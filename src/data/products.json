@@ -574,6 +574,15 @@
       "description": "Tres porciones de helado y crema chantilly.",
       "price": 6500,
       "status": "disponible"
+    },
+    {
+      "id": "producto-4ee347ef-269b-448e-9543-291d51383ebd",
+      "name": "Gatolatte",
+      "description": "Gato y late",
+      "price": 3200,
+      "category": "comida",
+      "group": "postres",
+      "status": "disponible"
     }
   ]
 }
