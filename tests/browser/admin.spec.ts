@@ -9,9 +9,9 @@ test.beforeAll(async () => {
   const result = await build({ entryPoints: ['tests/browser/widget-harness.ts'], bundle: true, write: false, format: 'iife', loader: { '.css': 'empty' }, define: { 'process.env.NODE_ENV': '"test"' } });
   harness = result.outputFiles[0].text;
 });
-async function loadHarness(page: import('@playwright/test').Page) {
-  await page.route('**/test-harness', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><html lang="es"><body><div id="root"></div></body></html>' }));
-  await page.goto('/test-harness');
+async function loadHarness(page: import('@playwright/test').Page, many = false) {
+  await page.route('**/test-harness*', route => route.fulfill({ contentType: 'text/html', body: '<!doctype html><html lang="es"><body><div id="root"></div></body></html>' }));
+  await page.goto('/test-harness' + (many ? '?many=1' : ''));
   await page.addScriptTag({ content: harness });
 }
 for (const width of [1280, 390]) {
@@ -61,7 +61,7 @@ for (const width of [1280, 390]) {
     const after = JSON.parse(await page.locator('#saved').innerText());
     expect(after).toHaveLength(3); expect(after[0]).toMatchObject({ note: 'No perder', image: 'cookie-cup' });
     await page.getByLabel('Buscar por nombre').fill('sin coincidencias');
-    await expect(page.getByText('No hay productos que coincidan con los filtros.')).toBeAttached();
+    await expect(page.getByText('No encontramos productos')).toBeAttached();
   });
 }
 test('pedido rechaza adiciones forzadas y oculta productos retirados', async ({ page }) => {
@@ -75,6 +75,24 @@ test('pedido rechaza adiciones forzadas y oculta productos retirados', async ({ 
   await page.getByRole('button', { name: 'Agregar producto seleccionado', exact: true }).click();
   await expect(page.locator('.order-items li')).toHaveCount(1);
   await expect(page.locator('.order-items')).toContainText('Café prueba');
+});
+
+test('lista paginada conserva cambios rápidos y filtros sin cargar de nuevo el documento', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await loadHarness(page, true);
+  await expect(page.locator('.fusion-products li')).toHaveCount(12);
+  await page.getByLabel('Estado de Café prueba', { exact: true }).selectOption('agotado');
+  await page.getByRole('button', { name: 'Siguiente', exact: true }).click();
+  await expect(page.locator('.fusion-products li')).toHaveCount(12);
+  await page.getByRole('button', { name: 'Anterior', exact: true }).click();
+  await expect(page.getByLabel('Estado de Café prueba', { exact: true })).toHaveValue('agotado');
+  await page.getByRole('button', { name: 'Guardar prueba', exact: true }).click();
+  expect(JSON.parse(await page.locator('#saved').innerText())[0].status).toBe('agotado');
+  await page.getByRole('button', { name: 'Siguiente', exact: true }).click();
+  await page.getByLabel('Buscar por nombre').fill('Café prueba');
+  await expect(page.locator('.fusion-products li')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await expect(page.locator('#product-name')).toBeFocused();
 });
 test('el gestor real carga en español y exige sesión antes de consultar contenido', async ({ page }) => {
   test.skip(!existsSync('.npm-cache/decap-cms-3.17.3.js'), 'Descargar el bundle fijado para esta comprobación de integración.');
@@ -90,7 +108,9 @@ test('el gestor real carga en español y exige sesión antes de consultar conten
   await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', /noindex/);
 });
 
-test('formulario nativo de Decap guarda y reabre mediante el contrato del gateway de prueba', async ({ page }) => {
+for (const width of [1280, 390]) {
+test(`formulario nativo de Decap guarda y reabre mediante el contrato del gateway de prueba (${width}px)`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 844 });
   test.skip(!existsSync('.npm-cache/decap-cms-3.17.3.js'), 'Necesita el bundle fijado.');
   page.on('dialog', dialog => { void dialog.accept(); });
   // Only in the browser test: replace the official gateway factory with Decap's
@@ -131,8 +151,8 @@ test('formulario nativo de Decap guarda y reabre mediante el contrato del gatewa
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.route('https://cdn.jsdelivr.net/npm/decap-cms@3.17.3/dist/decap-cms.js', route => route.fulfill({ contentType: 'application/javascript', body: readFileSync('.npm-cache/decap-cms-3.17.3.js'), headers: { 'Access-Control-Allow-Origin': '*' } }));
   await page.goto('/admin/');
+  expect(reads).toBe(0);
   await page.getByRole('button', { name: /iniciar sesión/i }).click();
-  await page.getByText('Administrar productos', { exact: true }).click();
   await page.getByRole('button', { name: 'Editar Café integración', exact: true }).click();
   await page.locator('#product-name').fill('Café actualizado');
   await page.locator('#product-status').selectOption('agotado');
@@ -159,6 +179,8 @@ test('formulario nativo de Decap guarda y reabre mediante el contrato del gatewa
   expect(errors).toEqual([]);
 });
 
+}
+
 test('carta pública y pedido muestran los datos de la única fuente JSON', async ({ page }) => {
   const menu = parseMenu(JSON.parse(readFileSync('src/data/products.json', 'utf8')));
   const visible = menu.products.filter(p => p.status !== 'oculto');
@@ -169,6 +191,8 @@ test('carta pública y pedido muestran los datos de la única fuente JSON', asyn
     const card = page.locator('.menu-entry').filter({ has: page.getByRole('heading', { name: product.name, exact: true, includeHidden: true }) });
     await expect(card.locator('p')).toHaveText(product.description);
   }
+  // The static menu is present before the React order island is interactive.
+  await expect(page.locator('astro-island[component-url*="WhatsAppOrder"]')).not.toHaveAttribute('ssr', '');
   await page.locator('[data-add-product="espresso"]').click();
   await page.locator('[data-add-product="chocolate-caliente"]').click();
   await page.locator('.order-basket').click();

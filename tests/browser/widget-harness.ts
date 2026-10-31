@@ -19,6 +19,9 @@ const sample: ProductData[] = [
   { id: 'agotado', name: 'Pastel agotado', description: 'Dulce', price: null, category: 'comida', group: 'pasteles', status: 'agotado' },
   { id: 'oculto', name: 'Oculto prueba', description: '', price: 100, category: 'heladeria', group: 'copas', status: 'oculto' },
 ];
+if (new URLSearchParams(location.search).has('many')) {
+  for (let index = 0; index < 28; index++) sample.push({ ...sample[0], id: 'extra-' + index, name: 'Producto ' + index });
+}
 function Harness() {
   const [products, setProducts] = React.useState(sample);
   const [saved, setSaved] = React.useState('');

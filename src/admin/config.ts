@@ -11,6 +11,8 @@ export function cmsConfig(bridge: BridgeConfig) {
       commit_messages: { update: 'Actualizar carta de Fusión x8' },
     },
     auth: { email_claim: 'email', first_name_claim: 'first_name', last_name_claim: 'last_name', avatar_url_claim: 'avatar_url' },
+    logo_url: '/images/fusion-x8-logo.png',
+    site_url: '/', display_url: '/',
     locale: 'es', load_config_file: false, show_preview_links: false,
     media_folder: 'public/images', public_folder: '/images',
     media_library: { name: 'disabled' },

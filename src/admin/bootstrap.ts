@@ -43,6 +43,9 @@ async function notify(state: SaveState) {
 export function startAdmin(bridge: BridgeConfig) {
   const cms = window.CMS;
   if (!cms) return;
+  // This CMS has one document: skip the generic collection landing screen.
+  // Leave OAuth callback URLs and explicit bookmarks untouched.
+  const openCartaAfterLogin = ['', '#', '#/'].includes(location.hash) && !location.search;
   const original = cms.getBackend('git-gateway');
   const es = structuredClone(cms.getLocale('es'));
   Object.assign(es.editor.editorToolbar, { publish: 'Guardar y solicitar publicación', publishing: 'Guardando en Git…', published: 'Guardado en Git', publishNow: 'Guardar y solicitar publicación' });
@@ -52,10 +55,22 @@ export function startAdmin(bridge: BridgeConfig) {
   // Wrap the official backend: login, logout, PKCE and token refresh remain Decap's.
   cms.registerBackend('fusion-git-gateway', class {
     constructor(config: unknown, options: unknown) {
-      return installMenuPersistence(original.init(config, options), state => { void notify(state); });
+      const gateway = original.init(config, options);
+      if (openCartaAfterLogin && gateway.authenticate) {
+        const authenticate = gateway.authenticate.bind(gateway);
+        gateway.authenticate = async credentials => {
+          const user = await authenticate(credentials);
+          window.setTimeout(() => {
+            if (['', '#/', '#/collections/carta'].includes(location.hash)) location.hash = '/collections/carta/entries/productos';
+          }, 0);
+          return user;
+        };
+      }
+      return installMenuPersistence(gateway, state => { void notify(state); });
     }
   });
-  cms.registerWidget('fusion-products', makeProductWidget(window));
+  const imageSources = JSON.parse(document.querySelector('#admin-image-sources')?.textContent || '{}') as Record<string, string>;
+  cms.registerWidget('fusion-products', makeProductWidget(window, imageSources));
   cms.registerMediaLibrary({ name: 'disabled', init: () => ({ show() {}, hide() {}, enableStandalone: () => false }) });
   cms.registerEventListener({ name: 'preSave', handler: ({ entry }) => { parseMenu(entry.get('data').toJS()); } });
   document.querySelector('#admin-boot')?.remove();

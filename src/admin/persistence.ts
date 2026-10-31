@@ -7,6 +7,7 @@ type Entry = { dataFiles: { path: string; raw: string }[]; assets: unknown[] };
 export interface Gateway {
   api?: { request: (path: string, options?: { method?: string; body?: string; cache?: RequestCache }) => Promise<unknown> };
   branch: string;
+  authenticate?: (credentials: unknown) => Promise<unknown>;
   getEntry: (path: string) => Promise<unknown>;
   entriesByFiles: (files: { path: string }[]) => Promise<unknown>;
   persistEntry: (entry: Entry, options: { commitMessage: string }) => Promise<unknown>;
@@ -27,13 +28,20 @@ export function installMenuPersistence(gateway: Gateway, notify: (state: SaveSta
   let baseline: { sha: string; menu: MenuData } | undefined;
   let saving = false;
   const deny = async (): Promise<never> => { throw new Error('Esta versión solo permite editar la carta, sin archivos multimedia ni eliminación de la carta completa.'); };
-  const read = async () => {
+  const readRemote = async () => {
     if (!gateway.api) throw new Error('Debes iniciar sesión para consultar la carta.');
     const file = await gateway.api.request(`/contents/${MENU_PATH}?ref=${encodeURIComponent(gateway.branch)}`, { cache: 'no-store' }) as GitFile;
     if (!file.sha || file.encoding !== 'base64') throw new Error('No se pudo leer la versión del repositorio.');
     const raw = decode(file.content);
     const menu = parseMenu(JSON.parse(raw));
     return { file: { path: MENU_PATH, id: file.sha }, data: raw, sha: file.sha, menu };
+  };
+  // Decap can request the singleton list and the editor at the same time.
+  // Share only an in-flight request; later openings still read a fresh SHA.
+  let reading: ReturnType<typeof readRemote> | undefined;
+  const read = () => {
+    reading ??= readRemote().finally(() => { reading = undefined; });
+    return reading;
   };
   gateway.getEntry = async path => {
     if (path !== MENU_PATH) return deny();

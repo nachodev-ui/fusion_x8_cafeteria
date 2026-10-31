@@ -1,24 +1,117 @@
-#admin-boot { max-width: 48rem; margin: 3rem auto; padding: 1.5rem; font: 1rem/1.6 system-ui, sans-serif; }
-.fusion-admin { color: #182332; font: 16px/1.5 system-ui, sans-serif; min-width: 0; overflow-wrap: anywhere; }
+:root { color-scheme: dark; font-family: 'DM Sans', system-ui, sans-serif; background: #0b0b0b; color: #f5eee4; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: #0b0b0b; }
+.fusion-brandbar { height: 82px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(18px, 4vw, 56px); background: #0b0b0b; border-bottom: 1px solid #312a25; position: relative; z-index: 100; }
+.fusion-brand { display: flex; align-items: center; gap: 13px; color: #f5eee4; text-decoration: none; font: 700 13px/1.4 'DM Sans', sans-serif; letter-spacing: .12em; }
+.fusion-brand img { object-fit: contain; }
+.fusion-brand small { display: block; color: #b7a89a; font-size: 11px; font-weight: 400; letter-spacing: 0; margin-top: 3px; }
+.fusion-view-site { color: #f5eee4; font-size: 13px; text-decoration: none; border: 1px solid #514139; border-radius: 6px; padding: 10px 15px; }
+.fusion-view-site span { margin-left: 12px; color: #ef8d7f; }
+#admin-boot { max-width: 38rem; margin: 10vh auto; padding: 2rem; font: 15px/1.7 'DM Sans', sans-serif; color: #cbb7a4; border: 1px solid #47362d; border-radius: 12px; background: #181310; }
+/* Decap 3.17.3 exposes Emotion component labels. Scope these shell overrides
+   to the admin root; keep native controls, focus and authentication behavior. */
+#nc-root { color-scheme: dark; font-family: 'DM Sans', system-ui, sans-serif; }
+#nc-root [class*='AppMainContainer'] { background: #0b0b0b; }
+#nc-root [class*='AppHeader'] { background-color: #171310; color: #f5eee4; border-color: #47382e; }
+#nc-root [class*='AppHeaderLogo'] { display: none; }
+#nc-root [class*='ToolbarContainer'] { background: #171310; color: #f5eee4; border-color: #47382e; }
+#nc-root [class*='ToolbarContainer'] a { color: #d3bb9f; }
+#nc-root [class*='ToolbarButton'], #nc-root [class*='PublishedToolbarButton'] { background: #9c2724; color: white; border: 1px solid #bf4338; border-radius: 6px; }
+#nc-root [class*='ToolbarDropdown'] { color-scheme: light; }
+#nc-root [class*='ControlPaneContainer'] { background: #0b0b0b; padding: 28px clamp(14px, 3vw, 44px) 50px; width: 100%; max-width: none; min-width: 0; }
+#nc-root [class*='NoPreviewContainer'] { width: 100%; max-width: 1440px; margin-inline: auto; min-width: 0; }
+#nc-root [class*='ControlContainer'] { padding: 0; background: transparent; box-shadow: none; border: 0; }
+#nc-root [class*='ControlTopbar'] { display: none; }
+#nc-root [class*='EditorContainer'], #nc-root [class*='Editor-'], #nc-root [class*='StyledSplitPane'] { background: #0b0b0b; }
+#nc-root [class*='StyledAuthenticationPage'] { background: radial-gradient(ellipse at top, #3d2219 0, #100e0c 60%); min-height: calc(100dvh - 82px); padding: 40px 18px; }
+#nc-root [class*='LoginButton'] { background: #a82b27; color: white; border-radius: 6px; font-family: inherit; }
+#nc-root [class*='SidebarContainer'], #nc-root [class*='CollectionMain'] { background: #15110f; color: #f5eee4; }
+#nc-root [class*='SidebarHeading'], #nc-root [class*='CollectionTopHeading'] { color: #f5eee4; }
+#nc-root [class*='SidebarNavLink'] { color: #cbb7a4; }
+.fusion-admin { --cream: #f5eee4; --muted: #bba898; --line: #42332a; color: var(--cream); font: 14px/1.55 'DM Sans', system-ui, sans-serif; min-width: 0; overflow-wrap: anywhere; }
 .fusion-admin *, .fusion-admin *::before, .fusion-admin *::after { box-sizing: border-box; }
+.fusion-admin h2, .fusion-admin h3, .fusion-admin p { margin: 0; }
+.fusion-admin button, .fusion-admin select { font: inherit; cursor: pointer; }
+.fusion-admin button { border: 1px solid #5b4438; border-radius: 6px; background: #241b16; color: var(--cream); padding: 10px 16px; min-height: 44px; transition: background .15s ease, border-color .15s ease; }
+.fusion-admin button:hover { background: #36261f; border-color: #9b6950; }
+.fusion-admin button:disabled { opacity: .4; cursor: default; }
+.fusion-admin :focus-visible { outline: 2px solid #ef8d7f; outline-offset: 3px; }
+.fusion-admin button.fusion-primary { background: #b72c27; color: white; border-color: #cf493d; font-weight: 700; }
+.fusion-admin button.fusion-primary:hover { background: #d03830; }
+.fusion-page-heading { display: flex; justify-content: space-between; margin: 2px 0 24px; }
+.fusion-kicker { color: #d7a37c; font-size: 10px; letter-spacing: .17em; font-weight: 700; }
+.fusion-page-heading h2 { font-size: clamp(28px, 3vw, 40px); color: var(--cream); font-weight: 500; letter-spacing: -.035em; line-height: 1.2; margin: 8px 0 10px; }
+.fusion-page-heading h2 em { color: #ef8d7f; font: 600 1.3em/.9 'Dancing Script', cursive; letter-spacing: -.02em; }
+.fusion-page-heading p, .fusion-help { color: var(--muted); font-size: 12px; line-height: 1.65; }
+.fusion-status { padding: 12px 16px; border: 1px solid #4c3a2e; border-left: 3px solid #be8c5e; border-radius: 6px; background: #211912; color: #d9c6b2; margin-bottom: 24px; font-size: 12px; }
+.fusion-status strong { color: #f2d7a2; }
+.fusion-status[data-phase=saved] { border-left-color: #86ac8d; }
+.fusion-status[data-phase=error], .fusion-error { color: #ffd0c5; background: #351b18; border-color: #a34d41; }
+.fusion-error { padding: 12px 16px; border-radius: 6px; margin-bottom: 18px !important; }
 .fusion-admin fieldset { border: 0; padding: 0; min-width: 0; margin: 0; }
-.fusion-admin legend { font-size: 1.3rem; font-weight: 700; margin: 1rem 0; }
-.fusion-admin button { border: 1px solid #6b7280; border-radius: .4rem; background: white; padding: .65rem .8rem; min-height: 44px; font: inherit; cursor: pointer; color: #182332; }
-.fusion-admin button:disabled, .fusion-admin fieldset:disabled { opacity: .65; cursor: wait; }
-.fusion-admin button:focus-visible, .fusion-admin input:focus-visible, .fusion-admin select:focus-visible, .fusion-admin textarea:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
-.fusion-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .75rem; align-items: end; }
-.fusion-field { display: flex; flex-direction: column; gap: .35rem; font-weight: 600; min-width: 0; }
-.fusion-field input, .fusion-field select, .fusion-field textarea { width: 100%; min-width: 0; min-height: 44px; border: 1px solid #6b7280; border-radius: .3rem; background: white; color: #182332; padding: .6rem; font: inherit; }
-.fusion-field input[type=checkbox] { width: 24px; height: 24px; min-height: 24px; }
-.fusion-products { padding: 0; margin: 1rem 0; list-style: none; }
-.fusion-products li { display: flex; gap: 1rem; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #cbd5e1; }
-.fusion-products p { margin: .2rem 0; }
-.fusion-actions { display: flex; gap: .5rem; flex-shrink: 0; }
-.fusion-editor { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 1rem; margin: 1.5rem 0; border-radius: .5rem; display: grid; gap: 1rem; }
-.fusion-editor h3, .fusion-editor p { margin: 0; }
-.fusion-status { padding: 1rem; border: 1px solid #64748b; border-radius: .4rem; background: #f1f5f9; }
-.fusion-status[data-phase=error], .fusion-error { color: #8b1c13; background: #fff1f0; padding: 1rem; }
-.fusion-confirm { position: fixed; inset: 0; margin: auto; width: min(90vw, 32rem); max-height: 90dvh; padding: 1.5rem; border: 1px solid #64748b; border-radius: .5rem; color: #182332; }
-.fusion-confirm::backdrop { background: rgb(0 0 0 / .55); }
-.fusion-confirm button { margin-right: .5rem; }
-@media (max-width: 600px) { .fusion-products li { align-items: start; flex-direction: column; } .fusion-actions { width: 100%; } .fusion-actions button { flex: 1; } }
+.fusion-filters { display: grid; grid-template-columns: minmax(180px, 1.5fr) 1fr 1fr auto; gap: 14px; align-items: end; margin-bottom: 24px; }
+.fusion-field { display: flex; flex-direction: column; gap: 7px; font-size: 12px; font-weight: 500; color: #e6d6c6; min-width: 0; }
+.fusion-field input, .fusion-field select, .fusion-field textarea { width: 100%; min-width: 0; min-height: 44px; border: 1px solid #544035; border-radius: 6px; background: #1c1511; color: var(--cream); padding: 11px 12px; font: inherit; font-size: 14px; line-height: 1.5; }
+.fusion-field textarea { resize: vertical; }
+.fusion-field input[type=checkbox] { width: 20px; height: 20px; min-height: 20px; accent-color: #d64b3f; }
+.fusion-field:has(input[type=checkbox]) { flex-direction: row-reverse; justify-content: flex-end; align-items: center; gap: 10px; }
+.fusion-workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+.fusion-workspace.is-editing { grid-template-columns: minmax(0, 1fr) minmax(290px, 360px); }
+.fusion-catalog { border: 1px solid var(--line); border-radius: 10px; background: #15110e; overflow: hidden; min-width: 0; }
+.fusion-catalog-heading { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.fusion-catalog-heading h3 { font-size: 16px; font-weight: 500; }
+.fusion-catalog-heading > span { color: var(--muted); font-size: 11px; }
+.fusion-products { padding: 0; margin: 0; list-style: none; }
+.fusion-products li { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto auto; align-items: center; gap: 16px; padding: 17px 20px; border-bottom: 1px solid #34271f; }
+.fusion-products li:last-child { border-bottom: 0; }
+.fusion-products li.is-selected { background: #2d1e16; box-shadow: inset 3px 0 #c54b3a; }
+.fusion-product-thumb { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: #30221a; border: 1px solid #50362a; display: grid; place-items: center; color: #cea17c; font: 600 25px 'Dancing Script', cursive; }
+.fusion-product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.fusion-product-copy { min-width: 0; }
+.fusion-product-copy strong { color: #f7e8d8; font-size: 14px; font-weight: 600; }
+.fusion-product-copy p { color: var(--muted); font-size: 11px; margin-top: 3px; }
+.fusion-price { display: inline-block; color: #debc91; font-size: 12px; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.fusion-quick-status select { color: #b9d7ba; border: 1px solid #3c5741; background: #1a2a1e; border-radius: 20px; font-size: 11px; padding: 8px 9px; min-height: 36px; max-width: 120px; }
+.fusion-quick-status[data-status=agotado] select { color: #f0cd95; background: #352819; border-color: #765a35; }
+.fusion-quick-status[data-status=oculto] select { color: #c2b4aa; background: #302923; border-color: #625247; }
+.fusion-actions { display: flex; gap: 7px; }
+.fusion-actions button { font-size: 12px; padding: 8px 12px; }
+.fusion-actions .fusion-delete { padding: 6px 12px; font-size: 21px; color: #e6a596; background: transparent; border-color: transparent; }
+.fusion-editor { background: #211812; border: 1px solid #674733; padding: 22px; border-radius: 10px; display: grid; gap: 19px; min-width: 0; position: sticky; top: 24px; }
+.fusion-editor-heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.fusion-editor-heading h3 { font-size: 20px; font-weight: 500; margin-top: 8px; line-height: 1.35; }
+.fusion-editor-heading button { padding: 4px 9px; font-size: 11px; min-height: 36px; }
+.fusion-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 9px; padding: 16px 20px; border-top: 1px solid var(--line); }
+.fusion-pagination span { margin-right: auto; color: var(--muted); font-size: 11px; }
+.fusion-pagination button { font-size: 12px; padding: 8px 12px; }
+.fusion-empty { text-align: center; padding: 60px 24px; color: var(--muted); }
+.fusion-empty h3 { font-size: 20px; color: var(--cream); margin-bottom: 8px; }
+.fusion-confirm { position: fixed; inset: 0; margin: auto; width: min(90vw, 440px); max-height: 90dvh; padding: 26px; border: 1px solid #81543e; border-radius: 12px; color: var(--cream); background: #241913; font: 14px/1.6 'DM Sans', sans-serif; }
+.fusion-confirm::backdrop { background: rgb(0 0 0 / .75); }
+.fusion-confirm h3 { font-size: 21px; font-weight: 500; }
+.fusion-confirm p { color: #d2baa5; margin: 16px 0 24px; }
+.fusion-confirm button { margin-right: 8px; }
+.fusion-confirm button:last-child { background: #a82b27; border-color: #cc4b3d; color: white; }
+.fusion-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 1100px) { .fusion-workspace.is-editing { grid-template-columns: minmax(0, 1fr); } .fusion-editor { position: static; grid-row: 1; } }
+@media (max-width: 700px) {
+  .fusion-brandbar { height: 72px; padding-inline: 16px; }
+  .fusion-brand { font-size: 11px; gap: 8px; }
+  .fusion-view-site { padding: 9px 11px; font-size: 12px; }
+  .fusion-filters { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fusion-filters > :first-child { grid-column: 1 / -1; }
+  .fusion-filters > button { grid-column: 1 / -1; }
+  .fusion-products li { grid-template-columns: 40px minmax(0, 1fr) auto; padding: 16px 14px; gap: 10px; }
+  .fusion-product-thumb { width: 40px; height: 40px; }
+  .fusion-quick-status { grid-column: 2; }
+  .fusion-actions { grid-column: 3; grid-row: 1 / span 2; flex-direction: column; }
+  .fusion-editor { padding: 18px; }
+  #nc-root [class*='ToolbarContainer'] { flex-wrap: wrap; height: auto; min-height: 60px; }
+}
+@media (prefers-reduced-motion: reduce) { .fusion-admin * { transition: none !important; } }
+#nc-root [class*='EditorContainer'] { min-width: 0; top: 82px; height: calc(100dvh - 82px); }
+#nc-root [class*='ToolbarContainer'] { min-width: 0; }
+#nc-root [class*='ControlPaneContainer'] [class*='ControlPaneContainer'] { padding: 0; }
+@media (max-width: 700px) {
+  #nc-root [class*='EditorContainer'] { top: 72px; height: calc(100dvh - 72px); padding-top: 110px; }
+  #nc-root [class*='ToolbarContainer'] { min-height: 100px; }
+}

@@ -5,7 +5,7 @@ import { type MenuData } from '../src/data/menu-schema';
 
 const initial: MenuData = { products: [{ id: 'cafe', name: 'Café ☕', description: 'Original', price: null, category: 'cafeteria', group: 'cafe', status: 'disponible', note: 'Conservar', image: 'cookie-cup' }] };
 function fixture() {
-  let menu = structuredClone(initial), sha = 'version-1', allow = true, writes = 0, fail = false;
+  let menu = structuredClone(initial), sha = 'version-1', allow = true, writes = 0, reads = 0, fail = false;
   const events: SaveState[] = [];
   const gateway = installMenuPersistence({
     branch: 'main',
@@ -19,11 +19,19 @@ function fixture() {
         writes++; sha = `version-${writes + 1}`;
         return { content: { sha } };
       }
+      reads++;
       return { sha, encoding: 'base64', content: Buffer.from(JSON.stringify(menu)).toString('base64') };
     } },
   } as Gateway, event => events.push(event));
-  return { gateway, events, get menu() { return menu; }, get writes() { return writes; }, disallow: () => { allow = false; }, fail: (value: boolean) => { fail = value; }, concurrent: () => { sha = 'someone-else'; } };
+  return { gateway, events, get menu() { return menu; }, get writes() { return writes; }, get reads() { return reads; }, disallow: () => { allow = false; }, fail: (value: boolean) => { fail = value; }, concurrent: () => { sha = 'someone-else'; } };
 }
+test('comparte lecturas simultáneas y vuelve a leer al reabrir para detectar cambios', async () => {
+  const f = fixture();
+  await Promise.all([f.gateway.getEntry(MENU_PATH), f.gateway.entriesByFiles([{ path: MENU_PATH }])]);
+  assert.equal(f.reads, 1);
+  await f.gateway.getEntry(MENU_PATH);
+  assert.equal(f.reads, 2);
+});
 const entry = (menu: MenuData) => ({ dataFiles: [{ path: MENU_PATH, raw: JSON.stringify(menu) }], assets: [] });
 test('el gateway deniega lectura y escritura sin autorización; no hay almacenamiento alternativo', async () => {
   const f = fixture(); f.disallow();
