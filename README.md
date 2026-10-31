@@ -100,6 +100,8 @@ Volver a desplegar desde Pages después de cambiar las variables. No copiar secr
 
 ### Uso diario
 
+Crear y editar abre una vista dedicada con secciones y una vista previa del producto. El listado y sus filtros se conservan al volver. El pie mantiene accesibles **Cancelar** y **Guardar producto**; la disponibilidad se elige con tarjetas. Referencias y decisiones en [docs/admin-editor-design.md](docs/admin-editor-design.md).
+
 1. En **/admin/**, iniciar sesión con el correo autorizado. **Cerrar sesión** usa el cierre de Cloudflare Access.
 2. Buscar por nombre o filtrar categoría y estado. La lista está paginada para mantener ligera la edición.
 3. **Crear producto** añade al final un identificador UUID estable y un formulario sin imagen. En **Editar**, el ID no cambia. Al cambiar categoría, elegir de nuevo un grupo válido.
@@ -185,7 +187,7 @@ Las pruebas de navegador usan Edge sin ventana y respuestas de API controladas e
 
 **No equivalen a una prueba en producción.** Pendientes: política real de Access, envío del código, login/logout, rechazo de otras cuentas, revocación, PAT, commit y build reales, publicación y demora observada, conservación del despliegue ante un build fallido y teléfono real. Completar el paso 5 antes de dar el panel como operativo.
 
-Resultado local: **12 pruebas de servidor/reglas y 7 de navegador aprobadas**, TypeScript/Astro sin errores ni advertencias, compilación estática y empaquetado de Pages Functions correctos. En el runtime local de Pages, carta y panel respondieron 200 y la API rechazó lectura y escritura anónimas o con token falso con 401. Las pruebas no usan credenciales de producción. Wrangler local fija la compatibilidad en **2026-10-30**, soportada por el runtime instalado.
+Resultado local: **12 pruebas de servidor/reglas y 8 de navegador aprobadas**, TypeScript/Astro sin errores ni advertencias, compilación estática y empaquetado de Pages Functions correctos. En el runtime local de Pages, carta y panel respondieron 200 y la API rechazó lectura y escritura anónimas o con token falso con 401. Las pruebas no usan credenciales de producción. Wrangler local fija la compatibilidad en **2026-10-30**, soportada por el runtime instalado.
 
 Mantenimiento pendiente: npm audit --omit=dev sigue reportando **5 avisos del árbol existente de Astro 5 (1 crítico, 3 altos y 1 bajo)**. La corrección propuesta por npm requiere una actualización mayor de Astro; no se ejecutó una migración de framework ni audit fix --force dentro de este cambio. Revisar los avisos y programar esa actualización. La API nueva usa jose y no ejecuta el servidor SSR de Astro.
 

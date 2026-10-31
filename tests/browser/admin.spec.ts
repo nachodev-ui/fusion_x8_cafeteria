@@ -82,7 +82,7 @@ for (const width of [1280, 390]) {
     await expect(page.getByRole('button', { name: 'Guardar producto', exact: true })).toBeDisabled();
     await page.getByLabel('Precio entero en CLP').fill('2500');
     await page.getByLabel('Precio por confirmar', { exact: true }).check();
-    await page.locator('#product-status').selectOption('agotado');
+    await page.getByRole('radio', { name: 'Agotado', exact: true }).check();
     api.fail(true);
     await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
     await expect(page.getByRole('alert')).toContainText('Se perdió la respuesta');
@@ -98,7 +98,7 @@ for (const width of [1280, 390]) {
     await expect(page.locator('.fusion-publication')).toContainText('versión verificada', { timeout: 8000 });
     await page.getByRole('button', { name: 'Editar Nuevo producto', exact: true }).click();
     await page.getByLabel('Nombre', { exact: true }).fill('Nombre editado');
-    await page.locator('#product-status').selectOption('oculto');
+    await page.getByRole('radio', { name: 'Oculto', exact: true }).check();
     await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Editar Nombre editado', exact: true })).toBeAttached();
     expect(api.menu.products.at(-1)!.id).toBe(added.id);
@@ -148,15 +148,46 @@ test('paginación y filtros locales; cambiar estado requiere guardar', async ({ 
   await page.goto('/admin/');
   await expect(page.locator('.fusion-products li')).toHaveCount(12);
   await page.getByLabel('Estado de Café prueba', { exact: true }).selectOption('agotado');
-  await expect(page.locator('#product-status')).toHaveValue('agotado');
+  await expect(page.getByRole('radio', { name: 'Agotado', exact: true })).toBeChecked();
   expect(api.writes).toBe(0);
+  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
   await page.getByRole('button', { name: 'Siguiente', exact: true }).click();
   await expect(page.locator('.fusion-products li')).toHaveCount(12);
   await page.getByLabel('Buscar por nombre').fill('Café prueba');
   await expect(page.locator('.fusion-products li')).toHaveCount(1);
   expect(api.reads).toBe(1);
-  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
   await expect(page.getByLabel('Estado de Café prueba', { exact: true })).toHaveValue('agotado');
+});
+
+test('editor dedicado conserva filtros, muestra vista previa y permite cancelar sin perder el formulario', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const api = await fixture(page);
+  await page.goto('/admin/');
+  await page.getByLabel('Buscar por nombre').fill('Café');
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await expect(page.locator('#product-name')).toBeFocused();
+  await expect(page.getByRole('region', { name: 'Listado de productos' })).toHaveCount(0);
+  await expect(page.getByLabel('Buscar por nombre')).toBeHidden();
+  await page.getByLabel('Nombre', { exact: true }).fill('Latte de prueba');
+  const preview = page.getByRole('complementary', { name: 'Vista previa del producto' });
+  await expect(preview.getByRole('heading', { name: 'Latte de prueba' })).toBeAttached();
+  await page.getByLabel('Precio por confirmar', { exact: true }).uncheck();
+  await page.getByLabel('Precio entero en CLP').fill('-1');
+  await page.getByLabel('Precio entero en CLP').press('Tab');
+  await expect(page.getByLabel('Precio entero en CLP')).toHaveAttribute('aria-invalid', 'true');
+  await page.getByLabel('Precio entero en CLP').fill('3500');
+  await expect(preview).toContainText('3.500');
+  await page.getByRole('radio', { name: 'Oculto', exact: true }).check();
+  await expect(preview).toContainText('Este producto estará oculto');
+  expect(api.writes).toBe(0);
+  await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Cancelar', exact: true }).click();
+  await expect(page.getByLabel('Nombre', { exact: true })).toHaveValue('Latte de prueba');
+  await page.getByRole('button', { name: 'Volver a productos', exact: false }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Descartar cambios' }).click();
+  await expect(page.getByLabel('Buscar por nombre')).toHaveValue('Café');
+  await expect(page.getByRole('button', { name: 'Editar Café prueba', exact: true })).toBeFocused();
+  expect(api.writes).toBe(0);
 });
 
 test('carta pública y pedido siguen leyendo la única fuente JSON', async ({ page }) => {
