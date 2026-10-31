@@ -4,6 +4,5 @@ export default defineConfig({
   use: { baseURL: 'http://127.0.0.1:4378', headless: true, channel: 'msedge', screenshot: 'off', video: 'off', trace: 'off' },
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1 --port 4378', url: 'http://127.0.0.1:4378/admin/', reuseExistingServer: false,
-    env: { CMS_BRIDGE_BASE_URL: 'https://auth.example.test', CMS_BRIDGE_CLIENT_ID: '', CMS_BRIDGE_GATEWAY_URL: 'https://gateway.example.test', CMS_BRIDGE_AUTH_ENDPOINT: '/sites/test-site/pkce', CMS_BRIDGE_TOKEN_ENDPOINT: '/sites/test-site/token', CMS_BRIDGE_STATUS_ENDPOINT: '' },
   },
 });

@@ -1,5 +1,6 @@
 ---
 import '../../admin/admin.css';
+import AdminPanel from '../../components/AdminPanel';
 import { getImage } from 'astro:assets';
 import cookieCup from '../../assets/products/cookie-cup.webp';
 import waffle from '../../assets/products/waffle-frutillas.webp';
@@ -7,20 +8,6 @@ import galletones from '../../assets/products/galletones-veganos.webp';
 import cinnamon from '../../assets/products/cinnamon-roll.webp';
 import kuchen from '../../assets/products/kuchen-sureno.webp';
 const imageSources = Object.fromEntries(await Promise.all(Object.entries({ 'cookie-cup': cookieCup, 'waffle-frutillas': waffle, 'galletones-veganos': galletones, 'cinnamon-roll': cinnamon, 'kuchen-sureno': kuchen }).map(async ([key, src]) => [key, (await getImage({ src, width: 112, height: 112, fit: 'cover', format: 'webp' })).src])));
-const bridge = {
-  baseUrl: process.env.CMS_BRIDGE_BASE_URL || '',
-  clientId: process.env.CMS_BRIDGE_CLIENT_ID || '',
-  gatewayUrl: process.env.CMS_BRIDGE_GATEWAY_URL || '',
-  authEndpoint: process.env.CMS_BRIDGE_AUTH_ENDPOINT || '',
-  tokenEndpoint: process.env.CMS_BRIDGE_TOKEN_ENDPOINT || '',
-  statusEndpoint: process.env.CMS_BRIDGE_STATUS_ENDPOINT || '',
-};
-const configured = [bridge.baseUrl, bridge.gatewayUrl, bridge.authEndpoint, bridge.tokenEndpoint].every(Boolean);
-if (configured) {
-  for (const url of [bridge.baseUrl, bridge.gatewayUrl, bridge.statusEndpoint].filter(Boolean)) {
-    if (new URL(url).protocol !== 'https:') throw new Error('Los endpoints del gestor deben usar HTTPS.');
-  }
-}
 ---
 <!doctype html>
 <html lang="es">
@@ -35,34 +22,13 @@ if (configured) {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet" />
-    {configured && <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />}
   </head>
   <body>
     <header class="fusion-brandbar">
       <a href="/" class="fusion-brand"><img src="/images/fusion-x8-logo.png" width="46" height="46" alt="Fusión x8" /><span>FUSIÓN X8<small>Administración de la carta</small></span></a>
       <a href="/" target="_blank" rel="noopener noreferrer" class="fusion-view-site">Ver carta <span aria-hidden="true">↗</span></a>
     </header>
-    <div id="admin-boot" role="status">
-      {configured ? 'Cargando el gestor seguro…' : 'El gestor está preparado, pero falta conectar DecapBridge. El responsable técnico debe completar CMS_BRIDGE_* según README.md. No se ha habilitado ningún acceso local o de prueba.'}
-    </div>
+    <main id="admin-main"><AdminPanel imageSources={imageSources} client:load /></main>
     <noscript>Activa JavaScript para iniciar sesión y administrar la carta.</noscript>
-    {configured && <>
-      <script is:inline>window.CMS_MANUAL_INIT = true;</script>
-      <script id="bridge-config" type="application/json" set:html={JSON.stringify(bridge).replace(/</g, '\\u003c')} />
-      <script id="admin-image-sources" type="application/json" set:html={JSON.stringify(imageSources).replace(/</g, '\\u003c')} />
-      <script is:inline src="https://cdn.jsdelivr.net/npm/decap-cms@3.17.3/dist/decap-cms.js" integrity="sha384-RWRzuHfiZSWCt3nEvG7B0v3cMgM1C2UuJmgBSL92GQh4uXmNSkbcthql/mNBqvjr" crossorigin="anonymous" onerror="document.getElementById('admin-boot').textContent='No se pudo cargar el gestor. Comprueba la conexión y vuelve a abrir esta página.'"></script>
-    </>}
-    <script>
-      import { startAdmin } from '../../admin/bootstrap';
-      const config = document.querySelector('#bridge-config');
-      if (config?.textContent) {
-        try { startAdmin(JSON.parse(config.textContent)); }
-        catch (error) {
-          const notice = document.querySelector('#admin-boot');
-          if (notice) notice.textContent = 'No se pudo iniciar el gestor. Vuelve a abrir esta página y pide al responsable técnico revisar la configuración si el error continúa.';
-          console.error(error);
-        }
-      }
-    </script>
   </body>
 </html>

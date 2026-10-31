@@ -1,0 +1,9 @@
+# Solo para Wrangler local. Copiar a .dev.vars (ignorado).
+# El acceso real requiere Cloudflare Access en un origen HTTPS de pruebas.
+ADMIN_ORIGIN=http://localhost:8788
+ADMIN_EMAIL=
+ACCESS_TEAM_DOMAIN=
+ACCESS_AUD=
+GITHUB_REPOSITORY=nachodev-ui/fusion_x8_cafeteria
+GITHUB_BRANCH=main
+GITHUB_TOKEN=
