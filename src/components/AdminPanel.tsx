@@ -1,4 +1,5 @@
 import ProductEditor from './ProductEditor';
+import AdminFeedback, { Spinner, type Feedback } from './AdminFeedback';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { categories, menuGroups } from '../data/menu-config';
 import { formatPrice } from '../data/menu-format';
@@ -13,8 +14,8 @@ const PAGE_SIZE = 12;
 function ConfirmDialog({ confirmation, close }: { confirmation: Confirmation | null; close: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => { if (confirmation && !dialog.current?.open) dialog.current?.showModal(); else if (!confirmation) dialog.current?.close(); }, [confirmation]);
-  return <dialog ref={dialog} className="fusion-confirm" aria-labelledby="confirmation-title" onCancel={close}>
-    {confirmation && <><h3 id="confirmation-title">{confirmation.title}</h3><p>{confirmation.message}</p><div className="fusion-dialog-actions"><button type="button" autoFocus onClick={close}>Cancelar</button><button type="button" className="fusion-primary" onClick={() => { const action = confirmation.run; close(); action(); }}>{confirmation.action}</button></div></>}
+  return <dialog ref={dialog} className="fusion-confirm fusion-confirm-designed" aria-labelledby="confirmation-title" aria-describedby="confirmation-description" onCancel={close}>
+    {confirmation && <><div className="fusion-confirm-symbol" aria-hidden="true">!</div><span className="fusion-kicker">{confirmation.action === 'Eliminar' ? 'ELIMINAR PRODUCTO' : 'ANTES DE CONTINUAR'}</span><h3 id="confirmation-title">{confirmation.title}</h3><p id="confirmation-description">{confirmation.message}</p><div className="fusion-confirm-note">{confirmation.action === 'Eliminar' ? 'Para una retirada temporal, puedes usar el estado Oculto.' : 'Puedes cancelar y seguir editando. Tus cambios seguirán en el formulario.'}</div><div className="fusion-dialog-actions"><button type="button" autoFocus onClick={close}>Cancelar</button><button type="button" className="fusion-primary" onClick={() => { const action = confirmation.run; close(); action(); }}>{confirmation.action}</button></div></>}
   </dialog>;
 }
 
@@ -41,6 +42,10 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
   const [error, setError] = useState('');
   const [authError, setAuthError] = useState(false);
   const [notice, setNotice] = useState('');
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const feedbackId = useRef(0);
+  const notify = useCallback((value: Omit<Feedback, 'id'>) => setFeedback({ ...value, id: ++feedbackId.current }), []);
+  const dismissFeedback = useCallback((id: number) => setFeedback(current => current?.id === id ? null : current), []);
   const [conflict, setConflict] = useState(false);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
   const [search, setSearch] = useState('');
@@ -48,6 +53,7 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(0);
   const [expectedVersion, setExpectedVersion] = useState<string | null>(null);
+  const [publicationCheck, setPublicationCheck] = useState(0);
   const [publication, setPublication] = useState<'waiting' | 'live' | 'unconfirmed' | null>(null);
   const returnTo = useRef<string | null>(null);
   const wasEditing = useRef(false);
@@ -75,13 +81,16 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
   }, []);
 
   const reportError = (exception: unknown) => {
-    setError(exception instanceof Error ? exception.message : 'No se pudo completar la operación.');
+    const message = exception instanceof Error ? exception.message : 'No se pudo completar la operación.';
+    setError(message);
+    notify({ phase: 'error', title: 'No se pudo completar la acción', message });
     setAuthError(exception instanceof AdminApiError && [401, 403].includes(exception.status));
     if (exception instanceof AdminApiError && exception.code === 'CONFLICT') setConflict(true);
   };
-  const load = useCallback(async () => {
+  const load = useCallback(async (showFeedback = false) => {
     setLoading(true); setError('');
-    try { setSnapshot(await adminRequest<MenuSnapshot>('products')); setNotice('Versión actual cargada. Si había cambios en el formulario, se conservaron para que puedas revisarlos.'); }
+    if (showFeedback) notify({ phase: 'saving', title: 'Cargando carta', message: 'Consultando la versión actual del repositorio…' });
+    try { setSnapshot(await adminRequest<MenuSnapshot>('products')); setNotice('Versión actual cargada.'); if (showFeedback) notify({ phase: 'info', title: 'Carta actualizada', message: 'Se cargó la versión actual. Los cambios del formulario se conservaron.' }); }
     catch (exception) { reportError(exception); }
     finally { setLoading(false); }
   }, []);
@@ -96,36 +105,52 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
   useEffect(() => {
     if (!expectedVersion) return;
     const controller = new AbortController(); let timer: ReturnType<typeof setTimeout>; let attempts = 0;
+    const deadline = Date.now() + 300_000;
     setPublication('waiting');
     const check = async () => {
       try {
-        const response = await fetch(`/menu-version.json?check=${Date.now()}`, { cache: 'no-store', signal: controller.signal });
-        if (response.ok && (await response.json()).version === expectedVersion) { if (!controller.signal.aborted) setPublication('live'); return; }
+        const response = await fetch(`/menu-version.json?check=${Date.now()}`, { cache: 'no-store', signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10_000)]) });
+        if (response.ok && (await response.json()).version === expectedVersion) {
+          if (!controller.signal.aborted) {
+            setPublication('live');
+            setFeedback(current => current?.version === expectedVersion ? { id: ++feedbackId.current, phase: 'success', title: 'Último guardado publicado', message: 'Verificamos esa versión en la carta pública. Los cambios nuevos sin guardar siguen pendientes.', version: expectedVersion } : current);
+          }
+          return;
+        }
       } catch { /* An unavailable deployment never turns a saved change into a failed save. */ }
       if (controller.signal.aborted) return;
-      if (++attempts >= 60) { setPublication('unconfirmed'); return; }
+      if (++attempts >= 60 || Date.now() >= deadline) { setPublication('unconfirmed'); setFeedback(current => current?.version === expectedVersion ? { id: ++feedbackId.current, phase: 'info', title: 'Publicación sin confirmar', message: 'El guardado está en el repositorio. Revisa el despliegue de Cloudflare; no necesitas guardar otra vez.' } : current); return; }
       timer = setTimeout(check, 5000);
     };
     void check();
     return () => { controller.abort(); clearTimeout(timer); };
-  }, [expectedVersion]);
+  }, [expectedVersion, publicationCheck]);
 
   const transition = useCallback((action: () => void) => {
     if (savingRef.current) return;
     if (dirtyRef.current) setConfirmation({ title: 'Hay cambios sin guardar', message: 'El formulario tiene cambios que todavía no están en el repositorio. ¿Quieres descartarlos y continuar?', action: 'Descartar cambios', run: action });
     else action();
   }, []);
+  useEffect(() => {
+    const home = document.querySelector('[data-admin-home]');
+    const goHome = (event: Event) => { const mouse = event as MouseEvent; if (mouse.button !== 0 || mouse.ctrlKey || mouse.metaKey || mouse.shiftKey || mouse.altKey) return; event.preventDefault(); transition(() => setEditor(null)); };
+    home?.addEventListener('click', goHome);
+    return () => home?.removeEventListener('click', goHome);
+  }, [transition]);
   const edit = useCallback((product: ProductData, nextStatus?: ProductStatus) => transition(() => { setEditor({ product: { ...product, ...(nextStatus ? { status: nextStatus } : {}) }, isNew: false }); setError(''); }), [transition]);
   const create = () => transition(() => { setEditor({ product: { id: `producto-${crypto.randomUUID()}`, name: '', description: '', price: null, category: 'cafeteria', group: '' as ProductData['group'], status: 'disponible' }, isNew: true }); setError(''); });
   const patch = (value: Partial<ProductData>) => setEditor(current => current ? { ...current, product: { ...current.product, ...value } } : null);
   const mutate = async (path: string, method: string, input: Record<string, unknown>, closeEditor: boolean) => {
     if (savingRef.current) return;
     savingRef.current = true; setSaving(true); setError(''); setAuthError(false);
+    notify({ phase: 'saving', title: method === 'DELETE' ? 'Eliminando producto' : 'Guardando producto', message: 'Estamos guardando el cambio. Espera un momento…' });
     try {
       const result = await adminRequest<MenuSnapshot>(path, { method, body: JSON.stringify(input) });
       setSnapshot(result); if (closeEditor) setEditor(null);
       setExpectedVersion(result.version); setPublication('waiting'); setConflict(false);
+      setPublicationCheck(current => current + 1);
       setNotice('Cambios guardados en el repositorio. La web se actualizará cuando termine la publicación.');
+      notify({ phase: 'waiting', title: method === 'DELETE' ? 'Producto eliminado · esperando publicación' : 'Producto guardado · esperando publicación', message: 'El cambio está en el repositorio. Comprobando cuándo aparece en la web…', version: result.version });
     } catch (exception) { reportError(exception); }
     finally { savingRef.current = false; setSaving(false); }
   };
@@ -146,7 +171,7 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
     const id = pendingDelete; setPendingDelete(null);
     void mutate(`products/${id}`, 'DELETE', { revision: snapshot.revision }, true);
   }, [pendingDelete]);
-  const logout = () => transition(() => { setSnapshot(null); setEditor(null); setSession(null); window.location.assign('/cdn-cgi/access/logout'); });
+  const logout = () => transition(() => { dirtyRef.current = false; setSnapshot(null); setEditor(null); setSession(null); window.location.assign('/cdn-cgi/access/logout'); });
   const filtered = useMemo(() => products.filter(product => product.name.toLocaleLowerCase('es').includes(search.toLocaleLowerCase('es')) && (!category || product.category === category) && (!status || product.status === status)), [products, search, category, status]);
   const currentPage = Math.min(page, Math.max(0, Math.ceil(filtered.length / PAGE_SIZE) - 1));
   const pageItems = filtered.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
@@ -159,15 +184,15 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
     <div className="fusion-session"><span>Acceso privado · {session.email}</span><button type="button" disabled={saving} onClick={logout}>Cerrar sesión</button></div>
     <div className="fusion-page-heading" hidden={!!editor}><div><span className="fusion-kicker">CARTA · FUSIÓN X8</span><h1>Tu carta, <em>al día.</em></h1><p>Precios, productos y lo que hay disponible hoy.</p></div><button type="button" className="fusion-primary fusion-create-action" disabled={saving || !snapshot} onClick={create}>Crear producto</button></div>
     <div className="fusion-status" role="status" aria-live="polite" data-phase={saving ? 'saving' : error ? 'error' : publication ? 'saved' : 'ready'}>
-      {saving ? 'Guardando en el repositorio…' : <>{dirty && <strong>Cambios sin guardar en el formulario. </strong>}{notice || 'Carta cargada del repositorio.'}</>}
-      {publication && <p className="fusion-publication">Último guardado: {publication === 'live' ? 'disponible en la web; versión verificada.' : publication === 'waiting' ? 'esperando confirmar la publicación.' : 'aún no se pudo confirmar en la web. Pide al responsable técnico revisar la publicación.'}</p>}
+      {saving ? <><Spinner /> Guardando en el repositorio…</> : dirty ? <strong>Cambios sin guardar en el formulario.</strong> : notice || 'Carta cargada del repositorio.'}
+      {publication && <p className="fusion-publication">{publication === 'waiting' && <Spinner />} Último guardado: {publication === 'live' ? 'disponible en la web; versión verificada.' : publication === 'waiting' ? 'esperando confirmar la publicación.' : 'aún no se pudo confirmar en la web. Pide al responsable técnico revisar la publicación.'}{publication === 'unconfirmed' && <button type="button" disabled={saving} onClick={() => { notify({ phase: 'waiting', title: 'Comprobando publicación', message: 'Consultando la versión de la carta pública…', version: expectedVersion! }); setPublicationCheck(current => current + 1); }}>Volver a comprobar publicación</button>}</p>}
     </div>
     {error && <div className="fusion-error" role="alert"><p>{error}</p>{authError && <a href="/api/admin/login" target="_blank" rel="noopener noreferrer">Reabrir acceso en otra pestaña</a>}</div>}
     <div className="fusion-filters" hidden={!!editor}>
       <label className="fusion-field" htmlFor="product-search">Buscar por nombre<input id="product-search" type="search" value={search} onChange={event => { setSearch(event.target.value); setPage(0); }} /></label>
       <label className="fusion-field" htmlFor="category-filter">Filtrar categoría<select id="category-filter" value={category} onChange={event => { setCategory(event.target.value); setPage(0); }}><option value="">Todas</option>{categories.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
       <label className="fusion-field" htmlFor="status-filter">Filtrar estado<select id="status-filter" value={status} onChange={event => { setStatus(event.target.value); setPage(0); }}><option value="">Todos</option>{statuses.map(item => <option key={item} value={item}>{statusLabels[item]}</option>)}</select></label>
-      <button type="button" disabled={loading || saving} onClick={() => void load()}>{loading ? 'Cargando…' : 'Cargar versión actual'}</button>
+      <button type="button" disabled={loading || saving} onClick={() => void load(true)}>{loading ? 'Cargando…' : 'Cargar versión actual'}</button>
     </div>
     <div className="fusion-workspace">
       <section className="fusion-catalog" hidden={!!editor} aria-label="Listado de productos"><div className="fusion-catalog-heading"><h2>Productos</h2><span role="status">{filtered.length} de {products.length} productos</span></div>
@@ -177,5 +202,6 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
       {editor && <ProductEditor key={editor.product.id} product={editor.product} isNew={editor.isNew} dirty={dirty} saving={saving} validation={validError} missing={!editor.isNew && !original} conflict={conflict} original={original} loading={loading} reload={() => void load()} image={editor.product.image ? imageSources[editor.product.image] : undefined} patch={patch} save={save} cancel={() => transition(() => setEditor(null))} />}
     </div>
     <ConfirmDialog confirmation={confirmation} close={() => setConfirmation(null)} />
+    <AdminFeedback feedback={feedback} dismiss={dismissFeedback} />
   </div>;
 }

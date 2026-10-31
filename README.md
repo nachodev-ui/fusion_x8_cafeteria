@@ -112,6 +112,10 @@ Crear y editar abre una vista dedicada con secciones y una vista previa del prod
 8. Se bloquean envíos duplicados mientras se guarda. Un error conserva el formulario. Si se pierde la respuesta, comprobar **Cargar versión actual** antes de repetir; una creación repetida con el mismo ID no duplica el producto. Si otro editor cambió la carta, cargar la versión actual, comparar el dato del repositorio y revisar el formulario conservado antes de guardar otra vez.
 9. El panel avisa antes de descartar cambios al cambiar de producto o cerrar sesión. El navegador puede avisar al cerrar/recargar; no se conserva un borrador después de abandonar la página. Si vence la sesión, el enlace de acceso abre otra pestaña para conservar el formulario.
 
+Las confirmaciones de descarte y eliminación usan un diálogo propio. El logo vuelve al listado conservando la protección de cambios pendientes. Cerrar sesión tras confirmar un descarte no dispara una segunda alerta nativa. Al recargar, cerrar la pestaña o salir con controles del navegador, el aviso nativo permanece: su texto y diseño dependen del navegador.
+
+Los avisos flotantes muestran guardado en curso, espera de publicación, publicación verificada y errores. El loader de publicación indica espera, no un porcentaje ni el estado interno de Cloudflare. Éxitos y avisos informativos se cierran tras 9 segundos; errores y espera quedan hasta cerrarlos o cambiar de estado. El estado permanente sigue visible al cerrar un toast. Si no se confirma, se puede volver a comprobar sin guardar de nuevo. Publicar el último guardado nunca confirma cambios nuevos sin guardar.
+
 ### Guardado, publicación y límites
 
 - **Cambios sin guardar**: solo en memoria del formulario.
@@ -187,7 +191,7 @@ Las pruebas de navegador usan Edge sin ventana y respuestas de API controladas e
 
 **No equivalen a una prueba en producción.** Pendientes: política real de Access, envío del código, login/logout, rechazo de otras cuentas, revocación, PAT, commit y build reales, publicación y demora observada, conservación del despliegue ante un build fallido y teléfono real. Completar el paso 5 antes de dar el panel como operativo.
 
-Resultado local: **12 pruebas de servidor/reglas y 8 de navegador aprobadas**, TypeScript/Astro sin errores ni advertencias, compilación estática y empaquetado de Pages Functions correctos. En el runtime local de Pages, carta y panel respondieron 200 y la API rechazó lectura y escritura anónimas o con token falso con 401. Las pruebas no usan credenciales de producción. Wrangler local fija la compatibilidad en **2026-10-30**, soportada por el runtime instalado.
+Resultado local: **12 pruebas de servidor/reglas y 12 de navegador aprobadas**, TypeScript/Astro sin errores ni advertencias, compilación estática y empaquetado de Pages Functions correctos. En el runtime local de Pages, carta y panel respondieron 200 y la API rechazó lectura y escritura anónimas o con token falso con 401. Las pruebas no usan credenciales de producción. Wrangler local fija la compatibilidad en **2026-10-30**, soportada por el runtime instalado.
 
 Mantenimiento pendiente: npm audit --omit=dev sigue reportando **5 avisos del árbol existente de Astro 5 (1 crítico, 3 altos y 1 bajo)**. La corrección propuesta por npm requiere una actualización mayor de Astro; no se ejecutó una migración de framework ni audit fix --force dentro de este cambio. Revisar los avisos y programar esa actualización. La API nueva usa jose y no ejecuta el servidor SSR de Astro.
 

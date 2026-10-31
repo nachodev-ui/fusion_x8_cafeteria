@@ -190,6 +190,102 @@ test('editor dedicado conserva filtros, muestra vista previa y permite cancelar 
   expect(api.writes).toBe(0);
 });
 
+test('feedback distingue guardar, esperar publicación y versión verificada sin perder cambios nuevos', async ({ page }) => {
+  const api = await fixture(page);
+  let release!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/api/admin/products/cafe', async route => { await pending; await route.fallback(); });
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Guardado nuevo');
+  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
+  const toast = page.locator('.fusion-toast');
+  try {
+    await expect(toast).toHaveAttribute('data-phase', 'saving');
+    await expect(toast.locator('.fusion-spinner')).toHaveCount(1);
+    await expect(page.getByRole('button', { name: 'Guardando…', exact: true })).toBeDisabled();
+  } finally { release(); }
+  await expect(toast).toHaveAttribute('data-phase', 'waiting');
+  await expect(toast).not.toContainText('verificamos', { ignoreCase: true });
+  expect(api.writes).toBe(1);
+  await page.getByRole('button', { name: 'Editar Guardado nuevo', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Todavía sin guardar');
+  api.publish();
+  await expect(toast).toHaveAttribute('data-phase', 'success', { timeout: 8000 });
+  await expect(toast).toContainText('Último guardado publicado');
+  await expect(page.getByLabel('Nombre', { exact: true })).toHaveValue('Todavía sin guardar');
+  await page.getByRole('button', { name: 'Cerrar notificación' }).click();
+  await expect(toast).toHaveCount(0);
+});
+
+test('logo y cierre de sesión usan confirmación propia sin disparar una segunda alerta del navegador', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await fixture(page);
+  const nativeDialogs: string[] = [];
+  page.on('dialog', dialog => { nativeDialogs.push(dialog.type()); void dialog.dismiss(); });
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Cambio pendiente');
+  await page.locator('[data-admin-home]').click();
+  await expect(page.getByRole('dialog')).toContainText('Hay cambios sin guardar');
+  await page.getByRole('dialog').getByRole('button', { name: 'Cancelar', exact: true }).click();
+  await expect(page.getByLabel('Nombre', { exact: true })).toHaveValue('Cambio pendiente');
+  await page.locator('[data-admin-home]').click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Descartar cambios' }).click();
+  await expect(page.getByRole('button', { name: 'Crear producto', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Otro cambio');
+  await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Descartar cambios' }).click();
+  await expect(page).toHaveURL(/\/cdn-cgi\/access\/logout$/);
+  expect(nativeDialogs).toEqual([]);
+});
+
+test('publicación sin confirmar y errores mantienen feedback honesto', async ({ page }) => {
+  const api = await fixture(page);
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Pendiente');
+  api.fail(true);
+  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
+  await expect(page.locator('.fusion-toast')).toHaveAttribute('data-phase', 'error');
+  await expect(page.getByLabel('Nombre', { exact: true })).toHaveValue('Pendiente');
+  api.fail(false);
+  await page.clock.install();
+  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
+  await expect(page.locator('.fusion-toast')).toHaveAttribute('data-phase', 'waiting');
+  await page.clock.fastForward(301_000);
+  await expect(page.locator('.fusion-toast')).toContainText('Publicación sin confirmar');
+  await expect(page.locator('.fusion-publication')).not.toContainText('versión verificada');
+  api.publish();
+  await page.getByRole('button', { name: 'Volver a comprobar publicación' }).click();
+  await expect(page.locator('.fusion-publication')).toContainText('versión verificada');
+  expect(api.writes).toBe(1);
+});
+
+test('recargar conserva protección nativa y un guardado con contenido idéntico vuelve a verificarse', async ({ page }) => {
+  const api = await fixture(page);
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Nuevo nombre');
+  const dialogReady = page.waitForEvent('dialog');
+  // A cancelled reload may keep waiting for a load event that will never fire.
+  const reload = page.reload({ timeout: 3000 }).catch(() => null);
+  const native = await dialogReady;
+  expect(native.type()).toBe('beforeunload');
+  await native.dismiss(); await reload;
+  await expect(page.getByLabel('Nombre', { exact: true })).toHaveValue('Nuevo nombre');
+  api.publish();
+  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
+  await expect(page.locator('.fusion-toast')).toHaveAttribute('data-phase', 'success');
+  await page.getByRole('button', { name: 'Editar Nuevo nombre', exact: true }).click();
+  await page.getByLabel('Nombre', { exact: true }).fill('Nuevo nombre ');
+  await page.getByRole('button', { name: 'Guardar producto', exact: true }).click();
+  await expect(page.locator('.fusion-publication')).toContainText('versión verificada');
+  await expect(page.locator('.fusion-toast')).toHaveAttribute('data-phase', 'success');
+  expect(api.writes).toBe(2);
+});
+
 test('carta pública y pedido siguen leyendo la única fuente JSON', async ({ page }) => {
   const menu = parseMenu(JSON.parse(readFileSync('src/data/products.json', 'utf8')));
   const visible = menu.products.filter(p => p.status !== 'oculto');
@@ -201,13 +297,22 @@ test('carta pública y pedido siguen leyendo la única fuente JSON', async ({ pa
     await expect(card.locator('p')).toHaveText(product.description);
   }
   await expect(page.locator('astro-island[component-url*="WhatsAppOrder"]')).not.toHaveAttribute('ssr', '');
-  await page.locator('[data-add-product="espresso"]').click();
-  await page.locator('[data-add-product="chocolate-caliente"]').click();
-  await page.locator('.order-basket').click();
-  await expect(page.locator('#order-product option')).toHaveCount(visible.length);
-  await expect(page.locator('.order-items li')).toHaveCount(2);
-  await expect(page.locator('.pending-total-note')).toContainText('El subtotal no incluye');
-  await expect(page.locator('.order-total strong')).toContainText('1.900');
+  const priced = visible.find(p => p.category === 'cafeteria' && p.status === 'disponible' && p.price !== null);
+  const pending = visible.find(p => p.category === 'cafeteria' && p.status === 'disponible' && p.price === null);
+  for (const product of visible.filter(p => p.status === 'agotado')) {
+    const card = page.locator('.menu-entry').filter({ has: page.getByRole('heading', { name: product.name, exact: true, includeHidden: true }) });
+    await expect(card.locator('.menu-entry-add')).toBeDisabled();
+    await expect(card.locator('[data-add-product]')).toHaveCount(0);
+  }
+  if (priced && pending) {
+    await page.locator(`[data-add-product="${priced.id}"]`).click();
+    await page.locator(`[data-add-product="${pending.id}"]`).click();
+    await page.locator('.order-basket').click();
+    await expect(page.locator('#order-product option')).toHaveCount(visible.length);
+    await expect(page.locator('.order-items li')).toHaveCount(2);
+    await expect(page.locator('.pending-total-note')).toContainText('El subtotal no incluye');
+    await expect(page.locator('.order-total strong')).toContainText(new Intl.NumberFormat('es-CL').format(priced.price!));
+  }
   const version = await (await page.request.get('/menu-version.json')).json();
   expect(version.version).toBe(createHash('sha256').update(menuSignatureInput(menu)).digest('hex'));
 });

@@ -160,3 +160,28 @@ body { margin: 0; background: #0b0b0b; }
   .fusion-edit-footer .fusion-editor-actions { display: grid; grid-template-columns: auto 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .fusion-price-toggle input::before { transition: none; } }
+/* Feedback: native dialog semantics with the existing warm palette. */
+.fusion-confirm-designed { width: min(92vw, 480px); padding: 30px; border-color: #674733; box-shadow: 0 28px 90px rgb(0 0 0 / .6); }
+.fusion-confirm-designed::backdrop { background: rgb(0 0 0 / .72); backdrop-filter: blur(5px); }
+.fusion-confirm-symbol { width: 48px; height: 48px; display: grid; place-items: center; margin-bottom: 22px; border-radius: 14px; color: #ef8d7f; background: #351b18; border: 1px solid #a34d41; font-size: 26px; font-weight: 600; }
+.fusion-confirm-designed h3 { margin-top: 8px; font-size: 26px; line-height: 1.2; letter-spacing: -.025em; }
+.fusion-confirm-designed p { margin: 16px 0; line-height: 1.7; }
+.fusion-confirm-note { border-left: 2px solid #be8c5e; padding: 10px 14px; background: #211912; color: #d9c6b2; font-size: 12px; margin-bottom: 26px; }
+.fusion-confirm-designed .fusion-dialog-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fusion-confirm-designed button { margin: 0; }
+.fusion-spinner { display: inline-block; flex: 0 0 auto; vertical-align: middle; width: 17px; height: 17px; border: 2px solid #674733; border-top-color: #ef8d7f; border-radius: 50%; animation: fusion-spin .85s linear infinite; }
+@keyframes fusion-spin { to { transform: rotate(360deg); } }
+.fusion-toast-region { position: fixed; z-index: 150; right: 24px; top: 98px; width: min(420px, calc(100vw - 32px)); pointer-events: none; }
+.fusion-toast { display: flex; align-items: start; gap: 14px; padding: 18px; border: 1px solid #674733; border-radius: 12px; background: #211812; color: var(--cream); box-shadow: 0 12px 40px rgb(0 0 0 / .45); pointer-events: auto; }
+.fusion-toast-icon { flex: 0 0 30px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: #30221a; color: #d7a37c; font-size: 18px; font-weight: 600; }
+.fusion-toast > div { min-width: 0; flex: 1; }
+.fusion-toast strong { font-size: 13px; line-height: 1.5; display: block; }
+.fusion-toast p { margin-top: 5px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.fusion-toast button { flex-shrink: 0; border: 0; background: transparent; padding: 0; min-height: 28px; min-width: 28px; font-size: 20px; color: var(--muted); }
+.fusion-toast[data-phase=success] { border-color: #3c5741; }
+.fusion-toast[data-phase=success] .fusion-toast-icon { color: #b9d7ba; background: #1a2a1e; }
+.fusion-toast[data-phase=error] { border-color: #a34d41; }
+.fusion-toast[data-phase=error] .fusion-toast-icon { color: #ffd0c5; background: #351b18; }
+.fusion-publication .fusion-spinner { width: 13px; height: 13px; margin-right: 4px; }
+@media (max-width: 700px) { .fusion-toast-region { right: 16px; top: 82px; } .fusion-confirm-designed { padding: 24px; } }
+@media (prefers-reduced-motion: reduce) { .fusion-spinner { animation: none; border-style: dotted; } }
