@@ -8,12 +8,11 @@ const bridge = {
   tokenEndpoint: process.env.CMS_BRIDGE_TOKEN_ENDPOINT || '',
   statusEndpoint: process.env.CMS_BRIDGE_STATUS_ENDPOINT || '',
 };
-const configured = Object.values(bridge).every(Boolean);
+const configured = [bridge.baseUrl, bridge.gatewayUrl, bridge.authEndpoint, bridge.tokenEndpoint].every(Boolean);
 if (configured) {
-  for (const url of [bridge.baseUrl, bridge.gatewayUrl, bridge.statusEndpoint]) {
+  for (const url of [bridge.baseUrl, bridge.gatewayUrl, bridge.statusEndpoint].filter(Boolean)) {
     if (new URL(url).protocol !== 'https:') throw new Error('Los endpoints del gestor deben usar HTTPS.');
   }
-  if (!bridge.gatewayUrl.replace(/\/$/, '').endsWith('/github')) throw new Error('El gateway debe terminar en /github. Copia la configuración PKCE de DecapBridge.');
 }
 ---
 <!doctype html>

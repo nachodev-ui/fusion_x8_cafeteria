@@ -2,7 +2,7 @@
 
 ## Administración de la carta
 
-Implementada en `/admin/` (también accesible como `/admin` en Pages). **Requiere conectar DecapBridge y verificar el circuito real antes de entregarlo como operativo al dueño.** Sin las variables `CMS_BRIDGE_*` completas, muestra un aviso de configuración y no habilita un backend local, una sesión ficticia ni escritura anónima.
+Implementada en `/admin/` (también accesible como `/admin` en Pages). **Requiere conectar DecapBridge y verificar el circuito real antes de entregarlo como operativo al dueño.** Sin las cuatro variables obligatorias `CMS_BRIDGE_*` completas, muestra un aviso de configuración y no habilita un backend local, una sesión ficticia ni escritura anónima.
 
 ### Arquitectura y elección
 
@@ -39,13 +39,13 @@ Decap se descarga de jsDelivr solamente en el panel, con versión fija y hash de
 | Valor generado por DecapBridge | Variable del build |
 | --- | --- |
 | `base_url` | `CMS_BRIDGE_BASE_URL` |
-| `app_id` | `CMS_BRIDGE_CLIENT_ID` |
-| `gateway_url` (debe terminar en `/github` o `/github/`) | `CMS_BRIDGE_GATEWAY_URL` |
+| `app_id` (opcional, solo si aparece) | `CMS_BRIDGE_CLIENT_ID` |
+| `gateway_url` (copiar tal cual, incluido el dominio sin sufijo) | `CMS_BRIDGE_GATEWAY_URL` |
 | `auth_endpoint` | `CMS_BRIDGE_AUTH_ENDPOINT` |
 | `auth_token_endpoint` | `CMS_BRIDGE_TOKEN_ENDPOINT` |
-| `status_endpoint` | `CMS_BRIDGE_STATUS_ENDPOINT` |
+| `status_endpoint` (opcional, solo si aparece) | `CMS_BRIDGE_STATUS_ENDPOINT` |
 
-Estas seis variables son identificadores y URLs **públicos**, no credenciales. Se incluyen en el HTML para que el cliente oficial ejecute PKCE. Copiarlas literalmente de la configuración generada: no adivinar UUID, rutas o secretos. Si algún campo no aparece, obtener del proveedor el valor efectivo indicado para PKCE antes de habilitar el panel. `.env.example` no contiene secretos. No existe ninguna variable `PUBLIC_*` para credenciales de administración.
+Las cuatro variables obligatorias son BASE_URL, GATEWAY_URL, AUTH_ENDPOINT y TOKEN_ENDPOINT. CLIENT_ID y STATUS_ENDPOINT son opcionales: si no aparecen en el bloque generado, dejarlas sin configurar. El gateway puede ser `https://gateway.decapbridge.com`; el backend oficial descubre GitHub mediante `/settings` después de autenticar. Estas variables son identificadores y URLs **públicos**, no credenciales. Se incluyen en el HTML para que el cliente oficial ejecute PKCE. Copiarlas literalmente de la configuración generada: no adivinar UUID, rutas o secretos. No inventar valores para los campos opcionales ausentes. `.env.example` no contiene secretos. No existe ninguna variable `PUBLIC_*` para credenciales de administración.
 
 4. En Cloudflare Workers & Pages, usar un proyecto **Pages con integración Git**, repositorio anterior, producción `main`, raíz del repositorio, comando `npm run build`, salida `dist`, Node 22.12 o superior. Mantener activados los builds automáticos de producción y comprobar que los filtros de rutas de build incluyen `src/data/products.json`. El token anterior no se configura aquí. Volver a desplegar tras agregar las variables públicas. No crear un deploy hook público ni un comando Workers.
 5. En el Site de DecapBridge → **Manage collaborators**, invitar exclusivamente el correo del dueño. El dueño acepta la invitación y elige el método de acceso del proveedor. No necesita el PAT, una cuenta GitHub ni acceso al panel técnico de Cloudflare. Para revocar acceso, quitar al colaborador del Site y verificar que el gateway rechaza la sesión; revisar con el proveedor la duración de tokens ya emitidos. Solo invitar más cuentas cuando se autoricen expresamente; esta versión no agrega roles propios.
@@ -130,7 +130,7 @@ El archivo está ignorado y la prueba conserva el SRI del HTML real. Las demás 
 
 Verificado localmente: compilación estática, TypeScript/Astro; reglas de precio y relaciones; disponibilidad y mensaje incluso ante cantidades manipuladas; creación/edición/eliminación y conservación de metadatos; persistencia y reapertura sobre API de prueba; rechazo 401 y conflictos SHA sobre API de prueba; error de red, reintento y doble guardado. Las pruebas de navegador cubren CRUD, filtros, categoría/grupo, estados, errores y pedido a 1280 y 390 px por interacción DOM. También comprueban la carga del CMS real con sesión requerida, su formulario nativo con gateway de prueba, la reapertura del documento guardado, la confirmación por hash y la conservación de cambios nuevos sin guardar. La prueba pública compara carta y selector con el JSON y verifica el subtotal con precios pendientes. Se bloquean integraciones externas en esa prueba pública.
 
-Resultado local: `npm test`, **12 pruebas aprobadas**; `npm run test:ui`, **6 pruebas aprobadas, ninguna omitida**, con Edge sin ventana; `npm run check`, **0 errores, 0 advertencias**; `npm run build`, **salida estática correcta**. El login/logout del backend de prueba no acredita la autorización ni la revocación de DecapBridge en producción. No se hicieron capturas ni comprobaciones visuales en esta implementación. La migración se contrastó campo por campo y en orden contra `src/data/menu.ts` de HEAD, sin diferencias salvo el estado inicial añadido.
+Resultado local: `npm test`, **13 pruebas aprobadas**; `npm run test:ui`, **6 pruebas aprobadas, ninguna omitida**, con Edge sin ventana; `npm run check`, **0 errores, 0 advertencias**; `npm run build`, **salida estática correcta**. El login/logout del backend de prueba no acredita la autorización ni la revocación de DecapBridge en producción. No se hicieron capturas ni comprobaciones visuales en esta implementación. La migración se contrastó campo por campo y en orden contra `src/data/menu.ts` de HEAD, sin diferencias salvo el estado inicial añadido.
 
 Mantenimiento pendiente detectado por `npm audit --omit=dev`: el árbol existente de Astro 5 reporta **5 avisos (1 crítico, 3 altos y 1 bajo)**. npm propone una actualización mayor de Astro para resolver el conjunto; no se ejecutó `audit fix --force` ni se cambió de versión mayor dentro de esta integración. Revisar esos avisos y planificar esa migración por separado; por ejemplo, el [aviso de optimización AVIF](https://github.com/advisories/GHSA-26w7-cxv4-gfx2). No se certificó que todos los avisos resulten explotables o inaplicables a esta salida estática.
 
