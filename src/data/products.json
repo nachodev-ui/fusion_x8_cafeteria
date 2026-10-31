@@ -1,0 +1,579 @@
+{
+  "products": [
+    {
+      "id": "espresso",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Espresso",
+      "description": "30 ml de café.",
+      "price": 1900,
+      "status": "disponible"
+    },
+    {
+      "id": "macchiato",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Macchiato",
+      "description": "30 ml de café con crema de leche.",
+      "price": 2900,
+      "status": "disponible"
+    },
+    {
+      "id": "americano",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Americano",
+      "description": "30 ml de café y agua.",
+      "price": 2700,
+      "status": "disponible"
+    },
+    {
+      "id": "cappuccino",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Cappuccino",
+      "description": "30 ml de café, 30 ml de leche y 30 ml de crema de leche.",
+      "price": 3900,
+      "status": "disponible"
+    },
+    {
+      "id": "latte",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Latte",
+      "description": "30 ml de café, 60 ml de leche y 10 ml de crema de leche.",
+      "price": 3900,
+      "status": "disponible"
+    },
+    {
+      "id": "ristretto",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Ristretto",
+      "description": "22 ml de café concentrado.",
+      "price": 1600,
+      "status": "disponible"
+    },
+    {
+      "id": "affogato",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Affogato",
+      "description": "30 ml de café con una porción de helado de vainilla.",
+      "price": 3900,
+      "status": "disponible"
+    },
+    {
+      "id": "mocaccino",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Mocaccino",
+      "description": "30 ml de café, 50 ml de leche, 10 ml de crema de leche y syrup de chocolate.",
+      "price": 4200,
+      "status": "disponible"
+    },
+    {
+      "id": "cafe-helado",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Café helado",
+      "description": "Helado de vainilla, 30 ml de café, 200 ml de leche y crema chantilly.",
+      "price": 5900,
+      "status": "disponible"
+    },
+    {
+      "id": "milkshake",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Milkshake",
+      "description": "Helado a elección, 200 ml de leche y crema chantilly.",
+      "price": 5900,
+      "status": "disponible"
+    },
+    {
+      "id": "chocolate-caliente",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Chocolate caliente",
+      "description": "125 ml de leche con cacao Lucaffé.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "frappuccino",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Frappuccino",
+      "description": "Hielo frappé, 30 ml de café, syrup a elección y crema chantilly.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "cortado",
+      "category": "cafeteria",
+      "group": "cafe",
+      "name": "Cortado",
+      "description": "30 ml de café y 30 ml de crema de leche.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "cookie-cup",
+      "category": "cafeteria",
+      "group": "extras-cafe",
+      "name": "Cookie Cup",
+      "description": "Vaso de galleta con baño de chocolate. Pídelo como extra para tu café o chocolate.",
+      "price": 1500,
+      "image": "cookie-cup",
+      "status": "disponible"
+    },
+    {
+      "id": "syrup",
+      "category": "cafeteria",
+      "group": "extras-cafe",
+      "name": "Agregado de syrup",
+      "description": "Amaretto, vainilla, chocolate, caramelo o crema irlandesa.",
+      "price": 800,
+      "status": "disponible"
+    },
+    {
+      "id": "te",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Té",
+      "description": "Una pausa calientita para acompañar tu tarde.",
+      "price": 2400,
+      "status": "disponible"
+    },
+    {
+      "id": "te-jamaica",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Té flor de Jamaica",
+      "description": "Té de flor de Jamaica.",
+      "price": 2700,
+      "status": "disponible"
+    },
+    {
+      "id": "te-chai",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Té chai",
+      "description": "Tu momento de té con chai.",
+      "price": 3000,
+      "status": "disponible"
+    },
+    {
+      "id": "te-chai-latte",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Té chai latte",
+      "description": "Té chai, leche y crema de leche.",
+      "price": 3900,
+      "status": "disponible"
+    },
+    {
+      "id": "te-con-leche",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Té con leche",
+      "description": "Té acompañado de leche.",
+      "price": 2800,
+      "status": "disponible"
+    },
+    {
+      "id": "leche-caliente",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Leche caliente",
+      "description": "Una taza de leche caliente.",
+      "price": 2200,
+      "status": "disponible"
+    },
+    {
+      "id": "platano-leche",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Plátano con leche",
+      "description": "La combinación de plátano y leche de siempre.",
+      "price": 4100,
+      "status": "disponible"
+    },
+    {
+      "id": "infusiones",
+      "category": "cafeteria",
+      "group": "te",
+      "name": "Infusiones",
+      "description": "Consulta las variedades disponibles al pedir.",
+      "price": 2500,
+      "status": "disponible"
+    },
+    {
+      "id": "bebidas",
+      "category": "cafeteria",
+      "group": "bebestibles",
+      "name": "Bebidas",
+      "description": "Consulta las opciones disponibles.",
+      "price": 2600,
+      "status": "disponible"
+    },
+    {
+      "id": "agua-mineral",
+      "category": "cafeteria",
+      "group": "bebestibles",
+      "name": "Agua mineral",
+      "description": "Para refrescar tu pausa.",
+      "price": 2200,
+      "status": "disponible"
+    },
+    {
+      "id": "jugos",
+      "category": "cafeteria",
+      "group": "bebestibles",
+      "name": "Jugos",
+      "description": "Piña, frambuesa, frutilla, melón, mango o frutos rojos.",
+      "price": 3900,
+      "status": "disponible"
+    },
+    {
+      "id": "limonadas",
+      "category": "cafeteria",
+      "group": "bebestibles",
+      "name": "Limonadas",
+      "description": "Clásica, menta, menta jengibre, jengibre o coco.",
+      "price": 3900,
+      "status": "disponible"
+    },
+    {
+      "id": "copa-fusion",
+      "category": "heladeria",
+      "group": "copas",
+      "name": "Copa Fusión",
+      "description": "Mix de frutos rojos, helado de frutos del bosque, crema chantilly y salsa de frambuesa.",
+      "price": 6600,
+      "status": "disponible"
+    },
+    {
+      "id": "copa-black",
+      "category": "heladeria",
+      "group": "copas",
+      "name": "Copa Black",
+      "description": "Brownie, helado de chocolate, crema chantilly y salsa de chocolate.",
+      "price": 6600,
+      "status": "disponible"
+    },
+    {
+      "id": "copa-frutal",
+      "category": "heladeria",
+      "group": "copas",
+      "name": "Copa Frutal",
+      "description": "Mix de fruta, dos sabores de helado a elección, crema chantilly y salsa de caramelo.",
+      "price": 6600,
+      "status": "disponible"
+    },
+    {
+      "id": "copa-nino",
+      "category": "heladeria",
+      "group": "copas",
+      "name": "Copa Niño",
+      "description": "Dos sabores de helado, crema chantilly, toppings a elección y salsa de manjar.",
+      "price": 5500,
+      "status": "disponible"
+    },
+    {
+      "id": "barquillo-simple",
+      "category": "heladeria",
+      "group": "barquillos",
+      "name": "Barquillo simple",
+      "description": "Consulta los sabores disponibles para tu barquillo.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "barquillo-doble",
+      "category": "heladeria",
+      "group": "barquillos",
+      "name": "Barquillo doble",
+      "description": "Consulta los sabores disponibles para tu barquillo.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "barquillo-triple",
+      "category": "heladeria",
+      "group": "barquillos",
+      "name": "Barquillo triple",
+      "description": "Consulta los sabores disponibles para tu barquillo.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "porcion-crema",
+      "category": "heladeria",
+      "group": "extras-helado",
+      "name": "Porción de crema",
+      "description": "Agrega una porción de crema a tu helado.",
+      "price": 800,
+      "status": "disponible"
+    },
+    {
+      "id": "bano-chocolate",
+      "category": "heladeria",
+      "group": "extras-helado",
+      "name": "Baño de chocolate",
+      "description": "Un toque de chocolate para tu helado.",
+      "price": 800,
+      "status": "disponible"
+    },
+    {
+      "id": "toppings",
+      "category": "heladeria",
+      "group": "extras-helado",
+      "name": "Toppings",
+      "description": "Consulta los toppings disponibles.",
+      "price": 700,
+      "status": "disponible"
+    },
+    {
+      "id": "mechada-fusion",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Mechada Fusión",
+      "description": "Mechada, queso fundido, champiñones, rúcula y baby berro.",
+      "price": 7800,
+      "status": "disponible"
+    },
+    {
+      "id": "mechada-palta",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Mechada palta",
+      "description": "Mechada, palta y tomate cherry.",
+      "price": 7800,
+      "status": "disponible"
+    },
+    {
+      "id": "mechada-chacarera",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Mechada chacarera",
+      "description": "Mechada, poroto verde, tomate cherry y ají verde.",
+      "price": 7500,
+      "status": "disponible"
+    },
+    {
+      "id": "mechada-luco",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Mechada Luco",
+      "description": "Mechada con queso fundido.",
+      "price": 7500,
+      "status": "disponible"
+    },
+    {
+      "id": "mechada-americana",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Mechada americana",
+      "description": "Mechada, pepinillo dulce, tocino y queso cheddar.",
+      "price": 7800,
+      "status": "disponible"
+    },
+    {
+      "id": "ave-palta",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Ave palta",
+      "description": "Ave, palta y mayonesa.",
+      "price": 7500,
+      "status": "disponible"
+    },
+    {
+      "id": "queso-cabra",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Queso cabra",
+      "description": "Queso de cabra, tomate cherry, albahaca y aceite de oliva.",
+      "price": 7500,
+      "status": "disponible"
+    },
+    {
+      "id": "vegetariano",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Vegetariano",
+      "description": "Queso fresco, lechuga hidropónica, rúcula y tomate cherry.",
+      "price": 7200,
+      "status": "disponible"
+    },
+    {
+      "id": "jamon-serrano",
+      "category": "comida",
+      "group": "sandwiches",
+      "name": "Jamón serrano",
+      "description": "Jamón serrano, queso crema, albahaca, tomate cherry, orégano y aceite de oliva.",
+      "price": 7500,
+      "status": "disponible"
+    },
+    {
+      "id": "extra-sandwich",
+      "category": "comida",
+      "group": "extras-comida",
+      "name": "Agregados extras",
+      "description": "Consulta qué puedes agregar a tu sándwich.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "trozo-torta",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Trozo de torta",
+      "description": "Consulta las tortas disponibles para tu porción.",
+      "price": 4300,
+      "status": "disponible"
+    },
+    {
+      "id": "pie-limon",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Pie de limón",
+      "description": "Un gustito de limón para acompañar tu café.",
+      "price": 4100,
+      "status": "disponible"
+    },
+    {
+      "id": "kuchen-manzana",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Kuchen manzana",
+      "description": "Una porción de kuchen de manzana.",
+      "price": 3000,
+      "status": "disponible"
+    },
+    {
+      "id": "kuchen-sureno",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Kuchen sureño",
+      "description": "Una porción de kuchen sureño.",
+      "price": 4100,
+      "image": "kuchen-sureno",
+      "status": "disponible"
+    },
+    {
+      "id": "galletones-veganos",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Galletones veganos",
+      "description": "Galletones de limón, chocolate brownie, canela o matcha.",
+      "price": 2500,
+      "note": "Precio de ejemplo, por confirmar.",
+      "image": "galletones-veganos",
+      "status": "disponible"
+    },
+    {
+      "id": "cinnamon-roll",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Cinnamon roll",
+      "description": "Un suave rollo de canela para acompañar tu café.",
+      "price": 3900,
+      "note": "Precio de ejemplo, por confirmar.",
+      "image": "cinnamon-roll",
+      "status": "disponible"
+    },
+    {
+      "id": "kuchen-nuez",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Kuchen nuez",
+      "description": "Una porción de kuchen de nuez.",
+      "price": 4100,
+      "status": "disponible"
+    },
+    {
+      "id": "cheesecake",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Cheesecake",
+      "description": "Consulta la variedad disponible.",
+      "price": 4300,
+      "status": "disponible"
+    },
+    {
+      "id": "donuts",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Donuts",
+      "description": "Algo dulce para acompañar tu pausa.",
+      "price": 2500,
+      "status": "disponible"
+    },
+    {
+      "id": "muffin",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Muffin",
+      "description": "Consulta las variedades disponibles.",
+      "price": 2700,
+      "status": "disponible"
+    },
+    {
+      "id": "medialuna",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Medialuna",
+      "description": "Una medialuna para acompañar tu cafecito.",
+      "price": 1100,
+      "status": "disponible"
+    },
+    {
+      "id": "relleno-por-confirmar",
+      "category": "comida",
+      "group": "pasteles",
+      "name": "Dulce relleno · nombre por confirmar",
+      "description": "Producto relleno de la sección de pasteles.",
+      "price": 1800,
+      "note": "El nombre aparece cortado en la carta compartida; consulta la variedad.",
+      "status": "disponible"
+    },
+    {
+      "id": "waffle",
+      "category": "comida",
+      "group": "postres",
+      "name": "Waffle",
+      "description": "Base de Nutella o manjar, plátano y/o frutilla, helado a elección, crema chantilly y salsa.",
+      "price": 7300,
+      "image": "waffle-frutillas",
+      "status": "disponible"
+    },
+    {
+      "id": "fondue-fusion",
+      "category": "comida",
+      "group": "postres",
+      "name": "Fondue Fusión",
+      "description": "Para dos: chocolate italiano dulce o belga semiamargo, frutilla, plátano, trozos de waffle y marshmallow.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "volcan-chocolate",
+      "category": "comida",
+      "group": "postres",
+      "name": "Volcán de chocolate",
+      "description": "Pastel tibio de chocolate 70% cacao con helado de vainilla.",
+      "price": null,
+      "status": "disponible"
+    },
+    {
+      "id": "banana-split",
+      "category": "comida",
+      "group": "postres",
+      "name": "Banana split",
+      "description": "Tres porciones de helado y crema chantilly.",
+      "price": 6500,
+      "status": "disponible"
+    }
+  ]
+}

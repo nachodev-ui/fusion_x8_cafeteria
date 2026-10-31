@@ -87,10 +87,19 @@ h1, h2, h3, h4, p { margin: 0; }
 .scene-caption .script { font-size: 30px; color: #f2d8b7; }
 .scene-caption > span:last-child { display: flex; align-items: center; gap: 10px; font-size: 6px; letter-spacing: .14em; color: #d9c0a7; padding-bottom: 6px; }
 .hero-scroll { display: none; align-items: center; gap: 16px; font-size: 8px; letter-spacing: .19em; color: #8e857c; }
-.flavor-strip { border-block: 1px solid #3c2420; background: #22110f; padding-block: 18px; overflow: hidden; }
-.flavor-strip > div { display: flex; justify-content: space-between; align-items: center; gap: 28px; white-space: nowrap; width: max-content; min-width: min(1200px, calc(100% - 40px)); }
-.flavor-strip span { font-size: 11px; letter-spacing: .02em; color: #d5bcb1; }
-.flavor-strip .strip-star { color: #d34b3c; font-size: 21px; }
+/* A compact visit card gives mobile visitors a useful next step after the promos. */
+.visit-invite { display: grid; gap: 24px; padding: 28px 24px; background: var(--color-fusion-cream); color: #30221d; border-radius: 12px; }
+.visit-invite-copy .eyebrow { color: #785548; font-size: 9px; letter-spacing: .15em; margin-bottom: 12px; }
+.visit-invite-copy h2 { font-size: clamp(27px, 6vw, 34px); font-weight: 500; line-height: 1.2; letter-spacing: -.035em; }
+.visit-invite-copy h2 .script { display: inline-block; color: #a52c27; font-size: 1.2em; }
+.visit-invite-copy > p:last-child { margin-top: 12px; font-size: 13px; line-height: 1.7; color: #715c50; }
+.visit-invite-details { display: grid; gap: 18px; min-width: 0; margin: 0; padding-block: 22px; border-block: 1px solid #d9c9b9; }
+.visit-invite-details dt { display: flex; gap: 9px; align-items: center; color: #8e342a; font-size: 12px; font-weight: 600; }
+.visit-invite-details dd { margin: 7px 0 0 27px; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
+.visit-invite-closed { display: block; color: #715c50; font-size: 12px; }
+.visit-invite-link { background: #8e2b26; color: #fff; font-size: 14px; min-height: 50px; }
+.visit-invite-link:hover { background: #70221e; }
+.visit-invite :focus-visible { outline-color: #8e2b26; }
 
 /* Business amenities come from the supplied information, including pets inside. */
 .amenities-section { padding-block: 46px; border-bottom: 1px solid #ffffff12; }
@@ -429,9 +438,9 @@ h1, h2, h3, h4, p { margin: 0; }
   .scene-caption .script { font-size: 37px; }
   .scene-caption > span:last-child { max-width: none; font-size: 6px; }
   .hero-scroll { margin-top: 0; }
-  .flavor-strip { margin-top: 0; padding-block: 20px; }
-  .flavor-strip > div { width: min(1200px, calc(100% - 64px)); }
-  .flavor-strip span { font-size: 11px; }
+  .visit-invite { grid-template-columns: 1fr 1.1fr auto; align-items: center; gap: 32px; padding: 32px; }
+  .visit-invite-details { border-block: 0; border-left: 1px solid #d9c9b9; padding: 0 0 0 28px; }
+  .visit-invite-link { white-space: nowrap; }
   .section { padding-block: 88px; }
   .amenities-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 35px; }
   .amenities-heading { margin-bottom: 32px; }
@@ -540,3 +549,6 @@ h1, h2, h3, h4, p { margin: 0; }
   .hero-media-attribution { margin-top: 0; font-size: 8px; padding: 5px 8px; }
 }
 @media (max-width: 420px) { .hero-with-media .hero-actions { flex-direction: column; align-items: stretch; } }
+
+.menu-sold-out { display: inline-block; color: #efb3a5; font-size: .8rem; font-weight: 700; }
+.menu-entry-add:disabled { opacity: .4; cursor: not-allowed; }

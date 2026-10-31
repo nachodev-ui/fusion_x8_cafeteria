@@ -10,8 +10,12 @@ import GoogleHero from '../components/GoogleHero.astro';
 import aboutPhoto from '../assets/venue/fusion-x8-salon-restaurado-v2.png';
 import googleMaps from '../data/google-maps.json';
 import googleMedia from '../data/google-media.json';
-import { categories, menuGroups, products, menuInfo, menuReferences, formatPrice } from '../data/menu';
+import { products, menuInfo, menuReferences, formatPrice } from '../data/menu';
+import { getVisibleMenu } from '../data/menu-schema';
 import { business, whatsappReady, whatsappUrl } from '../data/business';
+
+const { products: visibleProducts, categories: visibleCategories, groups: visibleGroups } = getVisibleMenu(products);
+const orderProducts = visibleProducts.map(({ image, ...product }) => product);
 
 const title = 'Fusión x8 · Cafetería y heladería pet friendly en Puente Alto';
 const description = 'Café, helados y sándwiches en Ciudad del Sol, Puente Alto. Pet friendly en todo el local, terraza exterior y calefacción en invierno. Conoce nuestra carta y horarios.';
@@ -95,10 +99,30 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
 
       <Promos />
 
-      <div class="flavor-strip" aria-hidden="true"><div class="container"><span>Café que abraza</span><span class="strip-star">✳</span><span>Helado que alegra</span><span class="strip-star">✳</span><span>Momentos que se quedan</span><span class="strip-star">✳</span><span>Así se vive Fusión x8</span></div></div>
+      <section class="visit-invite container" aria-labelledby="visit-invite-title">
+        <div class="visit-invite-copy">
+          <p class="eyebrow"><span class="red-dot"></span> HAZTE UN TIEMPITO</p>
+          <h2 id="visit-invite-title">¿Un ratito <span class="script">por acá?</span></h2>
+          <p>Tu próxima pausa está en Ciudad del Sol.</p>
+        </div>
+        <dl class="visit-invite-details">
+          {hasAddress && <div>
+            <dt><Icon name="pin" size={18} /><span>Encuéntranos</span></dt>
+            <dd>{business.address}</dd>
+          </div>}
+          <div>
+            <dt><Icon name="clock" size={18} /><span>Te esperamos</span></dt>
+            <dd>{business.hours}<span class="visit-invite-closed">{business.closedDays}</span></dd>
+          </div>
+        </dl>
+        <a class="button visit-invite-link" href={mapLink ?? '#visitanos'} target={mapLink ? '_blank' : undefined} rel={mapLink ? 'noopener noreferrer' : undefined}>
+          {mapLink ? 'Cómo llegar' : 'Planear mi visita'}<Icon name={mapLink ? 'diagonal' : 'arrow'} size={18} />
+          {mapLink && <span class="sr-only"> (abre Google Maps en una pestaña nueva)</span>}
+        </a>
+      </section>
 
       <section class="amenities-section container" id="comodidades" aria-labelledby="amenities-title">
-        <div class="amenities-heading"><p class="eyebrow"><span class="red-dot"></span> AQUÍ CABEMOS TODOS</p><h2 id="amenities-title">Tu gente, tu mascota y <span class="script">un buen momento.</span></h2></div>
+        <div class="amenities-heading"><h2 id="amenities-title">Tu gente, tu mascota y <span class="script">un buen momento.</span></h2></div>
         <div class="amenities-grid">
           {business.amenities.map((amenity) => <article class="amenity"><span class="amenity-icon"><Icon name={amenity.icon} size={26} /></span><h3>{amenity.title}</h3><p>{amenity.description}</p></article>)}
         </div>
@@ -106,37 +130,38 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
 
       <section class="section container" id="carta" aria-labelledby="menu-title">
         <div class="section-heading menu-heading">
-          <div><p class="eyebrow"><span class="red-dot"></span> PARA TODOS TUS ANTOJOS</p><h2 id="menu-title">La <span class="script">carta</span></h2></div>
+          <div><h2 id="menu-title">La <span class="script">carta</span></h2></div>
           <p>Para una tarde de conversa, hacer una pausa<br class="hidden sm:block" /> o darte ese gustito que te mereces.</p>
         </div>
         <div class="menu-toolbar">
           <div class="menu-tabs" role="tablist" aria-label="Categorías de la carta" hidden>
-            {categories.map((category, i) => <button type="button" id={`tab-${category.id}`} role="tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${category.id}`} tabindex={i === 0 ? 0 : -1} data-category={category.id}><Icon name={category.icon} size={19} />{category.label}</button>)}
+            {visibleCategories.map((category, i) => <button type="button" id={`tab-${category.id}`} role="tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${category.id}`} tabindex={i === 0 ? 0 : -1} data-category={category.id}><Icon name={category.icon} size={19} />{category.label}</button>)}
           </div>
-          <span class="menu-currency">PRECIOS EN PESOS CHILENOS</span>
         </div>
-        {categories.map((category) => <div id={`panel-${category.id}`} class="menu-panel" data-menu-panel={category.id}>
+        {!visibleProducts.length && <p class="demo-notice">La carta se está actualizando. Consulta los productos disponibles por WhatsApp.</p>}
+        {visibleCategories.map((category) => <div id={`panel-${category.id}`} class="menu-panel" data-menu-panel={category.id}>
           <h3 class="category-heading">{category.label}<span>{category.note}</span></h3>
-          {menuGroups.filter((group) => group.category === category.id).map((group) => <section class="menu-group" aria-labelledby={`group-${group.id}`}>
+          {visibleGroups.filter((group) => group.category === category.id).map((group) => <section class="menu-group" aria-labelledby={`group-${group.id}`}>
             <div class="menu-group-heading"><h4 id={`group-${group.id}`}>{group.label}</h4>{group.description && <p>{group.description}</p>}</div>
             <div class="menu-entries grid grid-cols-1 gap-x-10 md:grid-cols-2">
-              {products.filter((product) => product.group === group.id).map((product) => <article class:list={['menu-entry', { 'has-image': !!product.image }]}>
+              {visibleProducts.filter((product) => product.group === group.id).map((product) => <article class:list={['menu-entry', { 'has-image': !!product.image }]}>
                 {product.image && <Image class="menu-entry-image" src={product.image} alt={product.name} width={64} height={64} widths={[64, 128]} sizes="64px" fit="cover" format="webp" loading="lazy" decoding="async" />}
                 <div class="menu-entry-copy">
                   <div class="menu-entry-heading"><h5>{product.name}</h5><span class:list={['menu-entry-price', { 'is-pending': product.price === null }]} title={product.price === null ? menuInfo.pendingPriceNote : undefined}>{formatPrice(product.price)}</span></div>
                   <p>{product.description}</p>
+                  {product.status === 'agotado' && <span class="menu-sold-out">Agotado</span>}
                   {product.note && <small>{product.note}</small>}
                 </div>
-                <button class="menu-entry-add" type="button" data-add-product={product.id} aria-label={`Agregar ${product.name} al pedido${product.price === null ? ', precio por confirmar' : ''}`}><Icon name="plus" size={18} /></button>
+                <button class="menu-entry-add" type="button" disabled={product.status !== 'disponible'} data-add-product={product.status === 'disponible' ? product.id : undefined} aria-label={`Agregar ${product.name} al pedido${product.price === null ? ', precio por confirmar' : ''}`}><Icon name="plus" size={18} /></button>
               </article>)}
             </div>
           </section>)}
         </div>)}
         <div class="menu-bottom"><p><span aria-hidden="true">✳</span> {menuInfo.sourceNote}</p><a href="#pedido" data-order-open>¿Qué se te antoja hoy? <Icon name="arrow" size={17} /></a></div>
         <details class="menu-references">
-          <summary>Ver carta original <span aria-hidden="true">+</span></summary>
+          <summary>Ver carta original (referencia histórica) <span aria-hidden="true">+</span></summary>
           <div class="references-content">
-            <p>Los precios marcados como «Por confirmar» no se ven completos en estas imágenes. Puedes incluir esos productos en tu consulta; su precio se confirma al pedir.</p>
+            <p>Documentos históricos de referencia: estas imágenes no se actualizan con el panel y pueden mostrar precios antiguos. Los precios vigentes están en la carta de esta página. Los valores «Por confirmar» se consultan al pedir.</p>
             <div class="reference-grid">
               {menuReferences.map((reference) => <a href={reference.file} target="_blank" rel="noopener noreferrer" aria-label={`Abrir carta original: ${reference.label}, en una pestaña nueva`}>
                 <img src={reference.file} alt={`Carta original de ${reference.label}`} width="1179" height="2556" loading="lazy" decoding="async" />
@@ -162,7 +187,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
       </section>
 
       <section class="section container" id="galeria" aria-labelledby="gallery-title">
-        <div class="section-heading"><div><p class="eyebrow"><span class="red-dot"></span> UN POQUITO DE NUESTRO MUNDO</p><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div><a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a></div>
+        <div class="section-heading"><div><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div><a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a></div>
         <div class="gallery-grid gallery-grid-real" data-google-gallery data-media-state="fallback">
           {googleMaps.photos.items.slice(0, 1).map((photo, i) => <figure class="gallery-item gallery-real">
             <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Ver ${photo.title} en Google Maps, abre una pestaña nueva`}>
@@ -187,7 +212,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
 
       <section class="visit-section" id="visitanos" aria-labelledby="visit-title">
         <div class="container visit-grid">
-          <div class="visit-copy"><p class="eyebrow"><span class="red-dot"></span> TE ESPERAMOS</p><h2 id="visit-title">Tu próxima pausa<br /><span class="script">es por acá.</span></h2><p>Hazte un tiempo para algo rico.<br />Nos encantará verte.</p>
+          <div class="visit-copy"><p class="eyebrow"><span class="red-dot"></span> TE ESPERAMOS</p><h2 id="visit-title">Tu próxima pausa<br /><span class="script">es por acá.</span></h2>
             <div class="visit-detail"><span class="detail-icon"><Icon name="pin" size={21} /></span><div><h3>Encuéntranos</h3><p>{business.address}</p><small>{business.addressReference}</small></div></div>
             <div class="visit-detail"><span class="detail-icon"><Icon name="clock" size={21} /></span><div><h3>Horarios</h3><p>{business.hours}</p><small class="closed-day">{business.closedDays}</small></div></div>
             <div class="visit-detail"><span class="detail-icon"><Icon name="paw" size={21} /></span><div><h3>Tu mascota también es bienvenida</h3><p>Pet friendly en todo el local.</p></div></div>
@@ -227,7 +252,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
     <footer class="site-footer"><div class="container"><div class="footer-top"><a href="#inicio" class="footer-brand" aria-label="Fusión x8, volver al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8, cafetería y heladería" width="82" height="82" loading="lazy" /><span>Un cafecito. Un helado.<br />Un buen momento.</span></a><div class="footer-links"><a href="#carta">La carta</a><a href="#nosotros">Nuestra esencia</a><a href="#visitanos">Visítanos</a></div><div class="footer-social"><p>SIGAMOS COMPARTIENDO</p><div><a href={business.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram de Fusión x8, abre una pestaña nueva"><Icon name="instagram" size={21} /></a><a href={business.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok de Fusión x8, abre una pestaña nueva"><Icon name="tiktok" size={21} /></a><span>@cafeteriafusionx8</span></div></div></div><div class="footer-bottom"><span>© {new Date().getFullYear()} Fusión x8 · Puente Alto</span><span>Demo de diseño · Carta e información del local según material compartido.</span><a href="#inicio">Volver arriba ↑</a></div></div></footer>
 
     <a class="whatsapp-float" href={whatsappUrl} data-order-open={whatsappReady ? undefined : true} target={whatsappReady ? '_blank' : undefined} rel={whatsappReady ? 'noopener noreferrer' : undefined} aria-label={`Pedir por WhatsApp al ${business.whatsappDisplay}${whatsappReady ? '' : ', demo con número pendiente'}`}><Icon name="whatsapp" size={26} /><span>¿Un antojito?</span></a>
-    <WhatsAppOrder client:load />
+    <WhatsAppOrder products={orderProducts} client:load />
 
     <script>
       const hero = document.querySelector('#inicio');

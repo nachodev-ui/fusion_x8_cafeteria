@@ -1,0 +1,24 @@
+#admin-boot { max-width: 48rem; margin: 3rem auto; padding: 1.5rem; font: 1rem/1.6 system-ui, sans-serif; }
+.fusion-admin { color: #182332; font: 16px/1.5 system-ui, sans-serif; min-width: 0; overflow-wrap: anywhere; }
+.fusion-admin *, .fusion-admin *::before, .fusion-admin *::after { box-sizing: border-box; }
+.fusion-admin fieldset { border: 0; padding: 0; min-width: 0; margin: 0; }
+.fusion-admin legend { font-size: 1.3rem; font-weight: 700; margin: 1rem 0; }
+.fusion-admin button { border: 1px solid #6b7280; border-radius: .4rem; background: white; padding: .65rem .8rem; min-height: 44px; font: inherit; cursor: pointer; color: #182332; }
+.fusion-admin button:disabled, .fusion-admin fieldset:disabled { opacity: .65; cursor: wait; }
+.fusion-admin button:focus-visible, .fusion-admin input:focus-visible, .fusion-admin select:focus-visible, .fusion-admin textarea:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+.fusion-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .75rem; align-items: end; }
+.fusion-field { display: flex; flex-direction: column; gap: .35rem; font-weight: 600; min-width: 0; }
+.fusion-field input, .fusion-field select, .fusion-field textarea { width: 100%; min-width: 0; min-height: 44px; border: 1px solid #6b7280; border-radius: .3rem; background: white; color: #182332; padding: .6rem; font: inherit; }
+.fusion-field input[type=checkbox] { width: 24px; height: 24px; min-height: 24px; }
+.fusion-products { padding: 0; margin: 1rem 0; list-style: none; }
+.fusion-products li { display: flex; gap: 1rem; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #cbd5e1; }
+.fusion-products p { margin: .2rem 0; }
+.fusion-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+.fusion-editor { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 1rem; margin: 1.5rem 0; border-radius: .5rem; display: grid; gap: 1rem; }
+.fusion-editor h3, .fusion-editor p { margin: 0; }
+.fusion-status { padding: 1rem; border: 1px solid #64748b; border-radius: .4rem; background: #f1f5f9; }
+.fusion-status[data-phase=error], .fusion-error { color: #8b1c13; background: #fff1f0; padding: 1rem; }
+.fusion-confirm { position: fixed; inset: 0; margin: auto; width: min(90vw, 32rem); max-height: 90dvh; padding: 1.5rem; border: 1px solid #64748b; border-radius: .5rem; color: #182332; }
+.fusion-confirm::backdrop { background: rgb(0 0 0 / .55); }
+.fusion-confirm button { margin-right: .5rem; }
+@media (max-width: 600px) { .fusion-products li { align-items: start; flex-direction: column; } .fusion-actions { width: 100%; } .fusion-actions button { flex: 1; } }
