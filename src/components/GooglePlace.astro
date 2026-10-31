@@ -1,0 +1,164 @@
+---
+import Icon from './Icon.astro';
+import data from '../data/google-maps.json';
+
+const apiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+const checkDate = new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: data.timeZone }).format(new Date(`${data.checkedOn}T12:00:00-03:00`));
+const initials = (name: string) => name.split(/\s+/).slice(0, 2).map((part) => part[0]).join('');
+---
+<section class="section container google-section" id="opiniones" aria-labelledby="google-title" data-google-reviews data-api-key={apiKey} data-place-id={data.placeId} data-review-state="fallback">
+  <div class="section-heading google-section-heading">
+    <div><p class="eyebrow"><span class="red-dot"></span> CADA VISITA TIENE SU HISTORIA</p><h2 id="google-title">Lo que dicen <span class="script">de nosotros.</span></h2></div>
+    <p>Las opiniones de quienes ya compartieron<br />un momento en Fusión x8.</p>
+  </div>
+
+  <div class="google-rating-band">
+    <div class="google-rating-score">
+      <span class="google-rating-number" data-place-rating>{data.rating.toLocaleString('es-CL')}</span>
+      <div><span class="google-rating-outof">DE 5 ESTRELLAS</span><span class="google-stars google-overall-stars" role="img" aria-label={`${data.rating.toLocaleString('es-CL')} de 5 estrellas`} data-place-stars style={`--star-fill: ${data.rating / 5 * 100}%`}><span aria-hidden="true">★★★★★</span><span class="google-stars-fill" aria-hidden="true">★★★★★</span></span></div>
+    </div>
+    <div class="google-rating-context">
+      <a href={data.sourceUrl} target="_blank" rel="noopener noreferrer" class="google-attribution">Google Maps <Icon name="diagonal" size={13} /></a>
+      <p><strong data-place-count>{data.reviewCount}</strong> opiniones de nuestra comunidad</p>
+      <small data-google-status role="status" aria-live="polite">Datos consultados el {checkDate}.</small>
+    </div>
+    <a class="button button-outline google-all-reviews" href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Leer todas las reseñas <Icon name="diagonal" size={16} /></a>
+  </div>
+
+  <div class="google-reviews" data-reviews-list aria-label="Opiniones de clientes en Google Maps">
+    {data.reviewSummaries.map((review) => <article class="google-review">
+      <div class="google-review-author"><span class="google-avatar" aria-hidden="true">{initials(review.author)}</span><div><h3>{review.author}</h3><span>Opinión en Google Maps</span></div></div>
+      <div class="google-review-stars"><span class="google-stars" role="img" aria-label={`${review.rating} de 5 estrellas`}>{'★'.repeat(review.rating)}<span class="google-empty-stars" aria-hidden="true">{'☆'.repeat(5 - review.rating)}</span></span><span>Resumen</span></div>
+      <p class="google-review-text">{review.summary}</p>
+      <a class="google-review-link" href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Leer en Google Maps <Icon name="diagonal" size={12} /></a>
+    </article>)}
+  </div>
+  <div class="google-reviews-footer">
+    <p data-review-note>Resúmenes de tres opiniones visibles el {checkDate}. Los textos completos están en Google Maps.</p>
+    <button type="button" class="google-more-reviews" data-more-reviews hidden>Ver más reseñas <Icon name="plus" size={15} /></button>
+  </div>
+  <p class="google-provider-attribution" data-review-providers hidden></p>
+
+  <details class="google-visit-details">
+    <summary><span class="google-secondary-icon"><Icon name="clock" size={21} /></span><span><strong>¿A qué hora nos vemos?</strong><small>Consulta los horarios de mayor concurrencia</small></span><span class="google-details-toggle" aria-hidden="true">+</span></summary>
+    <div class="google-visit-content">
+      <div class="google-visit-intro"><p class="eyebrow">PLANEA TU VISITA</p><h3>Encuentra tu momento<br /><span class="script">para una pausa.</span></h3><p>Conoce cómo suele moverse la tarde según las horas punta de Google.</p><small>Martes a domingo · 15:30–22:00<br />Lunes cerrado.</small></div>
+      <div class="google-busyness">
+        <div class="google-day-selector" role="group" aria-label="Elegir día para ver la concurrencia habitual" hidden>
+          {data.popularTimes.days.map((day) => <button type="button" data-popular-day={day.id} aria-pressed={day.id === 'friday' ? 'true' : 'false'} aria-controls={`popular-${day.id}`} aria-label={day.label}>{day.shortLabel}</button>)}
+        </div>
+        {data.popularTimes.days.map((day) => <div class="google-day-panel" id={`popular-${day.id}`} data-popular-panel={day.id}>
+          <h4>{day.label} <span>{day.closed ? 'Cerrado' : '15:30–22:00'}</span></h4>
+          {day.values ? <>
+            <div class="google-histogram" role="img" aria-label={`${day.label}, actividad relativa de 0 a 100: ${day.values.map((value, i) => `${data.popularTimes.hours[i]}:00, ${value}`).join('; ')}.`}>
+              {day.values.map((value, i) => <div class="google-bar-column" aria-hidden="true"><span class="google-bar-value">{value}</span><div class:list={['google-bar', { 'is-peak': value === Math.max(...day.values!) }]} style={`--activity: ${value}%`}></div><span>{data.popularTimes.hours[i]} h</span></div>)}
+            </div>
+            <p class="google-peak">Mayor actividad cerca de las <strong>{data.popularTimes.hours[day.values.indexOf(Math.max(...day.values))]}:00</strong>.</p>
+          </> : <p class="google-closed">El lunes hacemos una pausa. Te esperamos de martes a domingo.</p>}
+        </div>)}
+        <p class="google-data-note">Actividad relativa, no ocupación en vivo ni porcentaje de aforo. Consultado el {checkDate}. La franja de 15 h incluye la apertura a las 15:30.</p>
+      </div>
+    </div>
+  </details>
+
+  <template data-review-template>
+    <article class="google-review">
+      <div class="google-review-author"><span class="google-avatar" aria-hidden="true"><span data-review-initials></span><img data-review-avatar width="42" height="42" alt="" loading="lazy" referrerpolicy="no-referrer" hidden /></span><div><h3><a data-review-author target="_blank" rel="noopener noreferrer"></a></h3><span data-review-date></span></div></div>
+      <div class="google-review-stars"><span class="google-stars" role="img" data-review-stars></span><span>Google Maps</span></div>
+      <p class="google-review-text" data-review-text></p>
+      <button class="google-review-expand" type="button" data-review-expand aria-expanded="false" hidden>Leer más</button>
+      <a class="google-review-link" data-review-link target="_blank" rel="noopener noreferrer">Leer en Google Maps <Icon name="diagonal" size={12} /></a>
+    </article>
+  </template>
+</section>
+
+<script>
+  import { initGoogleReviews } from '../lib/google-reviews';
+
+  const section = document.querySelector<HTMLElement>('[data-google-reviews]');
+  if (section) {
+    const selectors = section.querySelector<HTMLElement>('.google-day-selector');
+    const buttons = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-popular-day]'));
+    const panels = Array.from(section.querySelectorAll<HTMLElement>('[data-popular-panel]'));
+    const showDay = (id: string) => {
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.popularDay === id)));
+      panels.forEach((panel) => { panel.hidden = panel.dataset.popularPanel !== id; });
+    };
+    if (selectors && buttons.length) {
+      selectors.hidden = false;
+      showDay(new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'America/Santiago' }).format(new Date()).toLowerCase());
+      buttons.forEach((button) => button.addEventListener('click', () => showDay(button.dataset.popularDay!)));
+    }
+    initGoogleReviews(section);
+  }
+</script>
+
+<style>
+  .google-section-heading { margin-bottom: 30px; }
+  .google-rating-band { display: flex; flex-wrap: wrap; align-items: center; gap: 26px; padding: 28px 25px; border: 1px solid #49332b; border-radius: 10px; background: radial-gradient(ellipse at 0 0, #49251d55, transparent 70%), #171310; }
+  .google-rating-score { display: flex; align-items: center; gap: 22px; }
+  .google-rating-number { font-size: 76px; font-weight: 500; line-height: 1; letter-spacing: -.065em; color: #fff6ec; }
+  .google-rating-score > div { display: grid; gap: 11px; }
+  .google-rating-outof { color: #c5ac97; font-size: 8px; letter-spacing: .15em; }
+  .google-stars { color: #e7b76e; letter-spacing: .1em; font-size: 16px; white-space: nowrap; }
+  .google-overall-stars { position: relative; display: inline-block; width: max-content; font-size: 20px; line-height: 1.2; color: #625044; }
+  .google-stars-fill { position: absolute; inset: 0 auto 0 0; width: var(--star-fill); overflow: hidden; color: #e7b76e; }
+  .google-rating-context { flex: 1 1 210px; }
+  .google-attribution { display: inline-flex; align-items: center; gap: 7px; color: #fff; font-size: 14px; font-weight: 500; }
+  .google-rating-context p { margin-top: 9px; font-size: 12px; line-height: 1.7; color: #d3c2b3; }
+  .google-rating-context strong { font-weight: 600; color: #fff2e4; }
+  .google-rating-context small { display: block; margin-top: 6px; font-size: 10px; line-height: 1.7; color: #b4a292; }
+  .google-all-reviews { min-height: 44px; font-size: 11px; padding: 11px 16px; }
+  .google-reviews { display: grid; gap: 16px; margin-top: 20px; }
+  .google-review { min-width: 0; display: flex; flex-direction: column; padding: 25px; border: 1px solid #302822; border-radius: 9px; background: #13110f; }
+  .google-review-author { display: flex; align-items: center; gap: 12px; }
+  .google-avatar { position: relative; width: 42px; height: 42px; flex-shrink: 0; display: grid; place-items: center; border-radius: 50%; background: #39271f; color: #e9c5a5; font-size: 12px; font-weight: 500; overflow: hidden; }
+  .google-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .google-review-author h3 { font-size: 13px; font-weight: 500; line-height: 1.5; }
+  .google-review-author a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .google-review-author > div > span { display: block; color: #b4a292; font-size: 10px; line-height: 1.7; margin-top: 2px; }
+  .google-review-stars { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 24px; }
+  .google-empty-stars { color: #78614c; }
+  .google-review-stars > span:last-child:not(.google-stars) { font-size: 9px; color: #b4a292; }
+  .google-review-text { font-size: 13px; line-height: 1.9; color: #e1d4c7; margin: 15px 0 22px; white-space: pre-line; overflow-wrap: anywhere; }
+  .google-review-text.is-truncated { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .google-review-expand { align-self: start; background: none; border: 0; color: #e6ae91; font-size: 11px; padding: 0 0 18px; margin-top: -8px; }
+  .google-review-link { display: inline-flex; align-items: center; gap: 8px; align-self: start; margin-top: auto; font-size: 10px; color: #c4a38a; padding-top: 8px; }
+  .google-review-link:hover, .google-review-expand:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .google-reviews-footer { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 16px; margin-top: 18px; }
+  .google-reviews-footer p, .google-provider-attribution { max-width: 720px; color: #a99a8e; font-size: 10px; line-height: 1.8; }
+  .google-more-reviews { display: inline-flex; align-items: center; gap: 10px; border: 0; background: none; padding: 4px 0; color: #e6ae91; font-size: 11px; }
+  .google-provider-attribution { margin-top: 12px; }
+  .google-visit-details { margin-top: 34px; border-top: 1px solid #3b3029; border-bottom: 1px solid #3b3029; }
+  .google-visit-details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 15px; padding: 23px 0; }
+  .google-visit-details > summary::-webkit-details-marker { display: none; }
+  .google-visit-details > summary:focus-visible { outline: 2px solid #ed7770; outline-offset: 5px; }
+  .google-secondary-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: #241b16; color: #c8a78a; flex-shrink: 0; }
+  .google-visit-details > summary strong { font-size: 13px; font-weight: 500; }
+  .google-visit-details > summary small { display: block; margin-top: 6px; font-size: 10px; color: #b4a292; line-height: 1.6; }
+  .google-details-toggle { margin-left: auto; color: #c4a38a; font-size: 23px; transition: transform .2s; }
+  .google-visit-details[open] .google-details-toggle { transform: rotate(45deg); }
+  .google-visit-content { display: grid; gap: 28px; padding: 8px 0 28px; }
+  .google-visit-intro .eyebrow { color: #b99c83; font-size: 8px; }
+  .google-visit-intro h3 { font-size: 24px; line-height: 1.4; font-weight: 500; margin: 14px 0; }
+  .google-visit-intro h3 .script { font-size: 30px; color: #e2c3a7; }
+  .google-visit-intro > p:not(.eyebrow) { max-width: 310px; color: #b4a292; font-size: 12px; line-height: 1.8; }
+  .google-visit-intro > small { display: block; color: #d0b69f; font-size: 11px; line-height: 1.8; margin-top: 16px; }
+  .google-busyness { min-width: 0; }
+  .google-day-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .google-day-selector button { min-width: 36px; min-height: 40px; padding: 8px 11px; border-radius: 5px; border: 1px solid #4a382d; background: transparent; color: #cbb29d; font-size: 11px; }
+  .google-day-selector button[aria-pressed="true"] { background: #9c352b; border-color: #9c352b; color: white; }
+  .google-day-panel { margin-top: 18px; }
+  .google-day-panel h4 { font-size: 12px; font-weight: 500; }
+  .google-day-panel h4 span { font-size: 10px; color: #b4a292; margin-left: 10px; }
+  .google-histogram { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; height: 130px; margin-top: 15px; border-bottom: 1px solid #3b3029; }
+  .google-bar-column { display: flex; flex-direction: column; align-items: center; justify-content: end; height: 100%; min-height: 0; gap: 6px; font-size: 10px; color: #b4a292; }
+  .google-bar { width: 100%; max-width: 34px; height: calc(var(--activity) * .65); flex-shrink: 0; border-radius: 4px 4px 0 0; background: #71513a; }
+  .google-bar.is-peak { background: #a74939; }
+  .google-bar-value { font-size: 9px; }
+  .google-bar-column > span:last-child { padding-bottom: 8px; }
+  .google-peak, .google-closed { font-size: 11px; color: #cbb29d; line-height: 1.8; margin-top: 14px; }
+  .google-data-note { color: #a99a8e; font-size: 10px; line-height: 1.8; margin-top: 14px; }
+  @media (min-width: 700px) { .google-reviews { grid-template-columns: repeat(3, minmax(0, 1fr)); } .google-review { padding: 23px; } .google-visit-content { grid-template-columns: .8fr 1.2fr; gap: 50px; padding-top: 18px; } }
+  @media (min-width: 1000px) { .google-rating-band { flex-wrap: nowrap; padding: 30px 35px; gap: 38px; } .google-rating-number { font-size: 94px; } .google-rating-context { border-left: 1px solid #49332b; padding-left: 38px; } .google-review { padding: 28px; } .google-visit-content { grid-template-columns: .7fr 1.3fr; gap: 90px; } }
+</style>

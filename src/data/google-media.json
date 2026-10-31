@@ -1,0 +1,81 @@
+{
+  "checkedOn": "2026-10-30",
+  "minimumDate": "2025-07-01",
+  "dateSource": "Mes mostrado en la ficha de Google Maps; Places API (New) no devuelve fechas de fotos.",
+  "aboutPhoto": {
+    "id": "CIHM0ogKEICAgIDx4tL2Ug",
+    "asset": "src/assets/venue/fusion-x8-salon-restaurado-v2.png",
+    "originalAsset": "src/assets/venue/fusion-x8-salon-yordano-original.jpg",
+    "author": "Yordano Escaff",
+    "authorUrl": "https://maps.google.com/maps/contrib/107251256957228544320",
+    "publishedMonth": "2023-06",
+    "dateLabel": "Junio de 2023",
+    "sourceDimensions": { "width": 4000, "height": 2250 },
+    "downloadedDimensions": { "width": 2048, "height": 1152 },
+    "editedDimensions": { "width": 1672, "height": 941 },
+    "sourceUrl": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIHM0ogKEICAgIDx4tL2Ug!2e10!4m2!3m1!1s0x9662d7e38864993f:0xdba53a6fe4cf1115",
+    "editedOn": "2026-10-30",
+    "note": "Cuarta referencia enviada expresamente por el usuario, como excepción al corte anterior de 2025. Fecha original comprobada en Google Maps. Edición con image_gen para retirar personas, corregir inclinación y mejorar nitidez; se identifica como imagen editada y se conserva el crédito."
+  },
+  "restoredHero": {
+    "asset": "src/assets/venue/fusion-x8-exterior-restaurado-horizontal.png",
+    "sourcePhotoId": "CIABIhB7HopsKLG86bYA0Avg_qfX",
+    "sourceDimensions": { "width": 3000, "height": 4000 },
+    "editedOn": "2026-10-30",
+    "method": "Restauración con image_gen y adaptación horizontal para la portada. Se conserva el crédito de Nuretam y la fecha original de abril de 2026; se identifica como imagen restaurada."
+  },
+  "photos": [
+    {
+      "id": "CIABIhB7HopsKLG86bYA0Avg_qfX",
+      "title": "Así se vive la tarde en Fusión X8",
+      "alt": "Exterior nocturno de Fusión X8, con un vehículo rojo decorativo, luces cálidas y la entrada del local",
+      "publishedMonth": "2026-04",
+      "dateLabel": "Abril de 2026",
+      "author": "Nuretam",
+      "role": "hero",
+      "sourceUrl": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIABIhB7HopsKLG86bYA0Avg_qfX!2e10!4m2!3m1!1s0x9662d7e38864993f:0xdba53a6fe4cf1115"
+    },
+    {
+      "id": "CIABIhAQF7_gR5BOtm4vdKU-wvxf",
+      "title": "Algo rico para compartir",
+      "alt": "Sándwich de mechada con champiñones y rúcula servido en Fusión X8",
+      "publishedMonth": "2026-01",
+      "dateLabel": "Enero de 2026",
+      "author": "Carlos Toledo",
+      "role": "gallery",
+      "sourceUrl": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIABIhAQF7_gR5BOtm4vdKU-wvxf!2e10!4m2!3m1!1s0x9662d7e38864993f:0xdba53a6fe4cf1115"
+    },
+    {
+      "id": "CIABIhCkIt997GpjX_aRObkaVVYn",
+      "title": "El final más dulce",
+      "alt": "Postre de chocolate con frutos rojos y una bola de helado en Fusión X8",
+      "publishedMonth": "2025-08",
+      "dateLabel": "Agosto de 2025",
+      "author": "Tihare Pérez Montecinos",
+      "role": "gallery",
+      "sourceUrl": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIABIhCkIt997GpjX_aRObkaVVYn!2e10!4m2!3m1!1s0x9662d7e38864993f:0xdba53a6fe4cf1115"
+    }
+  ],
+  "localFallback": {
+    "file": "/images/google-maps/cinnamon-rolls.jpg",
+    "author": "Fusión X8",
+    "publishedMonth": "2026-07",
+    "dateLabel": "Julio de 2026",
+    "sourceUrl": "https://www.google.com/maps/place//data=!3m4!1e2!3m2!1sCIABIhDba2LVv7hbBgxDElkuoImd!2e10!4m2!3m1!1s0x9662d7e38864993f:0xdba53a6fe4cf1115"
+  },
+  "videos": [
+    {
+      "title": "Entrada y terraza del local",
+      "author": "Carlos Toledo",
+      "publishedMonth": "2026-01",
+      "dateLabel": "Enero de 2026",
+      "durationSeconds": 1,
+      "note": "Vídeo comprobado en Google Maps. Es demasiado breve para un fondo continuo y Places API no entrega su archivo de vídeo.",
+      "sourceUrl": "https://www.google.com/maps/place/Fusi%C3%B3n+X8/@-33.6044815,-70.5926443,3a,75y,90t/data=!3m8!1e5!3m6!1sCIABIhClWZ0XDCGrbyi0MMWMBitY!2e10!3e10!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FANWiy9TWHi_NKQurtaoNu6uqHbYeCaRrqzKPhr90sV4b62M7-oMiq9CMGw9ru5JcLSMld_VRCV396j_PW8AGpqVtIzj2GkWZ36VfQvItxwZtF9QbApw5CzIdunkuPKJSHhNOJqWd_B4o19MTRk9G%3Dw203-h152-k-no!7i1920!8i1440!4m9!3m8!1s0x9662d7e38864993f:0xdba53a6fe4cf1115!8m2!3d-33.6044754!4d-70.5926076!10e5!14m1!1BCgIgARICCAQ!16s%2Fg%2F11shfq9tmn"
+    }
+  ],
+  "excluded": [
+    { "author": "Viviana del Carmen Morales Solano", "subject": "Terraza diurna", "publishedMonth": "2023-11", "reason": "Anterior a julio de 2025" },
+    { "author": "Natalia Suarez", "subject": "Salón interior", "publishedMonth": "2024-10", "reason": "Anterior a julio de 2025" }
+  ]
+}

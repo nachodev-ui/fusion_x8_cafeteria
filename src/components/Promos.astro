@@ -1,0 +1,84 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import martesWaffle from '../assets/promos/martes-waffle-v2.png';
+import miercolesCopa from '../assets/promos/miercoles-copa-v2.png';
+import { promos } from '../data/promos';
+import { formatPrice } from '../data/menu';
+
+const promoImages: Record<string, ImageMetadata> = {
+  'martes-waffle': martesWaffle,
+  'miercoles-copa': miercolesCopa,
+};
+---
+<section class="section container promos-section" id="promos" aria-labelledby="promos-title">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span class="red-dot"></span> UN GUSTITO CADA SEMANA</p><h2 id="promos-title">Promos</h2></div>
+    <p>Tus favoritos tienen su día.<br />Disfrútalos aquí, en Fusión x8.</p>
+  </div>
+  <p class="promo-notice" data-promo-notice role="status" aria-live="polite" aria-atomic="true">Consulta los días, horarios y condiciones de nuestras promos.</p>
+  <div class="promos-grid">
+    {promos.map((promo) => <article class:list={['promo-card', { 'promo-card-image-only': !!promoImages[promo.id] }]} data-promo-id={promo.id} aria-labelledby={promoImages[promo.id] ? undefined : `promo-${promo.id}`} aria-label={promoImages[promo.id] ? `${promo.title} · ${promo.day}` : undefined}>
+      {promoImages[promo.id] ? <>
+        <Image class="promo-card-image" src={promoImages[promo.id]} alt={`Promoción del ${promo.day}: ${promo.title}, ${formatPrice(promo.price)}. ${promo.condition}.${promo.schedule ? ` De ${promo.schedule.start} a ${promo.schedule.end}, hora de Chile.` : ''}`} width={1000} widths={[360, 640, 1000]} sizes="(min-width: 1200px) 590px, (min-width: 640px) 50vw, 94vw" format="webp" loading="lazy" decoding="async" />
+        <span class="promo-status promo-image-status" data-promo-status hidden></span>
+      </> : <>
+        <div class="promo-card-top"><p class="promo-day">{promo.day}</p><span class="promo-status" data-promo-status hidden></span></div>
+        <h3 id={`promo-${promo.id}`}>{promo.title}</h3>
+        <p class="promo-price">{formatPrice(promo.price)}</p>
+        <p class="promo-condition">{promo.condition}</p>
+        {promo.schedule && <p class="promo-hours">De <time datetime={promo.schedule.start}>{promo.schedule.start}</time> a <time datetime={promo.schedule.end}>{promo.schedule.end}</time> · Hora de Chile</p>}
+      </>}
+    </article>)}
+  </div>
+</section>
+
+<script>
+  import { promos, weekdays, type Promo } from '../data/promos';
+
+  const notice = document.querySelector<HTMLElement>('[data-promo-notice]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-promo-id]');
+  const chileTime = new Intl.DateTimeFormat('es-CL', {
+    timeZone: 'America/Santiago', weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  });
+  const clp = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
+  const summary = (promo: Promo) => `${promo.title.toLocaleLowerCase('es-CL')} ${clp.format(promo.price)}`;
+  const hours = (promo: Promo) => promo.schedule ? ` De ${promo.schedule.start} a ${promo.schedule.end}.` : '';
+
+  function updatePromos() {
+    if (!notice) return;
+    const parts = chileTime.formatToParts(new Date());
+    const day = parts.find((part) => part.type === 'weekday')!.value;
+    const time = `${parts.find((part) => part.type === 'hour')!.value}:${parts.find((part) => part.type === 'minute')!.value}`;
+    const today = promos.find((promo) => promo.day === day);
+    const ended = !!today?.schedule && time >= today.schedule.end;
+
+    cards.forEach((card) => {
+      const isToday = card.dataset.promoId === today?.id;
+      card.classList.toggle('is-today', isToday);
+      const status = card.querySelector<HTMLElement>('[data-promo-status]');
+      if (status) {
+        status.hidden = !isToday;
+        status.textContent = ended ? 'Hoy · finalizada' : today?.schedule && time < today.schedule.start ? `Hoy · desde ${today.schedule.start}` : 'Hoy';
+      }
+    });
+
+    if (today && !ended) {
+      notice.textContent = `Hoy es ${day}: ${summary(today)}.${hours(today)} ${today.condition}.`;
+      return;
+    }
+
+    const currentDay = weekdays.findIndex((weekday) => weekday === day);
+    const distance = (promo: Promo) => (weekdays.indexOf(promo.day) - currentDay + 7) % 7 || 7;
+    const next = [...promos].sort((a, b) => distance(a) - distance(b))[0];
+    const prefix = today ? `La promo de hoy, ${day}, ya finalizó.` : `Hoy es ${day} y no hay promo.`;
+    notice.textContent = next
+      ? `${prefix} Próxima promo: ${next.day}, ${summary(next)}.${hours(next)} ${next.condition}.`
+      : 'Pronto compartiremos nuevas promos.';
+  }
+
+  updatePromos();
+  window.setInterval(updatePromos, 60_000);
+  window.addEventListener('pageshow', updatePromos);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) updatePromos(); });
+</script>

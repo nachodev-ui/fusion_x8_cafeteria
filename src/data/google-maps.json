@@ -1,0 +1,72 @@
+{
+  "name": "Fusión X8",
+  "source": "Google Maps",
+  "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Fusi%C3%B3n%20X8&query_place_id=ChIJP5lkiOPXYpYRFRHP5G86pds",
+  "placeId": "ChIJP5lkiOPXYpYRFRHP5G86pds",
+  "featureId": "0x9662d7e38864993f:0xdba53a6fe4cf1115",
+  "checkedOn": "2026-10-30",
+  "timeZone": "America/Santiago",
+  "address": "Av. Ejército Libertador 905, 8150000 Puente Alto, Región Metropolitana",
+  "location": { "latitude": -33.6044754, "longitude": -70.5926076 },
+  "rating": 4.7,
+  "reviewCount": 389,
+  "ratingDistribution": [
+    { "stars": 5, "count": 323 },
+    { "stars": 4, "count": 33 },
+    { "stars": 3, "count": 11 },
+    { "stars": 2, "count": 8 },
+    { "stars": 1, "count": 14 }
+  ],
+  "openingHours": { "monday": null, "tuesdayToSunday": { "opens": "15:30", "closes": "22:00" }, "holidayHoursMayVary": true },
+  "reviewSummaries": [
+    { "author": "Carlos Toledo", "rating": 4, "relativeDateAtCheck": "Hace 9 meses", "summary": "Destaca el espacio amplio, la terraza y las mantas; cuestiona la relación entre precio y calidad del sándwich." },
+    { "author": "Rayen Valenzuela", "rating": 3, "relativeDateAtCheck": "Hace 2 meses", "summary": "Valora los dulces y el trato amable, pero señala aspectos por mejorar en el café y el sándwich." },
+    { "author": "Victor Chavez", "rating": 5, "relativeDateAtCheck": "Hace 8 meses", "summary": "Resalta la limpieza, la comida y los precios, con observaciones sobre la atención en la terraza." }
+  ],
+  "popularTimes": {
+    "kind": "historical-relative-activity",
+    "note": "Índice relativo al máximo semanal de Google; no representa porcentaje de aforo, personas ni ocupación en vivo. La franja de las 15:00 incluye la apertura a las 15:30.",
+    "hours": [15, 16, 17, 18, 19, 20, 21],
+    "days": [
+      { "id": "monday", "label": "Lunes", "shortLabel": "Lun", "closed": true, "values": null },
+      { "id": "tuesday", "label": "Martes", "shortLabel": "Mar", "closed": false, "values": [12, 20, 28, 41, 51, 53, 41] },
+      { "id": "wednesday", "label": "Miércoles", "shortLabel": "Mié", "closed": false, "values": [9, 17, 26, 39, 51, 54, 43] },
+      { "id": "thursday", "label": "Jueves", "shortLabel": "Jue", "closed": false, "values": [10, 17, 29, 45, 56, 57, 45] },
+      { "id": "friday", "label": "Viernes", "shortLabel": "Vie", "closed": false, "values": [16, 26, 41, 54, 70, 74, 62] },
+      { "id": "saturday", "label": "Sábado", "shortLabel": "Sáb", "closed": false, "values": [19, 34, 50, 66, 81, 85, 71] },
+      { "id": "sunday", "label": "Domingo", "shortLabel": "Dom", "closed": false, "values": [18, 32, 52, 78, 98, 100, 77] }
+    ]
+  },
+  "photos": {
+    "mode": "local-owner-selection-and-google-hosted",
+    "note": "Selección de dos imágenes publicadas en la categoría Del propietario por Fusión X8. El resto de fotos se consulta en Google Maps.",
+    "items": [
+      {
+        "title": "Cinnamon rolls para compartir",
+        "alt": "Tres cinnamon rolls con distintas coberturas en una publicación de Fusión X8",
+        "file": "/images/google-maps/cinnamon-rolls.jpg",
+        "width": 1024,
+        "height": 1024,
+        "author": "Fusión X8",
+        "authorProfile": "https://maps.google.com/maps/contrib/110566645913436575157",
+        "publishedLabelAtCheck": "jul 2026",
+        "mediaId": "CIABIhDba2LVv7hbBgxDElkuoImd",
+        "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Fusi%C3%B3n%20X8&query_place_id=ChIJP5lkiOPXYpYRFRHP5G86pds",
+        "assetUrl": "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9Q8B12zfb-Olm6Q9o9CUn0JuXgA8CfhMg_azS3S9--6JWtOESYy12meOJt7Zr5ot-zhipueP40fWQUzfcO8qOaYqd9p7brya1CUDVJPV3vslRLQpapGxCzbNP6P4SNNFc9DlzxdrbJa1NfF=s1024-v1"
+      },
+      {
+        "title": "También hay antojos salados",
+        "alt": "Dos mitades de un sándwich en ciabatta con carne, queso y hojas verdes en Fusión X8",
+        "file": "/images/google-maps/sandwiches.jpg",
+        "width": 828,
+        "height": 679,
+        "author": "Fusión X8",
+        "authorProfile": "https://maps.google.com/maps/contrib/110566645913436575157",
+        "publishedLabelAtCheck": "mar 2024",
+        "mediaId": "CIHM0ogKEICAgICDxrfq8QE",
+        "sourceUrl": "https://www.google.com/maps/search/?api=1&query=Fusi%C3%B3n%20X8&query_place_id=ChIJP5lkiOPXYpYRFRHP5G86pds",
+        "assetUrl": "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9SxH96wj_jL854y54o3zo9KNuTqudSm00PHK1OOkZ6UKIybJ7qNJkD9SKrmPp5FfLtcuCdxkKtAJoo0UF7BYoB4lNiq_BK6XyhufRpp6zPqZZd75Bw2wcvTIBb_7fFakI582WJf9w=s1024-v1"
+      }
+    ]
+  }
+}

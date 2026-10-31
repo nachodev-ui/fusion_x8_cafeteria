@@ -1,0 +1,300 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import WhatsAppOrder from '../components/WhatsAppOrder';
+import { Image } from 'astro:assets';
+import Promos from '../components/Promos.astro';
+import Novedades from '../components/Novedades.astro';
+import GooglePlace from '../components/GooglePlace.astro';
+import GoogleHero from '../components/GoogleHero.astro';
+import aboutPhoto from '../assets/venue/fusion-x8-salon-restaurado-v2.png';
+import googleMaps from '../data/google-maps.json';
+import googleMedia from '../data/google-media.json';
+import { categories, menuGroups, products, menuInfo, menuReferences, formatPrice } from '../data/menu';
+import { business, whatsappReady, whatsappUrl } from '../data/business';
+
+const title = 'Fusión x8 · Cafetería y heladería pet friendly en Puente Alto';
+const description = 'Café, helados y sándwiches en Ciudad del Sol, Puente Alto. Pet friendly en todo el local, terraza exterior y calefacción en invierno. Conoce nuestra carta y horarios.';
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const socialImage = Astro.site ? new URL('/images/fusion-x8-logo.png', Astro.site).href : '/images/fusion-x8-logo.png';
+const hasAddress = business.address !== '[dirección]' && business.address.trim().length > 0;
+const mapUrl = hasAddress ? `https://www.google.com/maps?q=${encodeURIComponent(business.address + ', Chile')}&output=embed` : undefined;
+const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address)}&destination_place_id=${googleMaps.placeId}` : undefined;
+---
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0b0b" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CL" />
+    <meta property="og:site_name" content="Fusión x8" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content="Logo de Fusión x8, cafetería y heladería" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body data-hero-in-view="true">
+    <a class="skip-link" href="#contenido">Ir al contenido</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="#inicio" class="brand" aria-label="Fusión x8, ir al inicio">
+          <img src="/images/fusion-x8-logo.png" width="60" height="60" alt="Fusión x8" fetchpriority="high" />
+          <span class="brand-description">CAFETERÍA<br />& HELADERÍA</span>
+        </a>
+        <nav aria-label="Navegación principal" class="desktop-nav">
+          <a href="#promos">Promos</a>
+          <a href="#carta">La carta</a>
+          <a href="#nosotros">Nuestra esencia</a>
+          <a href="#galeria">Momentos</a>
+          <a href="#opiniones">Opiniones</a>
+          <a href="#visitanos">Visítanos</a>
+        </nav>
+        <a href="#pedido" data-order-open class="button button-outline header-order"><Icon name="whatsapp" size={17} /><span>Hablemos</span><Icon name="diagonal" size={14} /></a>
+        <button type="button" class="mobile-toggle" aria-label="Abrir menú de navegación" aria-controls="mobile-nav" aria-expanded="false"><Icon name="menu" size={23} /></button>
+      </div>
+      <nav id="mobile-nav" aria-label="Navegación móvil" class="mobile-nav" hidden>
+        <a href="#carta">La carta</a><a href="#nosotros">Nuestra esencia</a><a href="#galeria">Momentos</a><a href="#visitanos">Visítanos</a>
+        <a href="#promos">Promos</a><a href="#novedades">Novedades</a>
+        <a href="#opiniones">Opiniones</a>
+      </nav>
+    </header>
+
+    <main id="contenido">
+      <section class="hero hero-with-media" id="inicio" aria-labelledby="hero-title">
+        <div class="hero-content container">
+        <div class="hero-copy">
+          <p class="eyebrow hero-eyebrow"><span class="little-line"></span> CAFETERÍA & HELADERÍA · PUENTE ALTO</p>
+          <h1 id="hero-title" class="hero-brand"><span class="script">Fusión</span><span class="hero-x8">x8<span class="brand-spark" aria-hidden="true">✳</span></span></h1>
+          <h2 class="hero-tagline">Tu pausa más rica<br />del día.</h2>
+          <p class="hero-description">Un cafecito que abraza. Un helado que alegra.<br class="hidden sm:block" /> Y ese ratito que es solo para ti.</p>
+          <div class="hero-actions flex flex-wrap gap-3">
+            <a href="#carta" class="button button-red">Ver carta <Icon name="arrow" size={18} /></a>
+            <a href="#pedido" data-order-open class="button button-outline"><Icon name="whatsapp" size={18} /> Pedir por WhatsApp</a>
+          </div>
+          <div class="hero-note hero-pet-note"><span class="tiny-heart"><Icon name="paw" size={18} /></span><span>Pet friendly en todo el local. <a href="#comodidades">Ven con tu mascota <span aria-hidden="true">↗</span></a></span></div>
+          <p class="hero-location"><Icon name="pin" size={13} /> {business.neighborhood}</p>
+        </div>
+        </div>
+        <GoogleHero />
+        <a href="#carta" class="hero-scroll"><span>SIGUE EL ANTOJO</span><Icon name="down" size={17} /></a>
+      </section>
+
+      <Promos />
+
+      <div class="flavor-strip" aria-hidden="true"><div class="container"><span>Café que abraza</span><span class="strip-star">✳</span><span>Helado que alegra</span><span class="strip-star">✳</span><span>Momentos que se quedan</span><span class="strip-star">✳</span><span>Así se vive Fusión x8</span></div></div>
+
+      <section class="amenities-section container" id="comodidades" aria-labelledby="amenities-title">
+        <div class="amenities-heading"><p class="eyebrow"><span class="red-dot"></span> AQUÍ CABEMOS TODOS</p><h2 id="amenities-title">Tu gente, tu mascota y <span class="script">un buen momento.</span></h2></div>
+        <div class="amenities-grid">
+          {business.amenities.map((amenity) => <article class="amenity"><span class="amenity-icon"><Icon name={amenity.icon} size={26} /></span><h3>{amenity.title}</h3><p>{amenity.description}</p></article>)}
+        </div>
+      </section>
+
+      <section class="section container" id="carta" aria-labelledby="menu-title">
+        <div class="section-heading menu-heading">
+          <div><p class="eyebrow"><span class="red-dot"></span> PARA TODOS TUS ANTOJOS</p><h2 id="menu-title">La <span class="script">carta</span></h2></div>
+          <p>Para una tarde de conversa, hacer una pausa<br class="hidden sm:block" /> o darte ese gustito que te mereces.</p>
+        </div>
+        <div class="menu-toolbar">
+          <div class="menu-tabs" role="tablist" aria-label="Categorías de la carta" hidden>
+            {categories.map((category, i) => <button type="button" id={`tab-${category.id}`} role="tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${category.id}`} tabindex={i === 0 ? 0 : -1} data-category={category.id}><Icon name={category.icon} size={19} />{category.label}</button>)}
+          </div>
+          <span class="menu-currency">PRECIOS EN PESOS CHILENOS</span>
+        </div>
+        {categories.map((category) => <div id={`panel-${category.id}`} class="menu-panel" data-menu-panel={category.id}>
+          <h3 class="category-heading">{category.label}<span>{category.note}</span></h3>
+          {menuGroups.filter((group) => group.category === category.id).map((group) => <section class="menu-group" aria-labelledby={`group-${group.id}`}>
+            <div class="menu-group-heading"><h4 id={`group-${group.id}`}>{group.label}</h4>{group.description && <p>{group.description}</p>}</div>
+            <div class="menu-entries grid grid-cols-1 gap-x-10 md:grid-cols-2">
+              {products.filter((product) => product.group === group.id).map((product) => <article class:list={['menu-entry', { 'has-image': !!product.image }]}>
+                {product.image && <Image class="menu-entry-image" src={product.image} alt={product.name} width={64} height={64} widths={[64, 128]} sizes="64px" fit="cover" format="webp" loading="lazy" decoding="async" />}
+                <div class="menu-entry-copy">
+                  <div class="menu-entry-heading"><h5>{product.name}</h5><span class:list={['menu-entry-price', { 'is-pending': product.price === null }]} title={product.price === null ? menuInfo.pendingPriceNote : undefined}>{formatPrice(product.price)}</span></div>
+                  <p>{product.description}</p>
+                  {product.note && <small>{product.note}</small>}
+                </div>
+                <button class="menu-entry-add" type="button" data-add-product={product.id} aria-label={`Agregar ${product.name} al pedido${product.price === null ? ', precio por confirmar' : ''}`}><Icon name="plus" size={18} /></button>
+              </article>)}
+            </div>
+          </section>)}
+        </div>)}
+        <div class="menu-bottom"><p><span aria-hidden="true">✳</span> {menuInfo.sourceNote}</p><a href="#pedido" data-order-open>¿Qué se te antoja hoy? <Icon name="arrow" size={17} /></a></div>
+        <details class="menu-references">
+          <summary>Ver carta original <span aria-hidden="true">+</span></summary>
+          <div class="references-content">
+            <p>Los precios marcados como «Por confirmar» no se ven completos en estas imágenes. Puedes incluir esos productos en tu consulta; su precio se confirma al pedir.</p>
+            <div class="reference-grid">
+              {menuReferences.map((reference) => <a href={reference.file} target="_blank" rel="noopener noreferrer" aria-label={`Abrir carta original: ${reference.label}, en una pestaña nueva`}>
+                <img src={reference.file} alt={`Carta original de ${reference.label}`} width="1179" height="2556" loading="lazy" decoding="async" />
+                <span>{reference.label}<Icon name="diagonal" size={15} /></span>
+              </a>)}
+            </div>
+          </div>
+        </details>
+        <noscript><p class="demo-notice">Puedes ver toda la carta sin JavaScript. Para armar tu pedido interactivo, activa JavaScript en tu navegador.</p></noscript>
+      </section>
+
+      <section class="about-section" id="nosotros" aria-labelledby="about-title">
+        <div class="container about-grid">
+          <div class="about-visual">
+            <figure class="about-art about-real-photo">
+              <Image class="about-venue-photo" src={aboutPhoto} alt="Salón de Fusión X8 con luces cálidas, mesas y el mural de la cafetería; fotografía editada para retirar personas y mejorar nitidez" width={1600} format="webp" quality={92} loading="lazy" decoding="async" />
+              <figcaption class="about-photo-credit" title="Fotografía editada con IA para retirar personas, corregir la inclinación y mejorar la nitidez"><a href={googleMedia.aboutPhoto.sourceUrl} target="_blank" rel="noopener noreferrer">Google Maps</a> · <a href={googleMedia.aboutPhoto.authorUrl} target="_blank" rel="noopener noreferrer">{googleMedia.aboutPhoto.author}</a><span>{googleMedia.aboutPhoto.dateLabel} · Imagen editada</span></figcaption>
+            </figure>
+            <div class="about-small-note"><h3 class="script">Cosas simples,<br />momentos felices.</h3><span aria-hidden="true">↗</span></div>
+          </div>
+          <div class="about-copy"><p class="eyebrow"><span class="red-dot"></span> NUESTRA ESENCIA</p><h2 id="about-title">Un rincón para<br /><span class="script">sentirse bien.</span></h2><p>En Ciudad del Sol, Puente Alto, Fusión x8 es una invitación a bajar un cambio: un café, una copa de helado, un sándwich en ciabatta de masa madre y una buena conversa. Disfruta la terraza exterior o una pausa calentita con calefacción en invierno.</p><p>Ven con tu familia y tu mascota: somos pet friendly en todo el local y contamos con sillas de bebé para los más pequeños.</p><p class="about-closing">Ven como eres. El antojo lo ponemos nosotros.</p><a href="#visitanos" class="text-link">Nos vemos por acá <Icon name="diagonal" size={18} /></a></div>
+        </div>
+      </section>
+
+      <section class="section container" id="galeria" aria-labelledby="gallery-title">
+        <div class="section-heading"><div><p class="eyebrow"><span class="red-dot"></span> UN POQUITO DE NUESTRO MUNDO</p><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div><a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a></div>
+        <div class="gallery-grid gallery-grid-real" data-google-gallery data-media-state="fallback">
+          {googleMaps.photos.items.slice(0, 1).map((photo, i) => <figure class="gallery-item gallery-real">
+            <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Ver ${photo.title} en Google Maps, abre una pestaña nueva`}>
+              <img src={photo.file} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
+              <figcaption><span>0{i + 1}</span> {photo.title} <Icon name="diagonal" size={18} /></figcaption>
+            </a>
+          </figure>)}
+        </div>
+        <p class="gallery-note">Selección con fechas verificadas desde julio de 2025. Fotos y créditos de Google Maps; respaldo local publicado por Fusión X8 en julio de 2026. <a href={googleMaps.sourceUrl} target="_blank" rel="noopener noreferrer">Ver más fotos en Google Maps ↗</a></p>
+        <a class="text-link gallery-video-link" href={googleMedia.videos[0].sourceUrl} target="_blank" rel="noopener noreferrer">Ver la entrada del local en vídeo · enero de 2026 <Icon name="diagonal" size={15} /></a>
+        <template data-google-photo-template>
+          <figure class="recent-place-photo">
+            <a class="recent-photo-image" data-photo-source target="_blank" rel="noopener noreferrer"><img alt="" decoding="async" loading="eager" /></a>
+            <figcaption><h3 data-photo-title></h3><p><span data-photo-date></span> · Google Maps</p><small>Foto: <span data-photo-authors></span></small></figcaption>
+          </figure>
+        </template>
+      </section>
+
+      <Novedades />
+
+      <GooglePlace />
+
+      <section class="visit-section" id="visitanos" aria-labelledby="visit-title">
+        <div class="container visit-grid">
+          <div class="visit-copy"><p class="eyebrow"><span class="red-dot"></span> TE ESPERAMOS</p><h2 id="visit-title">Tu próxima pausa<br /><span class="script">es por acá.</span></h2><p>Hazte un tiempo para algo rico.<br />Nos encantará verte.</p>
+            <div class="visit-detail"><span class="detail-icon"><Icon name="pin" size={21} /></span><div><h3>Encuéntranos</h3><p>{business.address}</p><small>{business.addressReference}</small></div></div>
+            <div class="visit-detail"><span class="detail-icon"><Icon name="clock" size={21} /></span><div><h3>Horarios</h3><p>{business.hours}</p><small class="closed-day">{business.closedDays}</small></div></div>
+            <div class="visit-detail"><span class="detail-icon"><Icon name="paw" size={21} /></span><div><h3>Tu mascota también es bienvenida</h3><p>Pet friendly en todo el local.</p></div></div>
+            <div class="business-references">{business.references.map((reference) => <a href={reference.file} target="_blank" rel="noopener noreferrer">{reference.label} <Icon name="diagonal" size={12} /></a>)}</div>
+            <a href="#pedido" data-order-open class="button button-red">Conversemos <Icon name="whatsapp" size={18} /></a>
+          </div>
+          <div class="location-map">
+            <div class="map-panel">
+              <div id="map-illustration" class="map-illustration">
+                <div class="map-placeholder" aria-hidden="true">
+                  <div class="map-road road-one"></div><div class="map-road road-two"></div><div class="map-road road-three"></div><div class="map-road road-four"></div>
+                  <div class="map-block block-one"></div><div class="map-block block-two"></div>
+                  <div class="map-marker"><Icon name="pin" size={29} /></div>
+                </div>
+                <div class="map-placeholder-label">
+                  <strong>Nos vemos en Fusión x8</strong>
+                  <span>{hasAddress ? business.address : 'Pronto compartiremos nuestra dirección.'}</span>
+                  {hasAddress && <small>{business.addressReference}</small>}
+                  <span class="map-demo-label">VISTA ILUSTRATIVA</span>
+                </div>
+              </div>
+              {mapUrl && <div id="map-interactive" class="map-interactive" role="region" aria-label="Mapa interactivo de Google Maps" hidden>
+                <iframe data-map-src={mapUrl} title={`Ubicación de Fusión x8: ${business.address}`} width="600" height="450" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>}
+            </div>
+            {mapLink && <div class="map-actions">
+              <button type="button" class="map-toggle" aria-expanded="false" aria-controls="map-interactive" hidden><Icon name="pin" size={15} /><span data-map-label>Ver mapa interactivo</span></button>
+              <a class="map-link" href={mapLink} target="_blank" rel="noopener noreferrer" aria-label="Cómo llegar a Fusión x8 en Google Maps, abre una pestaña nueva">Cómo llegar <Icon name="diagonal" size={16} /></a>
+            </div>}
+          </div>
+        </div>
+      </section>
+
+      <section class="closing-section container" aria-label="Hagamos una pausa"><span class="closing-spark" aria-hidden="true">✳</span><h2>La vida sabe mejor con un <span class="script">gustito.</span></h2><a href="#pedido" data-order-open class="text-link">Date el tuyo <Icon name="diagonal" size={20} /></a></section>
+    </main>
+
+    <footer class="site-footer"><div class="container"><div class="footer-top"><a href="#inicio" class="footer-brand" aria-label="Fusión x8, volver al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8, cafetería y heladería" width="82" height="82" loading="lazy" /><span>Un cafecito. Un helado.<br />Un buen momento.</span></a><div class="footer-links"><a href="#carta">La carta</a><a href="#nosotros">Nuestra esencia</a><a href="#visitanos">Visítanos</a></div><div class="footer-social"><p>SIGAMOS COMPARTIENDO</p><div><a href={business.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram de Fusión x8, abre una pestaña nueva"><Icon name="instagram" size={21} /></a><a href={business.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok de Fusión x8, abre una pestaña nueva"><Icon name="tiktok" size={21} /></a><span>@cafeteriafusionx8</span></div></div></div><div class="footer-bottom"><span>© {new Date().getFullYear()} Fusión x8 · Puente Alto</span><span>Demo de diseño · Carta e información del local según material compartido.</span><a href="#inicio">Volver arriba ↑</a></div></div></footer>
+
+    <a class="whatsapp-float" href={whatsappUrl} data-order-open={whatsappReady ? undefined : true} target={whatsappReady ? '_blank' : undefined} rel={whatsappReady ? 'noopener noreferrer' : undefined} aria-label={`Pedir por WhatsApp al ${business.whatsappDisplay}${whatsappReady ? '' : ', demo con número pendiente'}`}><Icon name="whatsapp" size={26} /><span>¿Un antojito?</span></a>
+    <WhatsAppOrder client:load />
+
+    <script>
+      const hero = document.querySelector('#inicio');
+      if (hero && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+          document.body.dataset.heroInView = String(entry.isIntersecting);
+        }, { rootMargin: '-90px 0px 0px 0px' }).observe(hero);
+      }
+
+      const tablist = document.querySelector<HTMLElement>('[role="tablist"]');
+      const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-category]'));
+      const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-menu-panel]'));
+      function activateTab(tab: HTMLButtonElement, focus = false) {
+        tabs.forEach((item) => { const active = item === tab; item.setAttribute('aria-selected', String(active)); item.tabIndex = active ? 0 : -1; });
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.menuPanel !== tab.dataset.category;
+          panel.setAttribute('role', 'tabpanel');
+          panel.setAttribute('aria-labelledby', `tab-${panel.dataset.menuPanel}`);
+          panel.tabIndex = 0;
+          panel.classList.add('tabs-ready');
+        });
+        if (focus) tab.focus();
+      }
+      if (tablist && tabs.length) {
+        tablist.hidden = false;
+        activateTab(tabs[0]);
+        tabs.forEach((tab, i) => {
+          tab.addEventListener('click', () => activateTab(tab));
+          tab.addEventListener('keydown', (event) => {
+            let next = i;
+            if (event.key === 'ArrowRight') next = (i + 1) % tabs.length;
+            else if (event.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+            else if (event.key === 'Home') next = 0;
+            else if (event.key === 'End') next = tabs.length - 1;
+            else return;
+            event.preventDefault(); activateTab(tabs[next], true);
+          });
+        });
+      }
+
+      const toggle = document.querySelector<HTMLButtonElement>('.mobile-toggle');
+      const nav = document.querySelector<HTMLElement>('#mobile-nav');
+      function closeNav() { if (!toggle || !nav) return; nav.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Abrir menú de navegación'); }
+      toggle?.addEventListener('click', () => { if (!nav) return; const open = toggle.getAttribute('aria-expanded') !== 'true'; toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', open ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'); nav.hidden = !open; });
+      nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeNav));
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && nav && !nav.hidden) { closeNav(); toggle?.focus(); } });
+      document.addEventListener('click', (event) => { if (event.target instanceof Element && !event.target.closest('.site-header')) closeNav(); });
+      window.matchMedia('(min-width: 900px)').addEventListener('change', (event) => { if (event.matches) closeNav(); });
+
+      const mapToggle = document.querySelector<HTMLButtonElement>('.map-toggle');
+      const mapLabel = mapToggle?.querySelector<HTMLElement>('[data-map-label]');
+      const mapIllustration = document.querySelector<HTMLElement>('#map-illustration');
+      const mapInteractive = document.querySelector<HTMLElement>('#map-interactive');
+      const mapFrame = mapInteractive?.querySelector<HTMLIFrameElement>('iframe[data-map-src]');
+      if (mapToggle && mapLabel && mapIllustration && mapInteractive && mapFrame) {
+        mapToggle.hidden = false;
+        mapToggle.addEventListener('click', () => {
+          const showInteractive = mapToggle.getAttribute('aria-expanded') !== 'true';
+          if (showInteractive && !mapFrame.hasAttribute('src') && mapFrame.dataset.mapSrc) {
+            mapFrame.src = mapFrame.dataset.mapSrc;
+          }
+          mapInteractive.hidden = !showInteractive;
+          mapIllustration.hidden = showInteractive;
+          mapToggle.setAttribute('aria-expanded', String(showInteractive));
+          mapLabel.textContent = showInteractive ? 'Volver a vista oscura' : 'Ver mapa interactivo';
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+---
+interface Props { kind?: string; class?: string; }
+const { kind = 'latte', class: className = '' } = Astro.props;
+const iceCream = ['vanilla', 'chocolate', 'berry', 'sundae'].includes(kind);
+const food = ['croissant', 'sandwich', 'cake', 'cookie'].includes(kind);
+const image = iceCream ? 'icecream' : food ? 'bakery' : 'coffee';
+---
+<div class:list={['artwork', `artwork--${kind}`, className]} aria-hidden="true">
+  <span class="artwork-orbit"></span>
+  <img src={`/images/${image}-placeholder.svg`} alt="" width="600" height="600" loading="lazy" decoding="async" />
+</div>

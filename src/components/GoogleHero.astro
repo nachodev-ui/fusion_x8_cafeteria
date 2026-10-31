@@ -1,0 +1,15 @@
+---
+import media from '../data/google-media.json';
+import place from '../data/google-maps.json';
+import { Image } from 'astro:assets';
+import restoredHero from '../assets/venue/fusion-x8-exterior-restaurado-horizontal.png';
+const apiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+---
+<div class="hero-scene hero-real-scene" data-google-hero data-api-key={apiKey} data-place-id={place.placeId} data-media-state="restored" data-static-hero="true">
+  <Image class="hero-google-photo" data-hero-photo src={restoredHero} alt="Exterior de Fusión X8 con el vehículo rojo y decoración Route 66; fotografía restaurada para mejorar la nitidez" width={restoredHero.width} format="webp" quality={95} loading="eager" fetchpriority="high" decoding="async" />
+  <div class="hero-media-caption"><span class="eyebrow" data-hero-eyebrow>UN RINCÓN DE CIUDAD DEL SOL</span><p class="script" data-hero-caption>Tu próximo buen momento.</p><p class="hero-media-attribution" title="Fotografía de abril de 2026 restaurada con IA para mejorar nitidez y reducir ruido"><a href={media.photos[0].sourceUrl} target="_blank" rel="noopener noreferrer" data-hero-source>Google Maps</a> · <span data-hero-authors><a href="https://maps.google.com/maps/contrib/104702228310985217925" target="_blank" rel="noopener noreferrer">Nuretam</a></span> · <span data-hero-date>Abril de 2026</span> · Imagen restaurada</p></div>
+</div>
+<script>
+  import { initGoogleMedia } from '../lib/google-media';
+  initGoogleMedia();
+</script>

@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { novedades } from '../data/novedades';
+import { business } from '../data/business';
+---
+<section class="section container" id="novedades" aria-labelledby="novedades-title">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span class="red-dot"></span> RECIÉN SALIDO DE NUESTRAS REDES</p><h2 id="novedades-title">Novedades</h2></div>
+    <a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a>
+  </div>
+  <p class="novedades-hint" id="novedades-help">Desliza para ver más publicaciones. También puedes usar las flechas del teclado al seleccionar el carrusel.</p>
+  <div class="novedades-carousel" role="region" aria-roledescription="carrusel" aria-label="Publicaciones de Fusión x8" aria-describedby="novedades-help" tabindex="0">
+    {novedades.map((post) => <figure class="novedad-card">
+      <Image src={post.image} alt={post.alt} width={1000} widths={[360, 640, 1000]} sizes="(min-width: 900px) 380px, (min-width: 640px) 45vw, 82vw" format="webp" loading="lazy" decoding="async" />
+      <figcaption>{post.title}</figcaption>
+    </figure>)}
+  </div>
+  <p class="novedades-hint">Consulta los días, precios y condiciones de las promociones en <a href="#promos">Promos</a>.</p>
+</section>

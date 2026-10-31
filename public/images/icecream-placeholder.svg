@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="none">
+  <defs>
+    <linearGradient id="cone" x2="1" y2=".4"><stop stop-color="#a86d38"/><stop offset=".4" stop-color="#e4b979"/><stop offset="1" stop-color="#bd8343"/></linearGradient>
+    <radialGradient id="pink" cx=".3" cy=".25"><stop stop-color="#ffd5c8"/><stop offset=".6" stop-color="#e8a89e"/><stop offset="1" stop-color="#bd746f"/></radialGradient>
+    <radialGradient id="cream" cx=".3" cy=".25"><stop stop-color="#fff7e3"/><stop offset=".6" stop-color="#eddbb5"/><stop offset="1" stop-color="#c3a77e"/></radialGradient>
+    <pattern id="waffle" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0h26v26" stroke="#8b592c" stroke-opacity=".45" stroke-width="3"/><path d="M3 3h23v23" stroke="#ffdf9f" stroke-opacity=".4" stroke-width="2"/></pattern>
+    <clipPath id="clip"><path d="m200 285 100 245 100-245Z"/></clipPath>
+  </defs>
+  <ellipse cx="302" cy="546" rx="72" ry="12" fill="#000" opacity=".2"/>
+  <path d="m200 285 100 245 100-245Z" fill="url(#cone)"/>
+  <path d="m200 285 100 245 100-245Z" fill="url(#waffle)"/>
+  <path d="M209 291c6 13 19 10 29 5 12 15 26 15 38 3 12 16 31 12 37-1 17 14 34 11 42-3 18 8 32 5 38-7" stroke="#9d693a" stroke-width="6"/>
+  <path d="M218 211c-15-48 19-88 66-87 51-6 90 40 75 87 27 0 43 42 29 66-13 16-23 15-35 10-15 16-31 9-41 0-17 17-37 9-45 0-20 14-41 10-47-5-36 6-45-53-2-71Z" fill="url(#cream)"/>
+  <path d="M196 244c-24-48 17-101 65-102 51-17 103 26 91 77 33-6 58 38 39 70-10 15-24 14-38 7-15 17-33 10-42 1-17 18-37 9-47 1-17 13-40 9-48-6-38 7-55-34-20-48Z" fill="url(#pink)"/>
+  <g fill="#ffdfd0" opacity=".6"><ellipse cx="237" cy="198" rx="20" ry="11" transform="rotate(-35 237 198)"/><ellipse cx="287" cy="169" rx="15" ry="7"/><ellipse cx="214" cy="256" rx="9" ry="16"/></g>
+  <g fill="#a7615d" opacity=".45"><circle cx="301" cy="218" r="4"/><circle cx="256" cy="249" r="3"/><circle cx="330" cy="266" r="4"/><circle cx="274" cy="189" r="2"/><circle cx="228" cy="223" r="3"/></g>
+  <path d="M348 118c11-25 33-29 47-15-12 21-31 22-47 15Z" fill="#7e8b52"/><path d="m348 118 31-12" stroke="#bcc383" stroke-width="2"/>
+</svg>
