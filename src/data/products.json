@@ -61,7 +61,7 @@
       "name": "Affogato",
       "description": "30 ml de café con una porción de helado de vainilla.",
       "price": 3900,
-      "status": "agotado"
+      "status": "disponible"
     },
     {
       "id": "mocaccino",
