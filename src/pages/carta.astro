@@ -8,6 +8,8 @@ import { parseMenu, getVisibleMenu, dietaryTagLabels } from '../data/menu-schema
 import { formatPrice } from '../data/menu-format';
 import { business } from '../data/business';
 import printConfig from '../../config/carta-print.json';
+import MenuControls from '../components/MenuControls.astro';
+import BackToTop from '../components/BackToTop.astro';
 
 // The same validated source used by the home page and the existing admin API.
 const { products, categories, groups } = getVisibleMenu(parseMenu(data).products);
@@ -17,33 +19,35 @@ const { products, categories, groups } = getVisibleMenu(parseMenu(data).products
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0b0b0b" />
-    <meta name="description" content="La carta de Fusión x8: café, helados, sándwiches y algo dulce. Precios en pesos chilenos." />
+    <meta name="theme-color" content="#f5eee4" />
+    <meta name="description" content="La carta de Fusión x8: encuentra tu café, helado, sándwich o algo dulce favorito." />
     <link rel="canonical" href={printConfig.url} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Carta · Fusión x8</title>
   </head>
   <body>
     <a class="skip-link" href="#carta">Ir a la carta</a>
-    <header class="carta-header shell" data-entry-header data-carta-layout>
-      <a class="carta-brand" href="/" aria-label="Fusión x8, ir al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8" width="64" height="64" /><span>CAFETERÍA<br />& HELADERÍA</span></a>
-      <a class="home-link" href="/">El local <span aria-hidden="true">↗</span></a>
+    <header class="carta-header" data-entry-header data-carta-layout><div class="shell carta-header-inner">
+      <a class="carta-brand" href="/" aria-label="Fusión x8, ir al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8" width="52" height="52" /><span>FUSIÓN X8<small>Cafetería & Heladería</small></span></a>
+      <a class="home-link" href="/">El local <span aria-hidden="true">↗</span></a></div>
     </header>
-    <main id="contenido" class="shell" tabindex="-1">
+    <main id="contenido" class="shell menu-browser menu-browser--page" data-menu-browser tabindex="-1">
       <div class="carta-intro" data-carta-layout>
-        <p class="eyebrow">TU PAUSA MÁS RICA DEL DÍA</p>
+        <p class="eyebrow">FUSIÓN X8 · HECHO PARA TU PAUSA</p>
         <h1>Nuestra <span>carta.</span></h1>
-        <p>Café, helados y algo rico para compartir.</p>
-        <div class="carta-meta"><p>Precios en pesos chilenos (CLP).</p><p id="mesa" hidden></p></div>
+        <p>Un cafecito. Algo dulce. Tu próximo antojo.</p>
+        <p id="mesa" class="mesa-label" hidden></p>
       </div>
       <div id="carta" class="carta-start" data-carta-start aria-hidden="true"></div>
-      {categories.length > 0 && <nav class="carta-nav" aria-label="Categorías de la carta">{categories.map(category => <a href={`#${category.id}`}>{category.label}</a>)}</nav>}
-      {categories.map(category => <section class="carta-category" id={category.id} aria-labelledby={`title-${category.id}`}>
+      {categories.length > 0 && <MenuControls categories={categories} groups={groups} />}
+      <div class="menu-result-body">
+      <div class="menu-no-results" data-menu-empty hidden><h3>No encontramos ese antojo</h3><p>Prueba con otro nombre o ingrediente.</p><button type="button" data-menu-reset>Ver la carta</button></div>
+      {categories.map(category => <section class="carta-category" id={category.id} data-menu-panel={category.id} aria-labelledby={`title-${category.id}`}>
         <header><h2 id={`title-${category.id}`}>{category.label}</h2><p>{category.note}</p></header>
-        {groups.filter(group => group.category === category.id).map(group => <section class="carta-group" aria-labelledby={`title-${group.id}`}>
+        {groups.filter(group => group.category === category.id).map(group => <section class="carta-group" id={group.id} data-menu-group-section={group.id} aria-labelledby={`title-${group.id}`}>
           <h3 id={`title-${group.id}`}>{group.label}</h3>
           {group.description && <p class="group-description">{group.description}</p>}
-          <ul class="carta-products">{products.filter(product => product.group === group.id).map(product => <li>
+          <ul class="carta-products">{products.filter(product => product.group === group.id).map(product => <li data-menu-product={`${product.name} ${product.description} ${product.note ?? ''} ${product.tags?.map(tag => dietaryTagLabels[tag]).join(' ') ?? ''}`}>
             <article data-product-id={product.id}>
               <div class="product-heading"><h4>{product.name}</h4><p class="price">{formatPrice(product.price)}</p></div>
               {product.description && <p class="product-description">{product.description}</p>}
@@ -57,18 +61,21 @@ const { products, categories, groups } = getVisibleMenu(parseMenu(data).products
         </section>)}
       </section>)}
       {products.length === 0 && <p class="empty-menu">Estamos actualizando la carta. Consulta al equipo del local.</p>}
-      <aside class="carta-note" aria-label="Información de la carta"><p>Consulta al equipo por disponibilidad, precios por confirmar y alérgenos. Si tienes una alergia o celiaquía, confirma también las condiciones de preparación.</p><a id="refresh-menu" href="/carta">Actualizar carta</a></aside>
+      </div>
+      <aside class="carta-note" aria-label="Información de la carta"><p>¿Alguna alergia o una duda con tu pedido? Conversemos antes de preparar tu antojo.</p></aside>
     </main>
     <footer class="shell carta-footer"><p>{business.name} · {business.address}</p><a href="/">Conoce nuestro local <span aria-hidden="true">↗</span></a></footer>
+    <BackToTop target="#carta" label="Volver al inicio de la carta" />
     <script>
       import { initCartaEntry } from '../lib/carta-entry';
+      import { initMenuBrowser } from '../lib/menu-browser';
+      document.querySelectorAll<HTMLElement>('[data-menu-browser]').forEach(initMenuBrowser);
       initCartaEntry();
       // The menu itself works without JavaScript. Never inject query-string HTML.
       const table = new URLSearchParams(location.search).get('mesa');
       if (table && /^[1-9]\d{0,3}$/.test(table)) {
         const label = document.getElementById('mesa');
         if (label) { label.textContent = `Mesa ${table}`; label.hidden = false; }
-        document.getElementById('refresh-menu')?.setAttribute('href', `/carta?mesa=${table}`);
       }
       // A back/forward-cache snapshot must not restore old prices indefinitely.
       window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });

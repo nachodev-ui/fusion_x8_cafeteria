@@ -17,7 +17,7 @@ export default function ProductEditor({ product, isNew, dirty, saving, validatio
   useEffect(() => { name.current?.focus({ preventScroll: true }); window.scrollTo(0, 0); }, []);
   const errorField = validation.includes('nombre') ? 'product-name' : validation.includes('precio') ? 'product-price' : validation.includes('grupo') ? 'product-group' : '';
   const error = (field: string) => errorField === field && touched.includes(field) ? validation.replace(/^Producto \d+: /, '') : '';
-  const price = product.price === null ? 'Precio por confirmar' : Number.isSafeInteger(product.price) && product.price >= 0 && product.price <= 1_000_000_000 ? `${formatPrice(product.price)} CLP` : 'Introduce un precio válido';
+  const price = product.price === null ? 'Precio por confirmar' : Number.isSafeInteger(product.price) && product.price >= 0 && product.price <= 1_000_000_000 ? formatPrice(product.price) : 'Introduce un precio válido';
   const category = categories.find(item => item.id === product.category)?.label;
   const group = menuGroups.find(item => item.id === product.group)?.label;
   return <form className="fusion-product-editor" aria-label={isNew ? 'Crear producto' : `Editar ${product.name}`} onSubmit={save}
@@ -32,9 +32,9 @@ export default function ProductEditor({ product, isNew, dirty, saving, validatio
         </div>
       </section>
       <section className="fusion-edit-section" aria-labelledby="price-heading">
-        <div className="fusion-section-title"><span aria-hidden="true">02</span><div><h2 id="price-heading">Precio</h2><p>En pesos chilenos, sin decimales.</p></div></div>
+        <div className="fusion-section-title"><span aria-hidden="true">02</span><div><h2 id="price-heading">Precio</h2></div></div>
         <div className="fusion-section-fields"><label className="fusion-price-toggle" htmlFor="price-pending"><span><strong>Precio por confirmar</strong><small>Actívalo si aún debes confirmar el valor.</small></span><input id="price-pending" aria-label="Precio por confirmar" type="checkbox" checked={product.price === null} onChange={event => patch({ price: event.target.checked ? null : Number.NaN })} /></label>
-          {product.price === null ? <p className="fusion-pending-hint">Se mostrará «Por confirmar». No se sumará como cero al pedido.</p> : <><label className="fusion-field" htmlFor="product-price">Precio entero en CLP<span className="fusion-money-input"><span aria-hidden="true">$</span><input id="product-price" aria-label="Precio entero en CLP" type="number" required min={0} max={1_000_000_000} step={1} inputMode="numeric" placeholder="Ej. 3500" value={Number.isFinite(product.price) ? product.price : ''} aria-invalid={!!error('product-price')} aria-describedby="price-feedback" onChange={event => patch({ price: event.target.valueAsNumber })} /><span aria-hidden="true">CLP</span></span></label><small id="price-feedback" className="fusion-field-error">{error('product-price')}</small></>}
+          {product.price === null ? <p className="fusion-pending-hint">Se mostrará «Por confirmar». No se sumará como cero al pedido.</p> : <><label className="fusion-field" htmlFor="product-price">Precio<span className="fusion-money-input"><span aria-hidden="true">$</span><input id="product-price" aria-label="Precio" type="number" required min={0} max={1_000_000_000} step={1} inputMode="numeric" placeholder="Ej. 3500" value={Number.isFinite(product.price) ? product.price : ''} aria-invalid={!!error('product-price')} aria-describedby="price-feedback" onChange={event => patch({ price: event.target.valueAsNumber })} /></span></label><small id="price-feedback" className="fusion-field-error">{error('product-price')}</small></>}
         </div>
       </section>
       <section className="fusion-edit-section" aria-labelledby="category-heading">

@@ -1,0 +1,42 @@
+---
+import Icon from './Icon.astro';
+interface Props { target?: string; label?: string; side?: 'left' | 'right'; }
+const { target = '#inicio', label = 'Volver al inicio', side = 'right' } = Astro.props;
+---
+<button type="button" class:list={['back-to-top', `back-to-top--${side}`]} data-back-to-top data-target={target} aria-label={label} title={label} hidden><Icon name="up" size={19} /><span>Arriba</span></button>
+<style>
+  .back-to-top { position: fixed; z-index: 45; right: 20px; bottom: calc(max(20px, env(safe-area-inset-bottom)) + var(--back-top-offset, 0px)); display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 12px 17px; border: 1px solid #786a5b; border-radius: 100px; background: #15120f; color: #fff8ed; box-shadow: 0 5px 22px #0003; cursor: pointer; font: 700 13px/1.3 'DM Sans', system-ui, sans-serif; touch-action: manipulation; }
+  .back-to-top--left { right: auto; left: 20px; }
+  .back-to-top[hidden] { display: none !important; }
+  .back-to-top:hover { background: #9d2622; border-color: #9d2622; }
+  .back-to-top:focus-visible { outline: 3px solid #d62828; outline-offset: 4px; }
+  @media print { .back-to-top { display: none !important; } }
+</style>
+<script>
+  import { fixedHeaderOffset, scrollToCartaStart } from '../lib/carta-entry';
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-back-to-top]')) {
+    const target = document.querySelector<HTMLElement>(button.dataset.target ?? '#inicio');
+    if (!target) continue;
+    let frame = 0;
+    function update() {
+      frame = 0;
+      const start = target!.getBoundingClientRect().top + window.scrollY - fixedHeaderOffset();
+      button.hidden = window.scrollY - start < Math.max(560, window.innerHeight * .75);
+      const footer = document.querySelector<HTMLElement>('.fusion-edit-footer');
+      const rect = footer?.getBoundingClientRect();
+      const footerVisible = rect && rect.height > 0 && rect.top < window.innerHeight && rect.bottom > 0;
+      button.style.setProperty('--back-top-offset', `${footerVisible ? rect.height + 16 : 0}px`);
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(update); }
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    button.addEventListener('click', () => {
+      if (button.dataset.target === '#carta') scrollToCartaStart();
+      else window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - fixedHeaderOffset()), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      const focus = button.dataset.target === '#carta' ? document.querySelector<HTMLElement>('[data-menu-category][aria-current]') ?? document.querySelector<HTMLElement>('[data-menu-category]') ?? target : target;
+      if (!focus.hasAttribute('tabindex') && focus.tagName !== 'A') focus.setAttribute('tabindex', '-1');
+      focus.focus({ preventScroll: true });
+    });
+    update();
+  }
+</script>

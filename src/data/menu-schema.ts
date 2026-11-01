@@ -36,7 +36,7 @@ export function parseMenu(value: unknown): MenuData {
     ids.add(item.id);
     if (typeof item.name !== 'string' || !item.name.trim() || item.name !== item.name.trim() || item.name.length > 120) return fail(prefix + 'el nombre es obligatorio, sin espacios en los extremos y de hasta 120 caracteres.');
     if (typeof item.description !== 'string' || item.description.length > 1000) return fail(prefix + 'la descripción admite hasta 1000 caracteres.');
-    if (item.price !== null && (typeof item.price !== 'number' || !Number.isSafeInteger(item.price) || item.price < 0 || item.price > 1_000_000_000)) return fail(prefix + 'el precio debe ser un entero entre 0 y 1.000.000.000 CLP o null (por confirmar).');
+    if (item.price !== null && (typeof item.price !== 'number' || !Number.isSafeInteger(item.price) || item.price < 0 || item.price > 1_000_000_000)) return fail(prefix + 'el precio debe ser un número entero entre 0 y 1.000.000.000 o quedar por confirmar.');
     if (!categories.some(category => category.id === item.category)) return fail(prefix + 'categoría inválida.');
     if (!menuGroups.some(group => group.id === item.group && group.category === item.category)) return fail(prefix + 'selecciona un grupo de la categoría elegida.');
     if (!statuses.includes(item.status)) return fail(prefix + 'estado inválido.');

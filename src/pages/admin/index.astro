@@ -1,6 +1,7 @@
 ---
 import '../../admin/admin.css';
 import AdminPanel from '../../components/AdminPanel';
+import BackToTop from '../../components/BackToTop.astro';
 import { getImage } from 'astro:assets';
 import cookieCup from '../../assets/products/cookie-cup.webp';
 import waffle from '../../assets/products/waffle-frutillas.webp';
@@ -26,9 +27,10 @@ const imageSources = Object.fromEntries(await Promise.all(Object.entries({ 'cook
   <body>
     <header class="fusion-brandbar">
       <a href="/admin/" class="fusion-brand" data-admin-home><img src="/images/fusion-x8-logo.png" width="46" height="46" alt="Fusión x8" /><span>FUSIÓN X8<small>Administración de la carta</small></span></a>
-      <a href="/" target="_blank" rel="noopener noreferrer" class="fusion-view-site">Ver carta <span aria-hidden="true">↗</span></a>
+      <a href="/carta" target="_blank" rel="noopener noreferrer" class="fusion-view-site">Ver carta <span aria-hidden="true">↗</span></a>
     </header>
     <main id="admin-main"><AdminPanel imageSources={imageSources} client:load /></main>
+    <BackToTop target="#admin-main" side="left" />
     <noscript>Activa JavaScript para iniciar sesión y administrar la carta.</noscript>
   </body>
 </html>

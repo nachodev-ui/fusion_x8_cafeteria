@@ -1,21 +1,29 @@
 {
   "page": "/carta",
   "products": 64,
-  "compressedHtmlBytes": 3845,
-  "estimatedInitialTransferBytes": 85983,
+  "compressedHtmlBytes": 5824,
+  "estimatedInitialTransferBytes": 91708,
   "budgetBytes": 120000,
   "resources": [
     {
-      "path": "/_astro/carta.BRj63utT.css",
-      "transferBytes": 1662
+      "path": "/_astro/carta.B878b6YY.css",
+      "transferBytes": 1779
+    },
+    {
+      "path": "/_astro/carta.C23Fyc0u.css",
+      "transferBytes": 1482
     },
     {
       "path": "/images/fusion-x8-logo.png",
       "transferBytes": 24691
     },
     {
-      "path": "/_astro/carta.astro_astro_type_script_index_0_lang.Dzm75U7n.js",
-      "transferBytes": 290
+      "path": "/_astro/BackToTop.astro_astro_type_script_index_0_lang.D0BpSMJc.js",
+      "transferBytes": 614
+    },
+    {
+      "path": "/_astro/carta.astro_astro_type_script_index_0_lang.B1sMh9jy.js",
+      "transferBytes": 308
     },
     {
       "path": "/_astro/dm-sans-latin-400-normal.CW0RaeGs.woff2",
@@ -30,8 +38,12 @@
       "transferBytes": 25940
     },
     {
-      "path": "/_astro/carta-entry.BHyqM5e_.js",
-      "transferBytes": 1007
+      "path": "/_astro/carta-entry.CygfpBw9.js",
+      "transferBytes": 1036
+    },
+    {
+      "path": "/_astro/menu-browser.Bjq6gy8i.js",
+      "transferBytes": 1486
     }
   ],
   "note": "Presupuesto de bytes; no acredita latencia real ni el objetivo de 2 segundos en teléfonos. Sin comprobaciones visuales."

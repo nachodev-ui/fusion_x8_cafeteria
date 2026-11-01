@@ -4,6 +4,8 @@
 
 La página `/carta` comparte `src/data/products.json` con la portada y el panel. Abre directamente con las categorías a la vista, mide cabeceras fijas y ajusta cargas tardías. Conserva agotados, etiquetas y revalidación del HTML. `npm run generate:proposals` prepara dos diseños de Mesa 1 con QR de 58 mm y sin URL visible; `npm run generate:qr -- --diseno a --mesas N` permite producir la tirada del diseño elegido. Instrucciones, vistas previas, límites de las pruebas y checklist en [docs/carta-qr-propuestas.md](docs/carta-qr-propuestas.md).
 
+La carta y la portada comparten navegación por categorías y grupos, búsqueda global y un botón para volver al inicio; el panel también incorpora ese botón. Referencias de 21st.dev y decisiones de jerarquía en [docs/carta-navigation-design.md](docs/carta-navigation-design.md).
+
 ## Panel propio de administración
 
 El panel está en **/admin/**, dentro del mismo proyecto Astro. Usa React y el diseño de Fusión x8, con una API en **Pages Functions**. La carta pública sigue siendo estática. No requiere otro repositorio, base de datos ni cuenta de GitHub para el dueño.

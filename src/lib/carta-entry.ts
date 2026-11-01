@@ -1,4 +1,20 @@
 /** Align QR entries and the home-page menu anchor after real layout, not a timer. */
+export function fixedHeaderOffset() {
+  return Array.from(document.querySelectorAll<HTMLElement>('[data-entry-header], .site-header, .fusion-brandbar')).reduce((offset, header) => {
+    const position = getComputedStyle(header).position, rect = header.getBoundingClientRect();
+    return (position === 'fixed' || position === 'sticky') && rect.top <= 1 && rect.bottom > 0 ? Math.max(offset, rect.bottom) : offset;
+  }, 0);
+}
+export function scrollToCartaStart() {
+  const target = document.querySelector<HTMLElement>('[data-carta-start]');
+  if (!target) return;
+  const offset = fixedHeaderOffset();
+  document.documentElement.style.setProperty('--carta-header-offset', `${offset}px`);
+  const previous = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = 'auto';
+  window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset), left: 0, behavior: 'auto' });
+  document.documentElement.style.scrollBehavior = previous;
+}
 export function initCartaEntry() {
   const target = document.querySelector<HTMLElement>('[data-carta-start]');
   if (!target) return;
@@ -6,24 +22,10 @@ export function initCartaEntry() {
   let active = false;
   let frame = 0;
   const headers = Array.from(document.querySelectorAll<HTMLElement>('[data-entry-header], .site-header'));
-  function headerOffset() {
-    return headers.reduce((offset, header) => {
-      const position = getComputedStyle(header).position;
-      const rect = header.getBoundingClientRect();
-      return (position === 'fixed' || position === 'sticky') && rect.top <= 1 && rect.bottom > 0 ? Math.max(offset, rect.bottom) : offset;
-    }, 0);
-  }
   function align() {
     frame = 0;
     if (!active || !target) return;
-    const offset = headerOffset();
-    document.documentElement.style.setProperty('--carta-header-offset', `${offset}px`);
-    const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset);
-    // Override the home page's smooth scrolling: entry must land immediately.
-    const previous = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = 'auto';
-    window.scrollTo({ top, left: 0, behavior: 'auto' });
-    document.documentElement.style.scrollBehavior = previous;
+    scrollToCartaStart();
   }
   function schedule() {
     if (active && !frame) frame = requestAnimationFrame(align);

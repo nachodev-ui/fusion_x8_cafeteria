@@ -34,6 +34,36 @@ async function fixture(page: Page, authorized = true, many = false) {
   return { get menu() { return menu; }, get reads() { return reads; }, get writes() { return writes; }, fail(value: boolean) { fail = value; }, publish() { live = true; }, concurrent() { revision = 'f'.repeat(40); menu.products[0].name = 'Cambio de otra sesión'; } };
 }
 
+test('Arriba en admin evita el pie del editor y vuelve al panel', async ({ page }) => {
+  await fixture(page);
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/admin/');
+  await page.getByRole('button', { name: 'Editar Café prueba', exact: true }).click();
+  await expect(page.locator('body')).not.toContainText(/CLP|pesos chilenos/);
+  const up = page.getByRole('button', { name: 'Volver al inicio', exact: true });
+  await page.mouse.wheel(0, 2000);
+  await expect(up).toBeVisible();
+  const box = (await up.boundingBox())!, footer = (await page.locator('.fusion-edit-footer').boundingBox())!;
+  expect(box.y + box.height).toBeLessThan(footer.y);
+  await up.click();
+  await expect.poll(async () => Math.abs((await page.locator('#admin-main').boundingBox())!.y)).toBeLessThan(2);
+});
+
+test('Arriba en la portada vuelve al inicio y convive con el pedido', async ({ page }) => {
+  await page.route('https://**/*', route => route.abort());
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const up = page.getByRole('button', { name: 'Volver al inicio', exact: true });
+  await expect(up).toBeHidden();
+  await page.mouse.wheel(0, 1200);
+  await expect(up).toBeVisible();
+  expect((await up.boundingBox())!.x).toBeLessThan(100);
+  await up.click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(2);
+});
+
 test('sin sesión no consulta productos ni ofrece escritura', async ({ page }) => {
   const api = await fixture(page, false);
   await page.goto('/admin/');
@@ -77,10 +107,10 @@ for (const width of [1280, 390]) {
     await expect(page.getByRole('button', { name: 'Guardar producto', exact: true })).toBeDisabled();
     await page.locator('#product-group').selectOption('pasteles');
     await page.getByLabel('Precio por confirmar', { exact: true }).uncheck();
-    await expect(page.getByLabel('Precio entero en CLP')).toHaveValue('');
-    await page.getByLabel('Precio entero en CLP').fill('-1');
+    await expect(page.getByRole('spinbutton', { name: 'Precio', exact: true })).toHaveValue('');
+    await page.getByRole('spinbutton', { name: 'Precio', exact: true }).fill('-1');
     await expect(page.getByRole('button', { name: 'Guardar producto', exact: true })).toBeDisabled();
-    await page.getByLabel('Precio entero en CLP').fill('2500');
+    await page.getByRole('spinbutton', { name: 'Precio', exact: true }).fill('2500');
     await page.getByLabel('Precio por confirmar', { exact: true }).check();
     await page.getByRole('radio', { name: 'Agotado', exact: true }).check();
     api.fail(true);
@@ -172,10 +202,10 @@ test('editor dedicado conserva filtros, muestra vista previa y permite cancelar 
   const preview = page.getByRole('complementary', { name: 'Vista previa del producto' });
   await expect(preview.getByRole('heading', { name: 'Latte de prueba' })).toBeAttached();
   await page.getByLabel('Precio por confirmar', { exact: true }).uncheck();
-  await page.getByLabel('Precio entero en CLP').fill('-1');
-  await page.getByLabel('Precio entero en CLP').press('Tab');
-  await expect(page.getByLabel('Precio entero en CLP')).toHaveAttribute('aria-invalid', 'true');
-  await page.getByLabel('Precio entero en CLP').fill('3500');
+  await page.getByRole('spinbutton', { name: 'Precio', exact: true }).fill('-1');
+  await page.getByRole('spinbutton', { name: 'Precio', exact: true }).press('Tab');
+  await expect(page.getByRole('spinbutton', { name: 'Precio', exact: true })).toHaveAttribute('aria-invalid', 'true');
+  await page.getByRole('spinbutton', { name: 'Precio', exact: true }).fill('3500');
   await expect(preview).toContainText('3.500');
   await page.getByRole('radio', { name: 'Oculto', exact: true }).check();
   await expect(preview).toContainText('Este producto estará oculto');
@@ -305,7 +335,9 @@ test('carta pública y pedido siguen leyendo la única fuente JSON', async ({ pa
     await expect(card.locator('[data-add-product]')).toHaveCount(0);
   }
   if (priced && pending) {
+    await page.locator(`[data-menu-group="${priced.group}"]`).click();
     await page.locator(`[data-add-product="${priced.id}"]`).click();
+    await page.locator(`[data-menu-group="${pending.group}"]`).click();
     await page.locator(`[data-add-product="${pending.id}"]`).click();
     await page.locator('.order-basket').click();
     await expect(page.locator('#order-product option')).toHaveCount(visible.length);

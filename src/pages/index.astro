@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
+import MenuControls from '../components/MenuControls.astro';
+import BackToTop from '../components/BackToTop.astro';
 import WhatsAppOrder from '../components/WhatsAppOrder';
 import { Image } from 'astro:assets';
 import Promos from '../components/Promos.astro';
@@ -11,7 +13,7 @@ import aboutPhoto from '../assets/venue/fusion-x8-salon-restaurado-v2.png';
 import googleMaps from '../data/google-maps.json';
 import googleMedia from '../data/google-media.json';
 import { products, menuInfo, menuReferences, formatPrice } from '../data/menu';
-import { getVisibleMenu } from '../data/menu-schema';
+import { getVisibleMenu, dietaryTagLabels } from '../data/menu-schema';
 import { business, whatsappReady, whatsappUrl } from '../data/business';
 
 const { products: visibleProducts, categories: visibleCategories, groups: visibleGroups } = getVisibleMenu(products);
@@ -128,28 +130,26 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
         </div>
       </section>
 
-      <section class="section container" id="carta" aria-labelledby="menu-title">
+      <section class="section container menu-browser menu-browser--embedded" id="carta" data-menu-browser aria-labelledby="menu-title">
         <div class="section-heading menu-heading">
           <div><h2 id="menu-title">La <span class="script">carta</span></h2></div>
           <p>Para una tarde de conversa, hacer una pausa<br class="hidden sm:block" /> o darte ese gustito que te mereces.</p>
         </div>
-        <div class="menu-toolbar" data-carta-start>
-          <div class="menu-tabs" role="tablist" aria-label="Categorías de la carta" hidden>
-            {visibleCategories.map((category, i) => <button type="button" id={`tab-${category.id}`} role="tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${category.id}`} tabindex={i === 0 ? 0 : -1} data-category={category.id}><Icon name={category.icon} size={19} />{category.label}</button>)}
-          </div>
-        </div>
+        {visibleCategories.length > 0 && <MenuControls categories={visibleCategories} groups={visibleGroups} mode="embedded" />}
+        <div class="menu-no-results" data-menu-empty hidden><h3>No encontramos ese antojo</h3><p>Prueba con otro nombre o ingrediente.</p><button type="button" data-menu-reset>Ver la carta</button></div>
         {!visibleProducts.length && <p class="demo-notice">La carta se está actualizando. Consulta los productos disponibles por WhatsApp.</p>}
         {visibleCategories.map((category) => <div id={`panel-${category.id}`} class="menu-panel" data-menu-panel={category.id}>
           <h3 class="category-heading">{category.label}<span>{category.note}</span></h3>
-          {visibleGroups.filter((group) => group.category === category.id).map((group) => <section class="menu-group" aria-labelledby={`group-${group.id}`}>
+          {visibleGroups.filter((group) => group.category === category.id).map((group) => <section class="menu-group" data-menu-group-section={group.id} aria-labelledby={`group-${group.id}`}>
             <div class="menu-group-heading"><h4 id={`group-${group.id}`}>{group.label}</h4>{group.description && <p>{group.description}</p>}</div>
             <div class="menu-entries grid grid-cols-1 gap-x-10 md:grid-cols-2">
-              {visibleProducts.filter((product) => product.group === group.id).map((product) => <article class:list={['menu-entry', { 'has-image': !!product.image }]}>
+              {visibleProducts.filter((product) => product.group === group.id).map((product) => <article class:list={['menu-entry', { 'has-image': !!product.image }]} data-menu-product={`${product.name} ${product.description} ${product.note ?? ''} ${product.tags?.map(tag => dietaryTagLabels[tag]).join(' ') ?? ''}`}>
                 {product.image && <Image class="menu-entry-image" src={product.image} alt={product.name} width={64} height={64} widths={[64, 128]} sizes="64px" fit="cover" format="webp" loading="lazy" decoding="async" />}
                 <div class="menu-entry-copy">
                   <div class="menu-entry-heading"><h5>{product.name}</h5><span class:list={['menu-entry-price', { 'is-pending': product.price === null }]} title={product.price === null ? menuInfo.pendingPriceNote : undefined}>{formatPrice(product.price)}</span></div>
                   <p>{product.description}</p>
                   {product.status === 'agotado' && <span class="menu-sold-out">Agotado</span>}
+                  {!!product.tags?.length && <small>{product.tags.map(tag => dietaryTagLabels[tag]).join(' · ')}</small>}
                   {product.note && <small>{product.note}</small>}
                 </div>
                 <button class="menu-entry-add" type="button" disabled={product.status !== 'disponible'} data-add-product={product.status === 'disponible' ? product.id : undefined} aria-label={`Agregar ${product.name} al pedido${product.price === null ? ', precio por confirmar' : ''}`}><Icon name="plus" size={18} /></button>
@@ -252,47 +252,19 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
     <footer class="site-footer"><div class="container"><div class="footer-top"><a href="#inicio" class="footer-brand" aria-label="Fusión x8, volver al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8, cafetería y heladería" width="82" height="82" loading="lazy" /><span>Un cafecito. Un helado.<br />Un buen momento.</span></a><div class="footer-links"><a href="#carta">La carta</a><a href="#nosotros">Nuestra esencia</a><a href="#visitanos">Visítanos</a></div><div class="footer-social"><p>SIGAMOS COMPARTIENDO</p><div><a href={business.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram de Fusión x8, abre una pestaña nueva"><Icon name="instagram" size={21} /></a><a href={business.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok de Fusión x8, abre una pestaña nueva"><Icon name="tiktok" size={21} /></a><span>@cafeteriafusionx8</span></div></div></div><div class="footer-bottom"><span>© {new Date().getFullYear()} Fusión x8 · Puente Alto</span><span>Demo de diseño · Carta e información del local según material compartido.</span><a href="#inicio">Volver arriba ↑</a></div></div></footer>
 
     <a class="whatsapp-float" href={whatsappUrl} data-order-open={whatsappReady ? undefined : true} target={whatsappReady ? '_blank' : undefined} rel={whatsappReady ? 'noopener noreferrer' : undefined} aria-label={`Pedir por WhatsApp al ${business.whatsappDisplay}${whatsappReady ? '' : ', demo con número pendiente'}`}><Icon name="whatsapp" size={26} /><span>¿Un antojito?</span></a>
+    <BackToTop target="#inicio" side="left" />
     <WhatsAppOrder products={orderProducts} client:load />
 
     <script>
       import { initCartaEntry } from '../lib/carta-entry';
+      import { initMenuBrowser } from '../lib/menu-browser';
+      document.querySelectorAll<HTMLElement>('[data-menu-browser]').forEach(initMenuBrowser);
       initCartaEntry();
       const hero = document.querySelector('#inicio');
       if (hero && 'IntersectionObserver' in window) {
         new IntersectionObserver(([entry]) => {
           document.body.dataset.heroInView = String(entry.isIntersecting);
         }, { rootMargin: '-90px 0px 0px 0px' }).observe(hero);
-      }
-
-      const tablist = document.querySelector<HTMLElement>('[role="tablist"]');
-      const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-category]'));
-      const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-menu-panel]'));
-      function activateTab(tab: HTMLButtonElement, focus = false) {
-        tabs.forEach((item) => { const active = item === tab; item.setAttribute('aria-selected', String(active)); item.tabIndex = active ? 0 : -1; });
-        panels.forEach((panel) => {
-          panel.hidden = panel.dataset.menuPanel !== tab.dataset.category;
-          panel.setAttribute('role', 'tabpanel');
-          panel.setAttribute('aria-labelledby', `tab-${panel.dataset.menuPanel}`);
-          panel.tabIndex = 0;
-          panel.classList.add('tabs-ready');
-        });
-        if (focus) tab.focus();
-      }
-      if (tablist && tabs.length) {
-        tablist.hidden = false;
-        activateTab(tabs[0]);
-        tabs.forEach((tab, i) => {
-          tab.addEventListener('click', () => activateTab(tab));
-          tab.addEventListener('keydown', (event) => {
-            let next = i;
-            if (event.key === 'ArrowRight') next = (i + 1) % tabs.length;
-            else if (event.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
-            else if (event.key === 'Home') next = 0;
-            else if (event.key === 'End') next = tabs.length - 1;
-            else return;
-            event.preventDefault(); activateTab(tabs[next], true);
-          });
-        });
       }
 
       const toggle = document.querySelector<HTMLButtonElement>('.mobile-toggle');

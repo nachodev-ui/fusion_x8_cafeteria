@@ -42,7 +42,11 @@ for (const [engine, launcher, options] of [
       await page.evaluate(() => document.fonts.ready);
       await nextLayout(page);
       const settled = await assertLanding(page);
-      assert.ok(first.bottom < 160 && settled.bottom < 160);
+      assert.ok(first.bottom < 270 && settled.bottom < 270);
+      const totalProducts = await page.locator('[data-product-id]').count();
+      const visibleProducts = await page.locator('[data-product-id]:visible').count();
+      assert.ok(visibleProducts > 0 && visibleProducts < totalProducts, 'Una vista inicial por grupo, sin la carta completa seguida');
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false, 'Sin desbordamiento horizontal');
       const expectedMesa = new URL(path, origin).searchParams.get('mesa');
       assert.equal(new URL(page.url()).searchParams.get('mesa'), expectedMesa);
       assert.equal(new URL(page.url()).hash, '');
@@ -61,8 +65,8 @@ for (const [engine, launcher, options] of [
       await page.locator('.carta-intro').evaluate(element => { element.style.paddingTop = '190px'; });
       await nextLayout(page);
       const category = await page.locator('#heladeria').boundingBox();
-      assert.ok(category.y >= 70 && category.y < 220, `La categoría debe seguir visible tras interactuar; y=${category.y}, scroll=${chosenY}`);
-      checks.push({ engine, path, first, settled, fixedHeaderTop: fixed.top, queryPreserved: true, userNavigationRespected: true });
+      assert.ok(category.y >= 70 && category.y < 360, `La categoría debe seguir visible tras interactuar; y=${category.y}, scroll=${chosenY}`);
+      checks.push({ engine, path, first, settled, totalProducts, visibleProducts, fixedHeaderTop: fixed.top, queryPreserved: true, userNavigationRespected: true });
       await page.close();
     }
     for (const path of ['/#carta', '/']) {
