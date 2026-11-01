@@ -6,6 +6,12 @@
   Cache-Control: no-store
 /menu-version.json
   Cache-Control: no-store
+/carta
+  Cache-Control: public, max-age=0, must-revalidate
+/carta/
+  Cache-Control: public, max-age=0, must-revalidate
+/carta/index.html
+  Cache-Control: public, max-age=0, must-revalidate
 /api/admin/*
   Cache-Control: no-store
   X-Robots-Tag: noindex, nofollow, noarchive

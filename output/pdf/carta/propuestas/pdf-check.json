@@ -1,0 +1,26 @@
+[
+  {
+    "design": "a",
+    "pdf": "output\\pdf\\carta\\propuestas\\propuesta-a-mesa-1.pdf",
+    "trimMm": [
+      100,
+      150
+    ],
+    "bleedMm": 3,
+    "visibleUrl": false,
+    "qrSizeMm": 58,
+    "physicalPrintTest": "pendiente; solo renderizado digital a 150 y 300 dpi"
+  },
+  {
+    "design": "b",
+    "pdf": "output\\pdf\\carta\\propuestas\\propuesta-b-mesa-1.pdf",
+    "trimMm": [
+      100,
+      150
+    ],
+    "bleedMm": 3,
+    "visibleUrl": false,
+    "qrSizeMm": 58,
+    "physicalPrintTest": "pendiente; solo renderizado digital a 150 y 300 dpi"
+  }
+]

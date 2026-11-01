@@ -133,7 +133,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
           <div><h2 id="menu-title">La <span class="script">carta</span></h2></div>
           <p>Para una tarde de conversa, hacer una pausa<br class="hidden sm:block" /> o darte ese gustito que te mereces.</p>
         </div>
-        <div class="menu-toolbar">
+        <div class="menu-toolbar" data-carta-start>
           <div class="menu-tabs" role="tablist" aria-label="Categorías de la carta" hidden>
             {visibleCategories.map((category, i) => <button type="button" id={`tab-${category.id}`} role="tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${category.id}`} tabindex={i === 0 ? 0 : -1} data-category={category.id}><Icon name={category.icon} size={19} />{category.label}</button>)}
           </div>
@@ -157,7 +157,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
             </div>
           </section>)}
         </div>)}
-        <div class="menu-bottom"><p><span aria-hidden="true">✳</span> {menuInfo.sourceNote}</p><a href="#pedido" data-order-open>¿Qué se te antoja hoy? <Icon name="arrow" size={17} /></a></div>
+        <div class="menu-bottom"><p><span aria-hidden="true">✳</span> {menuInfo.sourceNote}</p><a href="/carta">Abrir carta para mesas <Icon name="arrow" size={17} /></a><a href="#pedido" data-order-open>¿Qué se te antoja hoy? <Icon name="arrow" size={17} /></a></div>
         <details class="menu-references">
           <summary>Ver carta original (referencia histórica) <span aria-hidden="true">+</span></summary>
           <div class="references-content">
@@ -255,6 +255,8 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
     <WhatsAppOrder products={orderProducts} client:load />
 
     <script>
+      import { initCartaEntry } from '../lib/carta-entry';
+      initCartaEntry();
       const hero = document.querySelector('#inicio');
       if (hero && 'IntersectionObserver' in window) {
         new IntersectionObserver(([entry]) => {

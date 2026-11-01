@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { categories, menuGroups } from '../data/menu-config';
 import { formatPrice } from '../data/menu-format';
-import { statuses, type ProductData } from '../data/menu-schema';
+import { statuses, dietaryTags, dietaryTagLabels, type ProductData } from '../data/menu-schema';
 
 const labels = { disponible: 'Disponible', agotado: 'Agotado', oculto: 'Oculto' };
 const descriptions = { disponible: 'Visible en la carta. Se puede añadir al pedido.', agotado: 'Visible con etiqueta Agotado. No permite pedidos.', oculto: 'Fuera de la carta y del selector del pedido.' };
@@ -47,6 +47,10 @@ export default function ProductEditor({ product, isNew, dirty, saving, validatio
       <section className="fusion-edit-section" aria-labelledby="availability-heading">
         <div className="fusion-section-title"><span aria-hidden="true">04</span><div><h2 id="availability-heading">Disponibilidad</h2><p>Decide cómo aparece y si se puede pedir.</p></div></div>
         <fieldset className="fusion-availability"><legend className="fusion-sr-only">Estado del producto</legend>{statuses.map(status => <label key={status} className="fusion-state-card" data-selected={product.status === status}><input type="radio" name="product-status" value={status} aria-label={labels[status]} checked={product.status === status} aria-describedby={`status-help-${status}`} onChange={() => patch({ status })} /><span><strong>{labels[status]}</strong><small id={`status-help-${status}`}>{descriptions[status]}</small></span></label>)}</fieldset>
+      </section>
+      <section className="fusion-edit-section" aria-labelledby="tags-heading">
+        <div className="fusion-section-title"><span aria-hidden="true">05</span><div><h2 id="tags-heading">Etiquetas opcionales</h2><p>Marca solo las que el local haya confirmado para esta preparación.</p></div></div>
+        <fieldset className="fusion-dietary-tags"><legend className="fusion-sr-only">Etiquetas del producto</legend>{dietaryTags.map(tag => <label key={tag}><input type="checkbox" checked={product.tags?.includes(tag) ?? false} onChange={event => patch({ tags: event.target.checked ? [...(product.tags ?? []), tag] : (product.tags ?? []).filter(item => item !== tag) })} />{dietaryTagLabels[tag]}</label>)}</fieldset>
       </section>
     </fieldset>
     <aside className="fusion-edit-preview" aria-label="Vista previa del producto"><span className="fusion-kicker">VISTA PREVIA</span><h2>Así se verá tu antojo</h2><p>Una referencia de su contenido en la carta.</p><article className="fusion-preview-card" data-status={product.status}>

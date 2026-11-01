@@ -1,0 +1,13 @@
+{
+  "products": [
+    { "id": "ejemplo-espresso", "name": "Espresso", "description": "Café espresso recién preparado.", "price": 1900, "category": "cafeteria", "group": "cafe", "status": "disponible", "tags": ["vegetariano"] },
+    { "id": "ejemplo-latte", "name": "Latte", "description": "Espresso con leche texturizada.", "price": 2900, "category": "cafeteria", "group": "cafe", "status": "disponible" },
+    { "id": "ejemplo-te", "name": "Té de la casa", "description": "Consulta las variedades del día.", "price": 1800, "category": "cafeteria", "group": "te", "status": "disponible", "tags": ["vegetariano", "sin-gluten"] },
+    { "id": "ejemplo-copa", "name": "Copa Fusión", "description": "Dos sabores con salsa a elección.", "price": 4500, "category": "heladeria", "group": "copas", "status": "disponible" },
+    { "id": "ejemplo-barquillo", "name": "Barquillo simple", "description": "Una porción de tu helado favorito.", "price": 2200, "category": "heladeria", "group": "barquillos", "status": "disponible" },
+    { "id": "ejemplo-copa-fruta", "name": "Copa de frutas", "description": "Helado y fruta de temporada.", "price": 4900, "category": "heladeria", "group": "copas", "status": "agotado" },
+    { "id": "ejemplo-sandwich", "name": "Sándwich de la huerta", "description": "Verduras asadas y palta en ciabatta.", "price": 5900, "category": "comida", "group": "sandwiches", "status": "disponible", "tags": ["vegetariano"] },
+    { "id": "ejemplo-picante", "name": "Sándwich picante", "description": "Pollo, tomate y salsa de ají.", "price": 6500, "category": "comida", "group": "sandwiches", "status": "disponible", "tags": ["picante"] },
+    { "id": "ejemplo-pastel", "name": "Pastel del día", "description": "Una porción para acompañar tu café.", "price": 3500, "category": "comida", "group": "pasteles", "status": "disponible" }
+  ]
+}

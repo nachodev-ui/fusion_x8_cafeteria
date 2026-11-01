@@ -1,0 +1,77 @@
+---
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-700.css';
+import '@fontsource/dancing-script/latin-600.css';
+import '../styles/carta.css';
+import data from '../data/products.json';
+import { parseMenu, getVisibleMenu, dietaryTagLabels } from '../data/menu-schema';
+import { formatPrice } from '../data/menu-format';
+import { business } from '../data/business';
+import printConfig from '../../config/carta-print.json';
+
+// The same validated source used by the home page and the existing admin API.
+const { products, categories, groups } = getVisibleMenu(parseMenu(data).products);
+---
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0b0b" />
+    <meta name="description" content="La carta de Fusión x8: café, helados, sándwiches y algo dulce. Precios en pesos chilenos." />
+    <link rel="canonical" href={printConfig.url} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Carta · Fusión x8</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#carta">Ir a la carta</a>
+    <header class="carta-header shell" data-entry-header data-carta-layout>
+      <a class="carta-brand" href="/" aria-label="Fusión x8, ir al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8" width="64" height="64" /><span>CAFETERÍA<br />& HELADERÍA</span></a>
+      <a class="home-link" href="/">El local <span aria-hidden="true">↗</span></a>
+    </header>
+    <main id="contenido" class="shell" tabindex="-1">
+      <div class="carta-intro" data-carta-layout>
+        <p class="eyebrow">TU PAUSA MÁS RICA DEL DÍA</p>
+        <h1>Nuestra <span>carta.</span></h1>
+        <p>Café, helados y algo rico para compartir.</p>
+        <div class="carta-meta"><p>Precios en pesos chilenos (CLP).</p><p id="mesa" hidden></p></div>
+      </div>
+      <div id="carta" class="carta-start" data-carta-start aria-hidden="true"></div>
+      {categories.length > 0 && <nav class="carta-nav" aria-label="Categorías de la carta">{categories.map(category => <a href={`#${category.id}`}>{category.label}</a>)}</nav>}
+      {categories.map(category => <section class="carta-category" id={category.id} aria-labelledby={`title-${category.id}`}>
+        <header><h2 id={`title-${category.id}`}>{category.label}</h2><p>{category.note}</p></header>
+        {groups.filter(group => group.category === category.id).map(group => <section class="carta-group" aria-labelledby={`title-${group.id}`}>
+          <h3 id={`title-${group.id}`}>{group.label}</h3>
+          {group.description && <p class="group-description">{group.description}</p>}
+          <ul class="carta-products">{products.filter(product => product.group === group.id).map(product => <li>
+            <article data-product-id={product.id}>
+              <div class="product-heading"><h4>{product.name}</h4><p class="price">{formatPrice(product.price)}</p></div>
+              {product.description && <p class="product-description">{product.description}</p>}
+              {product.note && <p class="product-note">{product.note}</p>}
+              {(product.status === 'agotado' || !!product.tags?.length) && <ul class="product-tags" aria-label={`Etiquetas de ${product.name}`}>
+                {product.status === 'agotado' && <li class="sold-out">Agotado</li>}
+                {product.tags?.map(tag => <li>{dietaryTagLabels[tag]}</li>)}
+              </ul>}
+            </article>
+          </li>)}</ul>
+        </section>)}
+      </section>)}
+      {products.length === 0 && <p class="empty-menu">Estamos actualizando la carta. Consulta al equipo del local.</p>}
+      <aside class="carta-note" aria-label="Información de la carta"><p>Consulta al equipo por disponibilidad, precios por confirmar y alérgenos. Si tienes una alergia o celiaquía, confirma también las condiciones de preparación.</p><a id="refresh-menu" href="/carta">Actualizar carta</a></aside>
+    </main>
+    <footer class="shell carta-footer"><p>{business.name} · {business.address}</p><a href="/">Conoce nuestro local <span aria-hidden="true">↗</span></a></footer>
+    <script>
+      import { initCartaEntry } from '../lib/carta-entry';
+      initCartaEntry();
+      // The menu itself works without JavaScript. Never inject query-string HTML.
+      const table = new URLSearchParams(location.search).get('mesa');
+      if (table && /^[1-9]\d{0,3}$/.test(table)) {
+        const label = document.getElementById('mesa');
+        if (label) { label.textContent = `Mesa ${table}`; label.hidden = false; }
+        document.getElementById('refresh-menu')?.setAttribute('href', `/carta?mesa=${table}`);
+      }
+      // A back/forward-cache snapshot must not restore old prices indefinitely.
+      window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
+    </script>
+  </body>
+</html>

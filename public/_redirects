@@ -1,0 +1,5 @@
+# /carta es el enlace permanente impreso. No eliminar ni redirigir al inicio.
+# Si se mueve el contenido, activar AMBAS reglas hacia la ruta real, sin bucles:
+# /carta  /nueva-carta  301
+# /carta/ /nueva-carta  301
+# Pages conserva el query string original cuando el destino no lo reemplaza.

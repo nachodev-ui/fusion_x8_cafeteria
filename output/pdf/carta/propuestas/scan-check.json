@@ -1,0 +1,47 @@
+{
+  "checks": [
+    {
+      "design": "a",
+      "dpi": 150,
+      "wholeCardDecoded": true,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    },
+    {
+      "design": "a",
+      "dpi": 300,
+      "wholeCardDecoded": true,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    },
+    {
+      "design": "a",
+      "dpi": 150,
+      "brightnessSimulation": 0.35,
+      "blurSigma": 0.4,
+      "wholeCardDecoded": true,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    },
+    {
+      "design": "b",
+      "dpi": 150,
+      "wholeCardDecoded": true,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    },
+    {
+      "design": "b",
+      "dpi": 300,
+      "wholeCardDecoded": true,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    },
+    {
+      "design": "b",
+      "dpi": 150,
+      "brightnessSimulation": 0.35,
+      "blurSigma": 0.4,
+      "wholeCardDecoded": true,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    }
+  ],
+  "qrSizeMm": 58,
+  "printScaling": "100%",
+  "physicalPrintTest": "pendiente: prueba digital, no papel ni cámara real"
+}

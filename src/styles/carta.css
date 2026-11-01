@@ -1,0 +1,49 @@
+/* A small stylesheet and local fonts keep the QR landing page independent of APIs. */
+:root { font-family: 'DM Sans', system-ui, sans-serif; color: #faf7f2; background: #0b0b0b; color-scheme: dark; font-synthesis: none; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+body { margin: 0; font-size: 16px; line-height: 1.6; }
+h1, h2, h3, h4, p, ul { margin: 0; }
+a { color: inherit; text-underline-offset: .25em; touch-action: manipulation; }
+:focus-visible { outline: 3px solid #f99e90; outline-offset: 4px; }
+[hidden] { display: none !important; }
+.shell { width: min(760px, calc(100% - 32px)); margin-inline: auto; }
+.skip-link { position: fixed; z-index: 10; top: 8px; left: 8px; padding: 12px; background: #f5eee4; color: #0b0b0b; transform: translateY(-160%); }
+.skip-link:focus { transform: translateY(0); }
+.carta-header { display: flex; align-items: center; justify-content: space-between; padding-block: 16px; gap: 12px; border-bottom: 1px solid #4b3e34; }
+.carta-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.carta-brand img { display: block; }
+.carta-brand span { font-size: 11px; letter-spacing: .09em; color: #dbcab7; }
+.home-link { min-height: 44px; display: flex; align-items: center; gap: 8px; }
+.carta-intro { padding-block: 32px 24px; }
+.eyebrow { color: #efaaa0; font-size: 11px; letter-spacing: .12em; font-weight: 700; }
+h1 { font-size: clamp(36px, 10vw, 56px); line-height: 1.2; margin-block: 8px 16px; letter-spacing: -.03em; }
+h1 span { font-family: 'Dancing Script', cursive; color: #e3c5aa; font-weight: 600; }
+.carta-intro > p:not(.eyebrow), .carta-category > header p { color: #d1c3b5; }
+.carta-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; font-size: 14px; color: #d1c3b5; }
+#mesa { color: #faf7f2; font-weight: 700; }
+.carta-start { height: 0; scroll-margin-top: var(--carta-header-offset, 0px); }
+.carta-nav { position: sticky; top: var(--carta-header-offset, 0px); z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding-block: 10px; background: #0b0b0b; border-bottom: 1px solid #695345; }
+.carta-nav a { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 8px 3px; text-align: center; text-decoration: none; border-radius: 5px; background: #281e19; font-size: 14px; font-weight: 700; }
+.carta-nav a:hover, .carta-nav a:focus-visible { background: #9d2020; color: #fff; }
+.carta-category { padding-top: 32px; scroll-margin-top: calc(var(--carta-header-offset, 0px) + 88px); }
+h2 { font-size: 28px; line-height: 1.3; color: #e3c5aa; margin-bottom: 8px; }
+.carta-group { margin-top: 28px; }
+h3 { font-size: 19px; border-bottom: 2px solid #d62828; padding-bottom: 8px; }
+.group-description { color: #d1c3b5; margin-top: 8px; font-size: 14px; }
+.carta-products, .product-tags { list-style: none; padding: 0; }
+.carta-products > li { border-bottom: 1px solid #42352b; padding-block: 18px; }
+.product-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+h4 { font-size: 16px; overflow-wrap: anywhere; }
+.price { font-weight: 700; color: #f5eee4; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.product-description, .product-note { font-size: 15px; color: #d1c3b5; margin-top: 6px; overflow-wrap: anywhere; }
+.product-note { font-size: 14px; }
+.product-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.product-tags li { font-size: 12px; font-weight: 700; color: #e4ebd9; background: #263124; border: 1px solid #7c9272; border-radius: 4px; padding: 2px 8px; }
+.product-tags .sold-out { color: #ffcbc1; background: #3c1b16; border-color: #c88070; }
+.carta-note, .empty-menu { padding: 24px 16px; background: #211912; border-radius: 6px; margin-block: 32px; color: #dfd0c0; font-size: 14px; }
+.carta-note a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; color: #faf7f2; font-weight: 700; }
+.carta-footer { border-top: 1px solid #4b3e34; padding-block: 24px 32px; font-size: 14px; color: #d1c3b5; }
+.carta-footer a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+@media (max-width: 360px) { .product-heading { flex-direction: column; gap: 2px; } }
+@media (min-width: 600px) { .shell { width: min(760px, calc(100% - 64px)); } .carta-nav { gap: 8px; } .carta-nav a { font-size: 16px; } }
+@media print { :root { color: #111; background: #fff; color-scheme: light; } .carta-nav, .home-link, .carta-note a, .carta-footer a { display: none; } .carta-intro { padding-block: 12px; } .carta-category { padding-top: 12px; } .carta-products > li { break-inside: avoid; } h1 span, h2, .price, .carta-intro > p:not(.eyebrow), .carta-category > header p, .product-description, .product-note, .group-description, .carta-meta, .carta-footer, .carta-brand span { color: #111; } }

@@ -1,0 +1,41 @@
+{
+  "status": "propuestas-pendientes-de-eleccion",
+  "finalSetGenerated": false,
+  "trimMm": {
+    "width": 100,
+    "height": 150
+  },
+  "bleedMm": 3,
+  "layout": {
+    "width": 100,
+    "height": 150,
+    "panel": {
+      "x": 17,
+      "y": 23,
+      "size": 66
+    },
+    "qr": {
+      "x": 21,
+      "y": 27,
+      "size": 58
+    }
+  },
+  "errorCorrectionLevel": "H",
+  "quietZoneModules": 4,
+  "files": [
+    {
+      "design": "a",
+      "name": "Rojo envolvente",
+      "file": "propuesta-a-mesa-1.pdf",
+      "table": 1,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    },
+    {
+      "design": "b",
+      "name": "Sello crema",
+      "file": "propuesta-b-mesa-1.pdf",
+      "table": 1,
+      "url": "https://fusion-x8-cafeteria.pages.dev/carta?mesa=1"
+    }
+  ]
+}

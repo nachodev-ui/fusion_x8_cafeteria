@@ -40,6 +40,24 @@ function fixture() {
   return { request, get menu() { return menu; }, get revision() { return revision; }, get writes() { return writes; }, get reads() { return reads; }, fail(value: typeof failure) { failure = value; } };
 }
 
+test('etiquetas opcionales se validan, persisten, cambian la firma y pueden retirarse sin afectar metadatos', async () => {
+  const f = fixture();
+  const before = await (await f.request()).json();
+  const result = await f.request('PUT', 'products/cafe', { revision: f.revision, product: { ...editable(product), tags: ['vegetariano', 'picante'] } });
+  assert.equal(result.status, 200);
+  const after = await result.json();
+  assert.notEqual(after.version, before.version);
+  assert.deepEqual(f.menu.products[0].tags, ['vegetariano', 'picante']);
+  assert.equal(f.menu.products[0].note, product.note);
+  assert.equal(f.menu.products[0].image, product.image);
+  for (const tags of [['inventada'], ['picante', 'picante'], 'sin-gluten']) assert.equal((await f.request('PUT', 'products/cafe', { revision: f.revision, product: { ...editable(product), tags } })).status, 422);
+  // An older admin client can omit the optional field without deleting it.
+  assert.equal((await f.request('PUT', 'products/cafe', { revision: f.revision, product: editable(product) })).status, 200);
+  assert.deepEqual(f.menu.products[0].tags, ['vegetariano', 'picante']);
+  assert.equal((await f.request('PUT', 'products/cafe', { revision: f.revision, product: { ...editable(product), tags: [] } })).status, 200);
+  assert.deepEqual(f.menu.products[0].tags, []);
+});
+
 test('API rechaza lectura y escritura sin sesión, token falso, otro correo, audiencia, emisor o expiración', async () => {
   const f = fixture();
   const wrongAudience = await new SignJWT({ email: env.ADMIN_EMAIL, type: 'app' }).setProtectedHeader({ alg: 'RS256', kid: 'test' }).setIssuer(`https://${env.ACCESS_TEAM_DOMAIN}`).setAudience('other-app').setSubject('owner').setIssuedAt().setExpirationTime('10m').sign(pair.privateKey);

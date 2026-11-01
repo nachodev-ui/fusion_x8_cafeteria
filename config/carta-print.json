@@ -1,0 +1,9 @@
+{
+  "url": "https://fusion-x8-cafeteria.pages.dev/carta",
+  "tables": 1,
+  "format": "10x15",
+  "bleedMm": 3,
+  "qrSizeMm": 58,
+  "quietZoneModules": 4,
+  "errorCorrectionLevel": "H"
+}

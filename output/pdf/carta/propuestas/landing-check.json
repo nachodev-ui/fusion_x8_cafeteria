@@ -1,0 +1,187 @@
+{
+  "origin": "http://127.0.0.1:4380",
+  "checks": [
+    {
+      "engine": "Chromium / Android",
+      "path": "/carta",
+      "first": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 308
+      },
+      "settled": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 309
+      },
+      "fixedHeaderTop": 72.015625,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "Chromium / Android",
+      "path": "/carta/",
+      "first": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 308
+      },
+      "settled": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 309
+      },
+      "fixedHeaderTop": 72.015625,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "Chromium / Android",
+      "path": "/carta?mesa=12",
+      "first": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 308
+      },
+      "settled": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 309
+      },
+      "fixedHeaderTop": 72.015625,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "Chromium / Android",
+      "path": "/carta?mesa=1",
+      "first": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 308
+      },
+      "settled": {
+        "top": 0.015625,
+        "bottom": 69.015625,
+        "scrollY": 309
+      },
+      "fixedHeaderTop": 72.015625,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "Chromium / Android",
+      "path": "/#carta",
+      "landing": {
+        "top": 83.46875,
+        "bottom": 134.46875,
+        "scrollY": 3130
+      },
+      "headerDiscounted": true
+    },
+    {
+      "engine": "Chromium / Android",
+      "path": "clic normal: Ver carta",
+      "landing": {
+        "top": 83.46875,
+        "bottom": 134.46875,
+        "scrollY": 3130
+      },
+      "headerDiscounted": true
+    },
+    {
+      "engine": "WebKit / iPhone",
+      "path": "/carta",
+      "first": {
+        "top": 0,
+        "bottom": 69,
+        "scrollY": 307
+      },
+      "settled": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "fixedHeaderTop": 72.375,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "WebKit / iPhone",
+      "path": "/carta/",
+      "first": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "settled": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "fixedHeaderTop": 72.375,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "WebKit / iPhone",
+      "path": "/carta?mesa=12",
+      "first": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "settled": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "fixedHeaderTop": 72.375,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "WebKit / iPhone",
+      "path": "/carta?mesa=1",
+      "first": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "settled": {
+        "top": 0.375,
+        "bottom": 69.375,
+        "scrollY": 306
+      },
+      "fixedHeaderTop": 72.375,
+      "queryPreserved": true,
+      "userNavigationRespected": true
+    },
+    {
+      "engine": "WebKit / iPhone",
+      "path": "/#carta",
+      "landing": {
+        "top": 83.703125,
+        "bottom": 134.703125,
+        "scrollY": 3106
+      },
+      "headerDiscounted": true
+    },
+    {
+      "engine": "WebKit / iPhone",
+      "path": "clic normal: Ver carta",
+      "landing": {
+        "top": 83.703125,
+        "bottom": 134.703125,
+        "scrollY": 3106
+      },
+      "headerDiscounted": true
+    }
+  ],
+  "engines": [
+    "Chromium",
+    "WebKit"
+  ],
+  "lateResourcesMs": 450,
+  "physicalDevicesTested": false
+}

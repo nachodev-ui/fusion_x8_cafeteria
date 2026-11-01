@@ -2,6 +2,9 @@ import { categories, menuGroups, type Category, type MenuGroup } from './menu-co
 
 export const statuses = ['disponible', 'agotado', 'oculto'] as const;
 export type ProductStatus = typeof statuses[number];
+export const dietaryTags = ['vegetariano', 'sin-gluten', 'picante'] as const;
+export type DietaryTag = typeof dietaryTags[number];
+export const dietaryTagLabels: Record<DietaryTag, string> = { vegetariano: 'Vegetariano', 'sin-gluten': 'Sin gluten', picante: 'Picante' };
 export const imageKeys = ['cookie-cup', 'waffle-frutillas', 'galletones-veganos', 'cinnamon-roll', 'kuchen-sureno'] as const;
 export interface ProductData {
   id: string;
@@ -13,6 +16,7 @@ export interface ProductData {
   status: ProductStatus;
   note?: string;
   image?: string;
+  tags?: DietaryTag[];
 }
 export interface MenuData { products: ProductData[] }
 
@@ -27,7 +31,7 @@ export function parseMenu(value: unknown): MenuData {
   for (const [index, item] of items.entries()) {
     const prefix = `Producto ${index + 1}: `;
     if (!item || typeof item !== 'object' || Array.isArray(item)) return fail(prefix + 'formato inválido.');
-    if (Object.keys(item).some(key => !['id', 'name', 'description', 'price', 'category', 'group', 'status', 'note', 'image'].includes(key))) return fail(prefix + 'campo desconocido.');
+    if (Object.keys(item).some(key => !['id', 'name', 'description', 'price', 'category', 'group', 'status', 'note', 'image', 'tags'].includes(key))) return fail(prefix + 'campo desconocido.');
     if (typeof item.id !== 'string' || !/^[a-z0-9][a-z0-9-]{0,79}$/.test(item.id) || ids.has(item.id)) return fail(prefix + 'identificador inválido o duplicado.');
     ids.add(item.id);
     if (typeof item.name !== 'string' || !item.name.trim() || item.name !== item.name.trim() || item.name.length > 120) return fail(prefix + 'el nombre es obligatorio, sin espacios en los extremos y de hasta 120 caracteres.');
@@ -38,6 +42,7 @@ export function parseMenu(value: unknown): MenuData {
     if (!statuses.includes(item.status)) return fail(prefix + 'estado inválido.');
     if (item.note !== undefined && (typeof item.note !== 'string' || item.note.length > 1000)) return fail(prefix + 'nota inválida.');
     if (item.image !== undefined && !imageKeys.includes(item.image)) return fail(prefix + 'referencia de imagen desconocida.');
+    if (item.tags !== undefined && (!Array.isArray(item.tags) || item.tags.length > dietaryTags.length || new Set(item.tags).size !== item.tags.length || item.tags.some((tag: unknown) => !dietaryTags.includes(tag as DietaryTag)))) return fail(prefix + 'etiquetas inválidas.');
   }
   return value as MenuData;
 }
@@ -59,4 +64,5 @@ export const menuSignatureInput = (menu: MenuData) => JSON.stringify(menu.produc
   id: product.id, name: product.name, description: product.description, price: product.price,
   category: product.category, group: product.group, status: product.status,
   note: product.note ?? null, image: product.image ?? null,
+  tags: [...(product.tags ?? [])].sort(),
 })));
