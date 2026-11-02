@@ -1,5 +1,5 @@
 // Ubicación, horarios y servicios transcritos de IMG_0868.PNG e IMG_0869.PNG.
-// Las imágenes no incluyen teléfono: sigue pendiente antes de habilitar envíos.
+// WhatsApp configurado con el número de pruebas indicado por el responsable del proyecto.
 export const business = {
   name: 'Fusión x8',
   address: 'Av. Ejército Libertador 905, Puente Alto',
@@ -17,10 +17,9 @@ export const business = {
     { label: 'Ubicación y servicios', file: '/references/ubicacion-servicios.png' },
     { label: 'Horarios', file: '/references/horarios.png' },
   ],
-  // Solo dígitos, con código de país. Ejemplo de formato: 56912345678.
-  // Vacío mientras no se conozca el número real: la demo no envía pedidos.
-  whatsappNumber: '',
-  whatsappDisplay: '+56 9 XXXX XXXX',
+  // Solo dígitos, con código de país. Reemplazar por el del local al entregar.
+  whatsappNumber: '56947087424',
+  whatsappDisplay: '+56 9 4708 7424',
   whatsappMessage: '¡Hola, Fusión x8! Me gustaría hacer un pedido ☕🍦',
   instagram: 'https://www.instagram.com/cafeteriafusionx8/',
   tiktok: 'https://www.tiktok.com/@cafeteriafusionx8',

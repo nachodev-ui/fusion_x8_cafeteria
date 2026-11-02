@@ -259,12 +259,12 @@ Algunos valores de las imágenes están cortados: chocolate caliente, frappuccin
 
 1. Confirmar desde `/admin/` los precios que están como `null` y el nombre incompleto. No completar los dígitos por suposición.
 2. Confirmar con el local la vigencia de la información transcrita en `src/data/business.ts`.
-3. Completar `whatsappNumber` con el teléfono real en formato `56912345678` (solo dígitos) y actualizar `whatsappDisplay`.
+3. Reemplazar el número de pruebas configurado en `whatsappNumber` por el WhatsApp definitivo del local, en formato `56912345678` (solo dígitos), y actualizar `whatsappDisplay`.
 4. Copiar `.env.example` a `.env` y definir `PUBLIC_SITE_URL` con el dominio real para generar canonical y URLs absolutas de Open Graph. Volver a compilar.
 
 El botón «Ver mapa interactivo» permite alternar entre la vista oscura y el mapa de Google dentro del mismo panel. El iframe solo recibe su URL y se carga cuando la persona activa esa opción; sus colores y controles originales se conservan. Los botones se sitúan fuera del mapa, sin tapar sus controles o atribuciones. Sin JavaScript, la vista ilustrativa y el enlace «Cómo llegar» siguen disponibles. El mapa usa la dirección informada en `business.ts` y no necesita una API key.
 
-Hasta configurar un WhatsApp chileno válido, los botones permiten explorar el pedido, pero su envío queda deshabilitado con un aviso de demo. Con el número configurado, el botón flotante abre WhatsApp con un mensaje prellenado; el pedido envía cantidades, subtotales, total referencial y comentarios. El mensaje **se prepara**: la persona lo envía desde WhatsApp. No hay pago ni confirmación automática.
+Actualmente se utiliza el número de pruebas indicado por el responsable del proyecto en `src/data/business.ts`. El botón flotante abre WhatsApp con un mensaje prellenado; el pedido incluye cantidades, subtotales, total referencial y comentarios. El mensaje **se prepara**: la persona lo envía desde WhatsApp. No hay pago ni confirmación automática. Si se elimina el número o se configura uno inválido, el envío queda deshabilitado con un aviso de demo.
 
 Se pueden incluir productos con precio pendiente en la consulta. Si los hay, el resumen muestra un **subtotal conocido**, excluye esos valores del cálculo y solicita confirmación del total final. Si todos los precios del pedido están pendientes, muestra «Por confirmar» en lugar de un total de cero.
 
