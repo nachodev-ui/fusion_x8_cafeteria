@@ -14,6 +14,8 @@ Las cuatro fotografías nuevas se descargaron de las imágenes públicas visible
 
 Los archivos locales se mantienen cuando llega la respuesta compartida de Places. Una imagen en vivo sustituye únicamente la misma fotografía, por identificador, sin borrar el resto de la selección. No se descargaron fotografías a través de Places API ni se guardaron sus URLs temporales.
 
-Tras la revisión del diseño de escritorio, las tarjetas forman una única pila centrada que se abre en un abanico panorámico. La escena permanece fija durante 90 svh de recorrido: el primer 22 % conserva la pila, el siguiente 66 % abre el abanico y el último 12 % mantiene la colección abierta. El título permanece dentro de la escena. Cada tarjeta se eleva al enfocarla, o al pasar el cursor cuando el abanico está completamente abierto, para mostrar su fotografía y sus créditos.
+Tras la revisión del diseño de escritorio, las tarjetas forman una única pila centrada que se abre en un abanico panorámico. La escena permanece fija durante 90 svh de recorrido: el primer 22 % conserva la pila, el siguiente 66 % abre el abanico y el último 12 % mantiene la colección abierta. El título permanece dentro de la escena. Cada tarjeta se eleva al enfocarla con el teclado; el hover ya no cambia la superposición.
 
 En móvil se conserva una única tira horizontal. Sin JavaScript, con movimiento reducido o con menos de 620 px de altura disponible, se usa una tira horizontal estática, también en escritorio. No se crean dos filas.
+
+El botón «Ver fotos» y el clic en una imagen abren un visor con la foto completa, botones Anterior/Siguiente, flechas de teclado, cierre con Escape y gestos horizontales en pantallas táctiles. Los créditos y enlaces originales permanecen dentro del visor. La colección mantiene su orden mientras está abierto, aunque termine la consulta de Google Maps; al cerrar se restaura el foco al control de apertura. Sin JavaScript, las imágenes siguen enlazando a Google Maps.

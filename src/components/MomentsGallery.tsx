@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { getMomentPhotos, subscribeMomentPhotos, type MomentPhoto } from '../lib/moment-photos';
+import MomentViewer from './MomentViewer';
 import '../styles/moments.css';
 
 export default function MomentsGallery({ fallback, children }: { fallback: MomentPhoto[]; children?: ReactNode }) {
@@ -9,6 +10,11 @@ export default function MomentsGallery({ fallback, children }: { fallback: Momen
     ? [...live, ...fallback.filter(photo => !live.some(current => current.id === photo.id))]
     : fallback, [live, fallback]);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const [viewerReady, setViewerReady] = useState(false);
+  // Freeze the order while browsing, even if Maps finishes loading in the meantime.
+  const [selection, setSelection] = useState<{ photos: MomentPhoto[]; index: number; opener: HTMLElement } | null>(null);
+
+  useEffect(() => { setViewerReady(typeof HTMLDialogElement !== 'undefined' && 'showModal' in HTMLDialogElement.prototype); }, []);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -64,6 +70,7 @@ export default function MomentsGallery({ fallback, children }: { fallback: Momen
   }, [photos.length]);
 
   return (
+    <>
     <div className="moments-wrap" ref={wrapRef}>
       <div className="moments-stage">
         {children}
@@ -77,9 +84,15 @@ export default function MomentsGallery({ fallback, children }: { fallback: Momen
               '--layer': photos.length - Math.floor(Math.abs(index - (photos.length - 1) / 2)),
             } as CSSProperties}>
               <a className="moment-image" href={photo.sourceUrl} target="_blank" rel="noopener noreferrer"
-                aria-label={`Ver ${photo.title} en Google Maps, abre una pestaña nueva`}>
+                aria-haspopup={viewerReady ? 'dialog' : undefined}
+                aria-label={viewerReady ? `Ampliar ${photo.title}` : `Ver ${photo.title} en Google Maps, abre una pestaña nueva`}
+                onClick={event => {
+                  if (!viewerReady || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                  event.preventDefault();
+                  setSelection({ photos, index, opener: event.currentTarget });
+                }}>
                 <img src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" draggable={false} />
-                <span className="moment-number" aria-hidden="true">{String(index + 1).padStart(2, '0')} ↗</span>
+                <span className="moment-number" aria-hidden="true">{String(index + 1).padStart(2, '0')} {viewerReady ? '＋' : '↗'}</span>
               </a>
               <figcaption>
                 <h3>{photo.title}</h3>
@@ -91,7 +104,13 @@ export default function MomentsGallery({ fallback, children }: { fallback: Momen
             </figure>
           ))}
         </div>
+        <div className="moments-tools" hidden={!viewerReady}>
+          <p>Abre una foto y recorre la colección a tu ritmo.</p>
+          <button type="button" className="button button-outline" aria-haspopup="dialog" onClick={event => setSelection({ photos, index: 0, opener: event.currentTarget })}>Ver fotos <span aria-hidden="true">↗</span></button>
+        </div>
       </div>
     </div>
+    {selection && <MomentViewer photos={selection.photos} initialIndex={selection.index} returnFocus={selection.opener} onClose={() => setSelection(null)} />}
+    </>
   );
 }

@@ -11,6 +11,25 @@
 .moment-card small { display: block; font-size: 9px; }
 .moment-card figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 .moments-section .gallery-social { white-space: normal; }
+.moments-tools { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+.moments-tools p { color: #b9a18d; font-size: 11px; line-height: 1.8; }
+.moments-tools .button { min-height: 44px; flex-shrink: 0; }
+.moment-image[aria-haspopup="dialog"] { cursor: zoom-in; }
+.moment-viewer { width: min(1100px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 16px; border: 1px solid #534033; border-radius: 12px; color: #faf7f2; background: #13110f; overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 24px 80px #0008; }
+.moment-viewer::backdrop { background: #000d; }
+.moment-viewer-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.moment-viewer-header .eyebrow { color: #c5ac97; font-size: 9px; }
+.moment-viewer-close { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border: 1px solid #534033; border-radius: 6px; background: transparent; color: #f5eee4; font-size: 28px; }
+.moment-viewer figure { margin: 0; }
+.moment-viewer-photo { height: min(55dvh, 650px); background: #0b0b0b; border-radius: 5px; overflow: hidden; touch-action: pan-y pinch-zoom; }
+.moment-viewer-photo img { width: 100%; height: 100%; object-fit: contain; }
+.moment-viewer-navigation { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
+.moment-viewer-navigation button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid #534033; border-radius: 5px; background: #241b16; color: #f5eee4; font-size: 12px; }
+.moment-viewer-navigation p { flex-shrink: 0; color: #c5ac97; font-size: 11px; font-variant-numeric: tabular-nums; }
+.moment-viewer-credit { margin-top: 16px; overflow-wrap: anywhere; }
+.moment-viewer-credit h2 { font-size: 17px; font-weight: 500; line-height: 1.5; }
+.moment-viewer-credit p, .moment-viewer-credit small { display: block; color: #b9a18d; font-size: 11px; line-height: 1.8; margin-top: 5px; }
+.moment-viewer-credit a { text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 900px) {
   .moments-track { grid-auto-columns: min(32%, 340px); gap: 24px; }
 }
@@ -18,7 +37,8 @@
   .moments-wrap[data-animated="true"] { height: calc(190svh - 115px); }
   .moments-wrap[data-animated="true"] .moments-stage { position: sticky; top: 115px; height: calc(100svh - 115px); display: flex; flex-direction: column; padding-block: 22px; }
   .moments-wrap[data-animated="true"] .section-heading { flex-shrink: 0; margin-bottom: 12px; }
-  .moments-wrap[data-animated="true"] .moments-track { position: relative; flex: 1; width: 100%; min-height: 360px; display: block; overflow: visible; padding: 0; perspective: 1200px; }
+  .moments-wrap[data-animated="true"] .moments-track { position: relative; flex: 1; width: 100%; min-height: 300px; display: block; overflow: visible; padding: 0; perspective: 1200px; }
+  .moments-wrap[data-animated="true"] .moments-tools { flex-shrink: 0; }
   .moments-wrap[data-animated="true"] .moment-card {
     --card-x: calc(var(--offset) * (12px * (1 - var(--spread)) + var(--fan-step) * var(--spread)));
     --card-y: calc(var(--offset) * -5px * (1 - var(--spread)) + var(--edge) * var(--edge) * 32px * var(--spread));
@@ -30,10 +50,9 @@
     transform-origin: center center;
   }
   .moments-wrap[data-animated="true"] .moment-card figcaption { min-height: 112px; }
-  .moments-wrap[data-animated="true"] .moment-image { aspect-ratio: 1.15; }
-  /* Raise a single card to reveal its photo and credits without opening the stack. */
-  .moments-wrap[data-animated="true"] .moment-card:focus-within,
-  .moments-wrap[data-animated="true"][data-open="true"] .moment-card:hover {
+  .moments-wrap[data-animated="true"] .moment-image { aspect-ratio: auto; height: clamp(140px, 26svh, 245px); }
+  /* Keyboard focus reveals the link; pointer hover keeps the fan in place. */
+  .moments-wrap[data-animated="true"] .moment-card:focus-within {
     --card-y: -6px; --card-angle: 0deg; --card-depth: 0deg; --card-scale: 1; z-index: 20;
   }
 }
