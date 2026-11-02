@@ -1,8 +1,8 @@
 {
   "page": "/carta",
   "products": 64,
-  "compressedHtmlBytes": 5824,
-  "estimatedInitialTransferBytes": 91708,
+  "compressedHtmlBytes": 5825,
+  "estimatedInitialTransferBytes": 92125,
   "budgetBytes": 120000,
   "resources": [
     {
@@ -18,11 +18,11 @@
       "transferBytes": 24691
     },
     {
-      "path": "/_astro/BackToTop.astro_astro_type_script_index_0_lang.D0BpSMJc.js",
-      "transferBytes": 614
+      "path": "/_astro/BackToTop.astro_astro_type_script_index_0_lang.DHGFYtf1.js",
+      "transferBytes": 1023
     },
     {
-      "path": "/_astro/carta.astro_astro_type_script_index_0_lang.B1sMh9jy.js",
+      "path": "/_astro/carta.astro_astro_type_script_index_0_lang.D5LK7j9w.js",
       "transferBytes": 308
     },
     {
@@ -42,8 +42,8 @@
       "transferBytes": 1036
     },
     {
-      "path": "/_astro/menu-browser.Bjq6gy8i.js",
-      "transferBytes": 1486
+      "path": "/_astro/menu-browser.CI0jpxuU.js",
+      "transferBytes": 1493
     }
   ],
   "note": "Presupuesto de bytes; no acredita latencia real ni el objetivo de 2 segundos en teléfonos. Sin comprobaciones visuales."

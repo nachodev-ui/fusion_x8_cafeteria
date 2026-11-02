@@ -52,6 +52,7 @@ export function initMenuBrowser(root: HTMLElement) {
   }
   function syncHash() {
     const id = location.hash.slice(1).replace(/^panel-/, '');
+    if (!id) return false;
     const link = categories.find(link => link.dataset.menuCategory === id);
     if (link) { category = link.dataset.menuCategory!; return true; }
     const section = groupSections.find(section => section.dataset.menuGroupSection === id || section.id === id);

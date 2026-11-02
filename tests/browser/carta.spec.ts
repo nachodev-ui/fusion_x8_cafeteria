@@ -87,6 +87,64 @@ test('Arriba aparece al bajar y vuelve al menú sin perder filtros ni mesa, incl
   await expect(page.locator('[data-menu-group="cafe"]')).toHaveAttribute('aria-pressed', 'true');
   expect(new URL(page.url()).searchParams.get('mesa')).toBe('4');
 });
+for (const path of ['/carta?mesa=4', '/']) {
+  test(`Arriba vuelve de forma gradual y lenta sin saltos (${path})`, async ({ page }) => {
+    await page.route('https://**/*', route => route.abort());
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.goto(path, { waitUntil: 'load' });
+    await page.mouse.wheel(0, 1100);
+    await expect(page.locator('[data-back-to-top]')).toBeVisible();
+    const result = await page.evaluate(async () => {
+      const button = document.querySelector<HTMLButtonElement>('[data-back-to-top]')!;
+      const start = window.scrollY, started = performance.now();
+      button.click();
+      const immediate = window.scrollY;
+      let early = start;
+      const samples: number[] = [];
+      await new Promise<void>((resolve, reject) => {
+        function sample() {
+          const elapsed = performance.now() - started;
+          samples.push(window.scrollY);
+          if (elapsed < 300) early = window.scrollY;
+          if (!button.hasAttribute('aria-busy')) return resolve();
+          if (elapsed > 4000) return reject(new Error('La animación no termina.'));
+          requestAnimationFrame(sample);
+        }
+        requestAnimationFrame(sample);
+      });
+      return { start, immediate, early, end: window.scrollY, duration: performance.now() - started, samples };
+    });
+    expect(Math.abs(result.immediate - result.start)).toBeLessThan(2);
+    expect(result.duration).toBeGreaterThan(1100);
+    expect(result.early).toBeLessThan(result.start);
+    expect(result.early).toBeGreaterThan((result.start + result.end) / 2);
+    for (let index = 1; index < result.samples.length; index++) expect(result.samples[index]).toBeLessThanOrEqual(result.samples[index - 1] + 2);
+    if (path === '/') expect(result.end).toBeLessThan(2);
+    else {
+      await expect.poll(async () => Math.abs((await page.locator('.carta-nav').boundingBox())!.y)).toBeLessThan(2);
+      expect(new URL(page.url()).searchParams.get('mesa')).toBe('4');
+    }
+  });
+}
+
+test('un desplazamiento manual interrumpe Arriba y conserva el control del usuario', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.setViewportSize({ width: 390, height: 700 });
+  await page.goto('/carta?mesa=4');
+  await page.mouse.wheel(0, 1100);
+  const up = page.locator('[data-back-to-top]');
+  await expect(up).toBeVisible();
+  await up.click();
+  await expect(up).toHaveAttribute('aria-busy', 'true');
+  await page.mouse.wheel(0, 180);
+  await expect(up).not.toHaveAttribute('aria-busy', 'true');
+  const y = await page.evaluate(() => window.scrollY);
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(y - 2);
+  await expect(page.locator('.carta-nav')).toBeVisible();
+});
+
 test('etiquetas se guardan desde el panel, incluso cuando son el único cambio', async ({ page }) => {
   let product = { ...products[0], tags: [] as string[] };
   let writes = 0;

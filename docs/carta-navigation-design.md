@@ -24,10 +24,12 @@ Se retiraron del contenido visible y de los errores de formulario las aclaracion
 
 `BackToTop.astro` se usa en `/carta`, la portada y `/admin/`. Aparece después de bajar al menos 560 px o tres cuartos de una pantalla desde el punto de inicio. En la carta vuelve a las categorías, conservando grupo, búsqueda y mesa; en la portada vuelve al inicio del sitio y en admin al panel. Respeta movimiento reducido, mantiene un nombre accesible y evita el área del pie de edición. En la portada se coloca a la izquierda para convivir con el pedido y WhatsApp.
 
+El retorno dura entre 1,2 y 2,2 segundos según la distancia, con aceleración y frenado de curva seno. La entrada por QR sigue siendo inmediata. Un toque, tecla o desplazamiento manual interrumpe el retorno sin mover el foco; al completar el recorrido se enfoca el inicio. Con movimiento reducido se omite la animación.
+
 ## Verificación
 
 Pruebas de normalización de búsqueda, filtros, navegación por teclado, búsqueda entre categorías, consultas sin resultados, conservación de mesa, recarga de selección, disponibilidad, precios, uso sin JavaScript y vuelta al inicio. Se conservan los controles de compilación, tipos y presupuesto de carga. Las pruebas de navegador usan DOM y medidas de los elementos, sin capturas ni comprobaciones visuales.
 
-Resultados: 19 pruebas de datos/API/QR/PDF/búsqueda y 19 casos de navegador aprobados; además, 12 accesos verificados con Chromium y WebKit en perfiles móviles, recursos tardíos y cabecera fija. El botón se probó en carta, portada y admin. La carga inicial estimada se mantiene por debajo de 92 KB. La disponibilidad real, precios y pedidos continúan leyendo la misma fuente.
+Resultados del rediseño: 19 pruebas de datos/API/QR/PDF/búsqueda y 19 casos de navegador aprobados; además, 12 accesos verificados con Chromium y WebKit en perfiles móviles, recursos tardíos y cabecera fija. El botón se probó en carta, portada y admin. El ajuste posterior de animación pasó seis pruebas específicas de duración, progreso gradual, interrupción y movimiento reducido; también comprueba que la portada sin ancla permanezca en su inicio. La carga inicial se controla con un presupuesto de 120 KB. La disponibilidad real, precios y pedidos continúan leyendo la misma fuente.
 
 La ruta pública del QR y el contenido de los QR impresos no cambian. El panel conserva la API, la autenticación y la fuente de datos existentes.

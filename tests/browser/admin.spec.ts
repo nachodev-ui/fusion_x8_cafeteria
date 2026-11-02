@@ -56,6 +56,9 @@ test('Arriba en la portada vuelve al inicio y convive con el pedido', async ({ p
   await page.setViewportSize({ width: 390, height: 700 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const up = page.getByRole('button', { name: 'Volver al inicio', exact: true });
+  await expect(page.locator('[data-menu-browser]')).toHaveAttribute('data-menu-enhanced', 'true');
+  await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  expect(await page.evaluate(() => window.scrollY)).toBeLessThan(2);
   await expect(up).toBeHidden();
   await page.mouse.wheel(0, 1200);
   await expect(up).toBeVisible();

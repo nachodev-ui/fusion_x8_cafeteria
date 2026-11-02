@@ -13,15 +13,17 @@ const { target = '#inicio', label = 'Volver al inicio', side = 'right' } = Astro
   @media print { .back-to-top { display: none !important; } }
 </style>
 <script>
-  import { fixedHeaderOffset, scrollToCartaStart } from '../lib/carta-entry';
+  import { fixedHeaderOffset } from '../lib/carta-entry';
+  import { scrollToTopSmoothly } from '../lib/scroll-to-top';
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-back-to-top]')) {
     const target = document.querySelector<HTMLElement>(button.dataset.target ?? '#inicio');
     if (!target) continue;
     let frame = 0;
+    let returning = false;
     function update() {
       frame = 0;
       const start = target!.getBoundingClientRect().top + window.scrollY - fixedHeaderOffset();
-      button.hidden = window.scrollY - start < Math.max(560, window.innerHeight * .75);
+      button.hidden = !returning && window.scrollY - start < Math.max(560, window.innerHeight * .75);
       const footer = document.querySelector<HTMLElement>('.fusion-edit-footer');
       const rect = footer?.getBoundingClientRect();
       const footerVisible = rect && rect.height > 0 && rect.top < window.innerHeight && rect.bottom > 0;
@@ -31,11 +33,22 @@ const { target = '#inicio', label = 'Volver al inicio', side = 'right' } = Astro
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule, { passive: true });
     button.addEventListener('click', () => {
-      if (button.dataset.target === '#carta') scrollToCartaStart();
-      else window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - fixedHeaderOffset()), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-      const focus = button.dataset.target === '#carta' ? document.querySelector<HTMLElement>('[data-menu-category][aria-current]') ?? document.querySelector<HTMLElement>('[data-menu-category]') ?? target : target;
-      if (!focus.hasAttribute('tabindex') && focus.tagName !== 'A') focus.setAttribute('tabindex', '-1');
-      focus.focus({ preventScroll: true });
+      if (returning) return;
+      const destination = button.dataset.target === '#carta' ? document.querySelector<HTMLElement>('[data-carta-start]') ?? target : target;
+      const offset = fixedHeaderOffset();
+      document.documentElement.style.setProperty('--carta-header-offset', `${offset}px`);
+      const top = Math.max(0, destination.getBoundingClientRect().top + window.scrollY - offset);
+      returning = true;
+      button.setAttribute('aria-busy', 'true');
+      scrollToTopSmoothly(top, completed => {
+        returning = false;
+        button.removeAttribute('aria-busy');
+        schedule();
+        if (!completed) return;
+        const focus = button.dataset.target === '#carta' ? document.querySelector<HTMLElement>('[data-menu-category][aria-current]') ?? document.querySelector<HTMLElement>('[data-menu-category]') ?? target : target;
+        if (!focus.hasAttribute('tabindex') && focus.tagName !== 'A') focus.setAttribute('tabindex', '-1');
+        focus.focus({ preventScroll: true });
+      });
     });
     update();
   }
