@@ -20,7 +20,7 @@ export const business = {
   // Solo dígitos, con código de país. Reemplazar por el del local al entregar.
   whatsappNumber: '56947087424',
   whatsappDisplay: '+56 9 4708 7424',
-  whatsappMessage: '¡Hola, Fusión x8! Me gustaría hacer un pedido ☕🍦',
+  whatsappMessage: '¡Hola, Fusión x8! Me gustaría hacer un pedido.',
   instagram: 'https://www.instagram.com/cafeteriafusionx8/',
   tiktok: 'https://www.tiktok.com/@cafeteriafusionx8',
 };
