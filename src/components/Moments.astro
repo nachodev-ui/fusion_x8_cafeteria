@@ -32,11 +32,12 @@ const fallback: MomentPhoto[] = [
 ];
 ---
 <section class="section container moments-section" id="galeria" aria-labelledby="gallery-title">
-  <div class="section-heading">
-    <div><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div>
-    <a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a>
-  </div>
-  <MomentsGallery fallback={fallback} client:load />
+  <MomentsGallery fallback={fallback} client:load>
+    <div class="section-heading">
+      <div><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div>
+      <a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a>
+    </div>
+  </MomentsGallery>
   <p class="gallery-note">Selección con fechas verificadas desde julio de 2025. Fotografías de Google Maps con sus autores originales; la imagen restaurada se identifica en su crédito. <a href={place.sourceUrl} target="_blank" rel="noopener noreferrer">Ver más fotos en Google Maps ↗</a></p>
   <a class="text-link gallery-video-link" href={media.videos[0].sourceUrl} target="_blank" rel="noopener noreferrer">Ver la entrada del local en vídeo · enero de 2026 <Icon name="diagonal" size={15} /></a>
 </section>

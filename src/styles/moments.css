@@ -12,22 +12,30 @@
 .moment-card figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 .moments-section .gallery-social { white-space: normal; }
 @media (min-width: 900px) {
-  .moments-track { grid-auto-flow: initial; grid-auto-columns: auto; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); gap: 32px 24px; overflow: visible; padding: 20px 12px 38px; }
-  .moment-image { aspect-ratio: auto; height: clamp(210px, 34svh, 340px); }
-  .moments-wrap[data-multirow="true"] .moment-image { height: clamp(180px, 22vw, 260px); }
+  .moments-track { grid-auto-columns: min(32%, 340px); gap: 24px; }
 }
-@media (min-width: 900px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
-  .moments-wrap[data-animated="true"] { height: calc(132svh - 125px); }
-  .moments-wrap[data-animated="true"] .moments-stage { position: sticky; top: 115px; height: calc(100svh - 125px); display: flex; align-items: center; }
-  .moments-wrap[data-animated="true"] .moments-track { width: 100%; perspective: 1200px; }
-  .moments-wrap[data-animated="true"][data-multirow="true"] { height: auto; }
-  .moments-wrap[data-animated="true"][data-multirow="true"] .moments-stage { position: static; height: auto; display: block; }
+@media (min-width: 900px) and (min-height: 620px) and (prefers-reduced-motion: no-preference) {
+  .moments-wrap[data-animated="true"] { height: calc(190svh - 115px); }
+  .moments-wrap[data-animated="true"] .moments-stage { position: sticky; top: 115px; height: calc(100svh - 115px); display: flex; flex-direction: column; padding-block: 22px; }
+  .moments-wrap[data-animated="true"] .section-heading { flex-shrink: 0; margin-bottom: 12px; }
+  .moments-wrap[data-animated="true"] .moments-track { position: relative; flex: 1; width: 100%; min-height: 360px; display: block; overflow: visible; padding: 0; perspective: 1200px; }
   .moments-wrap[data-animated="true"] .moment-card {
-    transform: translateX(calc((var(--stack-x) + var(--stack-gap)) * (1 - var(--spread)))) translateY(calc(var(--offset) * var(--offset) * 10px * var(--spread))) rotate(calc(var(--offset) * (6deg - 3deg * var(--spread)))) rotateY(calc(var(--offset) * -8deg * var(--spread))) scale(calc(.88 + .12 * var(--spread)));
+    --card-x: calc(var(--offset) * (12px * (1 - var(--spread)) + var(--fan-step) * var(--spread)));
+    --card-y: calc(var(--offset) * -5px * (1 - var(--spread)) + var(--edge) * var(--edge) * 32px * var(--spread));
+    --card-angle: calc(var(--offset) * (2deg - 1deg * var(--spread)));
+    --card-depth: calc(var(--normalized) * -18deg * var(--spread));
+    --card-scale: calc(.88 + .12 * var(--spread) - var(--edge) * .08 * var(--spread));
+    position: absolute; left: 50%; top: 47%; width: clamp(200px, 22vw, 300px); z-index: var(--layer);
+    transform: translate(-50%, -50%) translate(var(--card-x), var(--card-y)) rotate(var(--card-angle)) rotateY(var(--card-depth)) scale(var(--card-scale));
     transform-origin: center center;
   }
-  /* Keyboard navigation opens the whole spread so credits and links stay reachable. */
-  .moments-wrap:focus-within { --spread: 1 !important; }
+  .moments-wrap[data-animated="true"] .moment-card figcaption { min-height: 112px; }
+  .moments-wrap[data-animated="true"] .moment-image { aspect-ratio: 1.15; }
+  /* Raise a single card to reveal its photo and credits without opening the stack. */
+  .moments-wrap[data-animated="true"] .moment-card:focus-within,
+  .moments-wrap[data-animated="true"][data-open="true"] .moment-card:hover {
+    --card-y: -6px; --card-angle: 0deg; --card-depth: 0deg; --card-scale: 1; z-index: 20;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .moments-track { scroll-behavior: auto; scroll-snap-type: none; }

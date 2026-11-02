@@ -14,4 +14,6 @@ Las cuatro fotografías nuevas se descargaron de las imágenes públicas visible
 
 Los archivos locales se mantienen cuando llega la respuesta compartida de Places. Una imagen en vivo sustituye únicamente la misma fotografía, por identificador, sin borrar el resto de la selección. No se descargaron fotografías a través de Places API ni se guardaron sus URLs temporales.
 
-En escritorio, las tarjetas se distribuyen en dos filas y se despliegan al entrar en pantalla, sin añadir un tramo de scroll fijo. En móvil se conserva una única tira horizontal. Sin JavaScript y con movimiento reducido, la disposición es estática.
+Tras la revisión del diseño de escritorio, las tarjetas forman una única pila centrada que se abre en un abanico panorámico. La escena permanece fija durante 90 svh de recorrido: el primer 22 % conserva la pila, el siguiente 66 % abre el abanico y el último 12 % mantiene la colección abierta. El título permanece dentro de la escena. Cada tarjeta se eleva al enfocarla, o al pasar el cursor cuando el abanico está completamente abierto, para mostrar su fotografía y sus créditos.
+
+En móvil se conserva una única tira horizontal. Sin JavaScript, con movimiento reducido o con menos de 620 px de altura disponible, se usa una tira horizontal estática, también en escritorio. No se crean dos filas.
