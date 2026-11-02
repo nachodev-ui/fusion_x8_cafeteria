@@ -1,0 +1,35 @@
+.moments-wrap { --spread: 1; min-width: 0; }
+.moments-stage { min-width: 0; }
+.moments-track { display: grid; grid-auto-flow: column; grid-auto-columns: min(82%, 380px); gap: 16px; overflow-x: auto; padding: 12px 4px 20px; scroll-snap-type: x mandatory; scroll-padding-inline: 4px; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #71513a #171310; }
+.moment-card { min-width: 0; margin: 0; padding: 8px; align-self: start; border: 1px solid #3b3029; border-radius: 8px; background: #171310; box-shadow: 0 12px 28px #0003; scroll-snap-align: start; }
+.moment-image { position: relative; display: block; overflow: hidden; border-radius: 3px; aspect-ratio: 1.15; }
+.moment-image img { width: 100%; height: 100%; object-fit: cover; }
+.moment-number { position: absolute; right: 10px; bottom: 10px; padding: 5px 8px; border-radius: 3px; background: #0b0b0bcc; color: #f5eee4; font-size: 10px; }
+.moment-card figcaption { padding: 15px 10px 12px; overflow-wrap: anywhere; }
+.moment-card h3 { font-size: 13px; font-weight: 500; line-height: 1.6; }
+.moment-card p, .moment-card small { color: #b9a18d; font-size: 10px; line-height: 1.8; margin-top: 6px; }
+.moment-card small { display: block; font-size: 9px; }
+.moment-card figcaption a { text-decoration: underline; text-underline-offset: 3px; }
+.moments-section .gallery-social { white-space: normal; }
+@media (min-width: 900px) {
+  .moments-track { grid-auto-flow: initial; grid-auto-columns: auto; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); gap: 32px 24px; overflow: visible; padding: 20px 12px 38px; }
+  .moment-image { aspect-ratio: auto; height: clamp(210px, 34svh, 340px); }
+  .moments-wrap[data-multirow="true"] .moment-image { height: clamp(180px, 22vw, 260px); }
+}
+@media (min-width: 900px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .moments-wrap[data-animated="true"] { height: calc(132svh - 125px); }
+  .moments-wrap[data-animated="true"] .moments-stage { position: sticky; top: 115px; height: calc(100svh - 125px); display: flex; align-items: center; }
+  .moments-wrap[data-animated="true"] .moments-track { width: 100%; perspective: 1200px; }
+  .moments-wrap[data-animated="true"][data-multirow="true"] { height: auto; }
+  .moments-wrap[data-animated="true"][data-multirow="true"] .moments-stage { position: static; height: auto; display: block; }
+  .moments-wrap[data-animated="true"] .moment-card {
+    transform: translateX(calc((var(--stack-x) + var(--stack-gap)) * (1 - var(--spread)))) translateY(calc(var(--offset) * var(--offset) * 10px * var(--spread))) rotate(calc(var(--offset) * (6deg - 3deg * var(--spread)))) rotateY(calc(var(--offset) * -8deg * var(--spread))) scale(calc(.88 + .12 * var(--spread)));
+    transform-origin: center center;
+  }
+  /* Keyboard navigation opens the whole spread so credits and links stay reachable. */
+  .moments-wrap:focus-within { --spread: 1 !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moments-track { scroll-behavior: auto; scroll-snap-type: none; }
+  .moment-card, .moment-image img { transform: none; transition: none; animation: none; }
+}

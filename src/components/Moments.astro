@@ -1,0 +1,42 @@
+---
+import { getImage } from 'astro:assets';
+import MomentsGallery from './MomentsGallery';
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+import place from '../data/google-maps.json';
+import media from '../data/google-media.json';
+import restoredHero from '../assets/venue/fusion-x8-exterior-restaurado-horizontal.png';
+import type { MomentPhoto } from '../lib/moment-photos';
+import { momentAdditions } from '../data/moment-additions';
+
+const exterior = await getImage({ src: restoredHero, width: 900, format: 'webp', quality: 90 });
+const local = place.photos.items[0];
+const fallback: MomentPhoto[] = [
+  {
+    id: local.mediaId, src: local.file, alt: local.alt, width: local.width, height: local.height,
+    title: local.title, dateLabel: media.localFallback.dateLabel, sourceUrl: media.localFallback.sourceUrl,
+    authors: [{ name: local.author, url: local.authorProfile }],
+  },
+  {
+    id: media.photos[0].id, src: exterior.src,
+    alt: 'Exterior de Fusión X8 con luces cálidas y el vehículo rojo decorativo; fotografía restaurada',
+    width: exterior.attributes.width, height: exterior.attributes.height,
+    title: media.photos[0].title, dateLabel: media.photos[0].dateLabel, sourceUrl: media.photos[0].sourceUrl,
+    authors: [{ name: media.photos[0].author, url: 'https://maps.google.com/maps/contrib/104702228310985217925' }],
+    edited: 'Imagen restaurada',
+  },
+  ...await Promise.all(momentAdditions.map(async ({ image, ...photo }) => {
+    const optimized = await getImage({ src: image, width: 900, format: 'webp', quality: 88 });
+    return { ...photo, src: optimized.src, width: optimized.attributes.width, height: optimized.attributes.height };
+  })),
+];
+---
+<section class="section container moments-section" id="galeria" aria-labelledby="gallery-title">
+  <div class="section-heading">
+    <div><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div>
+    <a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a>
+  </div>
+  <MomentsGallery fallback={fallback} client:load />
+  <p class="gallery-note">Selección con fechas verificadas desde julio de 2025. Fotografías de Google Maps con sus autores originales; la imagen restaurada se identifica en su crédito. <a href={place.sourceUrl} target="_blank" rel="noopener noreferrer">Ver más fotos en Google Maps ↗</a></p>
+  <a class="text-link gallery-video-link" href={media.videos[0].sourceUrl} target="_blank" rel="noopener noreferrer">Ver la entrada del local en vídeo · enero de 2026 <Icon name="diagonal" size={15} /></a>
+</section>

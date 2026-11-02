@@ -10,6 +10,7 @@ import Novedades from '../components/Novedades.astro';
 import Amenities from '../components/Amenities.astro';
 import GooglePlace from '../components/GooglePlace.astro';
 import GoogleHero from '../components/GoogleHero.astro';
+import Moments from '../components/Moments.astro';
 import aboutPhoto from '../assets/venue/fusion-x8-salon-restaurado-v2.png';
 import googleMaps from '../data/google-maps.json';
 import googleMedia from '../data/google-media.json';
@@ -85,9 +86,8 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
         <div class="hero-content container">
         <div class="hero-copy">
           <p class="eyebrow hero-eyebrow"><span class="little-line"></span> CAFETERÍA & HELADERÍA · PUENTE ALTO</p>
-          <h1 id="hero-title" class="hero-brand"><span class="script">Fusión</span><span class="hero-x8">x8<span class="brand-spark" aria-hidden="true">✳</span></span></h1>
+          <h1 id="hero-title" class="hero-brand"><span class="script">Fusión</span><span class="hero-x8">x8</span></h1>
           <h2 class="hero-tagline">Tu pausa más rica<br />del día.</h2>
-          <p class="hero-description">Un cafecito que abraza. Un helado que alegra.<br class="hidden sm:block" /> Y ese ratito que es solo para ti.</p>
           <div class="hero-actions flex flex-wrap gap-3">
             <a href="#carta" class="button button-red">Ver carta <Icon name="arrow" size={18} /></a>
             <a href="#pedido" data-order-open class="button button-outline"><Icon name="whatsapp" size={18} /> Pedir por WhatsApp</a>
@@ -104,7 +104,6 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
 
       <section class="visit-invite container" aria-labelledby="visit-invite-title">
         <div class="visit-invite-copy">
-          <p class="eyebrow"><span class="red-dot"></span> HAZTE UN TIEMPITO</p>
           <h2 id="visit-invite-title">¿Un ratito <span class="script">por acá?</span></h2>
           <p>Tu próxima pausa está en Ciudad del Sol.</p>
         </div>
@@ -182,25 +181,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
         </div>
       </section>
 
-      <section class="section container" id="galeria" aria-labelledby="gallery-title">
-        <div class="section-heading"><div><h2 id="gallery-title">Sabor a <span class="script">buen momento.</span></h2></div><a class="text-link gallery-social" href={business.instagram} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={18} /> @cafeteriafusionx8 <Icon name="diagonal" size={16} /></a></div>
-        <div class="gallery-grid gallery-grid-real" data-google-gallery data-media-state="fallback">
-          {googleMaps.photos.items.slice(0, 1).map((photo, i) => <figure class="gallery-item gallery-real">
-            <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Ver ${photo.title} en Google Maps, abre una pestaña nueva`}>
-              <img src={photo.file} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
-              <figcaption><span>0{i + 1}</span> {photo.title} <Icon name="diagonal" size={18} /></figcaption>
-            </a>
-          </figure>)}
-        </div>
-        <p class="gallery-note">Selección con fechas verificadas desde julio de 2025. Fotos y créditos de Google Maps; respaldo local publicado por Fusión X8 en julio de 2026. <a href={googleMaps.sourceUrl} target="_blank" rel="noopener noreferrer">Ver más fotos en Google Maps ↗</a></p>
-        <a class="text-link gallery-video-link" href={googleMedia.videos[0].sourceUrl} target="_blank" rel="noopener noreferrer">Ver la entrada del local en vídeo · enero de 2026 <Icon name="diagonal" size={15} /></a>
-        <template data-google-photo-template>
-          <figure class="recent-place-photo">
-            <a class="recent-photo-image" data-photo-source target="_blank" rel="noopener noreferrer"><img alt="" decoding="async" loading="eager" /></a>
-            <figcaption><h3 data-photo-title></h3><p><span data-photo-date></span> · Google Maps</p><small>Foto: <span data-photo-authors></span></small></figcaption>
-          </figure>
-        </template>
-      </section>
+      <Moments />
 
       <Novedades />
 
@@ -242,7 +223,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
         </div>
       </section>
 
-      <section class="closing-section container" aria-label="Hagamos una pausa"><span class="closing-spark" aria-hidden="true">✳</span><h2>La vida sabe mejor con un <span class="script">gustito.</span></h2><a href="#pedido" data-order-open class="text-link">Date el tuyo <Icon name="diagonal" size={20} /></a></section>
+      <section class="closing-section container" aria-label="Hagamos una pausa"><h2>La vida sabe mejor con un <span class="script">gustito.</span></h2><a href="#pedido" data-order-open class="text-link">Date el tuyo <Icon name="diagonal" size={20} /></a></section>
     </main>
 
     <footer class="site-footer"><div class="container"><div class="footer-top"><a href="#inicio" class="footer-brand" aria-label="Fusión x8, volver al inicio"><img src="/images/fusion-x8-logo.png" alt="Fusión x8, cafetería y heladería" width="82" height="82" loading="lazy" /><span>Un cafecito. Un helado.<br />Un buen momento.</span></a><div class="footer-links"><a href="#carta">La carta</a><a href="#nosotros">Nuestra esencia</a><a href="#visitanos">Visítanos</a></div><div class="footer-social"><p>SIGAMOS COMPARTIENDO</p><div><a href={business.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram de Fusión x8, abre una pestaña nueva"><Icon name="instagram" size={21} /></a><a href={business.tiktok} target="_blank" rel="noopener noreferrer" aria-label="TikTok de Fusión x8, abre una pestaña nueva"><Icon name="tiktok" size={21} /></a><span>@cafeteriafusionx8</span></div></div></div><div class="footer-bottom"><span>© {new Date().getFullYear()} Fusión x8 · Puente Alto</span><span>Demo de diseño · Carta e información del local según material compartido.</span><a href="#inicio">Volver arriba ↑</a></div></div></footer>

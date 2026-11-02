@@ -1,5 +1,6 @@
 import media from '../data/google-media.json';
 import { fetchFusionPlace, type PlacePhoto } from './google-reviews';
+import { publishMomentPhotos, type MomentPhoto } from './moment-photos';
 
 function matches(photo: PlacePhoto, id: string) {
   if (!photo.googleMapsURI) return false;
@@ -15,8 +16,6 @@ function loadImage(image: HTMLImageElement, src: string): Promise<void> {
 export async function initGoogleMedia() {
   const hero = document.querySelector<HTMLElement>('[data-google-hero]');
   if (!hero?.dataset.apiKey || !hero.dataset.placeId) return;
-  const gallery = document.querySelector<HTMLElement>('[data-google-gallery]');
-  const template = document.querySelector<HTMLTemplateElement>('[data-google-photo-template]');
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     const place = await Promise.race([
@@ -53,37 +52,22 @@ export async function initGoogleMedia() {
       if (!authors.textContent) authors.textContent = main.item.author;
       hero.dataset.mediaState = 'live';
     }
-    if (gallery && template && selected.length) {
-      const cards = await Promise.all(selected.map(async ({ item, photo }) => {
-        // Import into the active document so detached images can load before insertion.
-        const fragment = document.importNode(template.content, true);
-        const card = fragment.querySelector<HTMLElement>('figure')!;
-        const image = card.querySelector<HTMLImageElement>('img')!;
-        image.alt = item.alt;
-        image.width = photo!.widthPx;
-        image.height = photo!.heightPx;
-        await loadImage(image, photo!.getURI({ maxWidth: 900 }));
-        card.querySelector<HTMLElement>('[data-photo-title]')!.textContent = item.title;
-        card.querySelector<HTMLElement>('[data-photo-date]')!.textContent = item.dateLabel;
-        card.querySelector<HTMLAnchorElement>('[data-photo-source]')!.href = photo!.googleMapsURI || item.sourceUrl;
-        const authors = card.querySelector<HTMLElement>('[data-photo-authors]')!;
-        photo!.authorAttributions.forEach((author, index) => {
-          if (index) authors.append(document.createTextNode(', '));
-          const link = document.createElement('a');
-          link.textContent = author.displayName;
-          link.href = author.uri?.startsWith('https://') ? author.uri : item.sourceUrl;
-          link.target = '_blank'; link.rel = 'noopener noreferrer';
-          authors.append(link);
-        });
-        if (!authors.textContent) authors.textContent = item.author;
-        return card;
+    if (selected.length) {
+      const cards = await Promise.all(selected.map(async ({ item, photo }): Promise<MomentPhoto> => {
+        const src = photo!.getURI({ maxWidth: 900 });
+        // Preload before publishing; React alone owns the gallery DOM.
+        await loadImage(new Image(), src);
+        return {
+          id: item.id, src, alt: item.alt, width: photo!.widthPx, height: photo!.heightPx,
+          title: item.title, dateLabel: item.dateLabel, sourceUrl: photo!.googleMapsURI || item.sourceUrl,
+          authors: photo!.authorAttributions.length ? photo!.authorAttributions.map(author => ({
+            name: author.displayName,
+            url: author.uri?.startsWith('https://') ? author.uri : item.sourceUrl,
+          })) : [{ name: item.author, url: item.sourceUrl }],
+        };
       }).map(promise => promise.catch(() => null)));
-      const loaded = cards.filter((card): card is HTMLElement => !!card);
-      if (loaded.length) {
-        gallery.replaceChildren(...loaded);
-        gallery.classList.add('gallery-grid-recent');
-        gallery.dataset.mediaState = 'live';
-      }
+      const loaded = cards.filter((card): card is MomentPhoto => !!card);
+      if (loaded.length) publishMomentPhotos(loaded);
     }
   } catch { if (hero.dataset.staticHero !== 'true') hero.dataset.mediaState = 'fallback'; }
   finally { if (timer) clearTimeout(timer); }
