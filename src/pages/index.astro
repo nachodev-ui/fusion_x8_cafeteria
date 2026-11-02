@@ -7,6 +7,7 @@ import WhatsAppOrder from '../components/WhatsAppOrder';
 import { Image } from 'astro:assets';
 import Promos from '../components/Promos.astro';
 import Novedades from '../components/Novedades.astro';
+import Amenities from '../components/Amenities.astro';
 import GooglePlace from '../components/GooglePlace.astro';
 import GoogleHero from '../components/GoogleHero.astro';
 import aboutPhoto from '../assets/venue/fusion-x8-salon-restaurado-v2.png';
@@ -123,12 +124,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
         </a>
       </section>
 
-      <section class="amenities-section container" id="comodidades" aria-labelledby="amenities-title">
-        <div class="amenities-heading"><h2 id="amenities-title">Tu gente, tu mascota y <span class="script">un buen momento.</span></h2></div>
-        <div class="amenities-grid">
-          {business.amenities.map((amenity) => <article class="amenity"><span class="amenity-icon"><Icon name={amenity.icon} size={26} /></span><h3>{amenity.title}</h3><p>{amenity.description}</p></article>)}
-        </div>
-      </section>
+      <Amenities />
 
       <section class="section container menu-browser menu-browser--embedded" id="carta" data-menu-browser aria-labelledby="menu-title">
         <div class="section-heading menu-heading">

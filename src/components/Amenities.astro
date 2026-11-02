@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+import pet from '../assets/amenities/pet-friendly.png';
+import terrace from '../assets/amenities/terrace.png';
+import winter from '../assets/amenities/winter.png';
+import family from '../assets/amenities/family.png';
+
+const artwork: Record<string, { image: ImageMetadata; name: string; sizes: string }> = {
+  paw: { image: pet, name: 'pet', sizes: '(min-width: 900px) 38vw, (min-width: 600px) 340px, 82vw' },
+  terrace: { image: terrace, name: 'terrace', sizes: '(min-width: 900px) 43vw, (min-width: 600px) 340px, 82vw' },
+  heat: { image: winter, name: 'winter', sizes: '(min-width: 900px) 29vw, (min-width: 600px) 340px, 82vw' },
+  baby: { image: family, name: 'family', sizes: '(min-width: 900px) 29vw, (min-width: 600px) 340px, 82vw' },
+};
+---
+<section class="comfort-section container" id="comodidades" aria-labelledby="amenities-title" data-comfort-section>
+  <div class="comfort-heading">
+    <h2 id="amenities-title">Tu gente, tu mascota y <span class="script">un buen momento.</span></h2>
+    <div class="comfort-controls" data-comfort-controls hidden>
+      <button type="button" data-comfort-prev aria-label="Ver comodidad anterior" aria-controls="comfort-cards" disabled><Icon name="arrow" size={19} /></button>
+      <span data-comfort-count aria-live="polite" aria-atomic="true">01 / 04</span>
+      <button type="button" data-comfort-next aria-label="Ver siguiente comodidad" aria-controls="comfort-cards"><Icon name="arrow" size={19} /></button>
+    </div>
+  </div>
+  <ul class="comfort-grid" id="comfort-cards" data-comfort-track tabindex="0" aria-label="Comodidades para disfrutar tu visita">
+    {business.amenities.map((amenity, index) => {
+      const art = artwork[amenity.icon];
+      return <li class:list={['comfort-card', `comfort-card--${art.name}`]} data-comfort-card>
+        <article aria-labelledby={`comfort-title-${art.name}`}>
+          <Image class="comfort-image" src={art.image} alt="" width={960} widths={[360, 640, 960]} sizes={art.sizes} format="webp" quality={82} loading="lazy" decoding="async" />
+          <span class="comfort-number" aria-hidden="true">0{index + 1}</span>
+          <div class="comfort-copy"><h3 id={`comfort-title-${art.name}`}>{amenity.title}</h3><p>{amenity.description}</p></div>
+        </article>
+      </li>;
+    })}
+  </ul>
+  <div class="comfort-footer"><p>Imágenes referenciales</p><span class="comfort-swipe" aria-hidden="true">Desliza y descubre tu rincón <span>↔</span></span></div>
+</section>
+
+<style>
+  .comfort-section { padding-block: 48px 54px; border-bottom: 1px solid #ffffff14; }
+  .comfort-heading { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 26px; }
+  .comfort-heading h2 { max-width: 680px; font-size: clamp(24px, 3.8vw, 36px); font-weight: 500; line-height: 1.25; letter-spacing: -.035em; }
+  .comfort-heading h2 .script { color: #e2c3a7; font-size: 1.25em; white-space: nowrap; }
+  .comfort-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .comfort-controls[hidden] { display: none; }
+  .comfort-controls button { display: grid; place-items: center; min-width: 44px; min-height: 44px; border: 1px solid #76604c; border-radius: 50%; background: #211a15; color: #f5eee4; cursor: pointer; transition: background .25s ease, border-color .25s ease; }
+  .comfort-controls button:first-child svg { transform: rotate(180deg); }
+  .comfort-controls button:hover:not(:disabled) { background: #8f3024; border-color: #ba6b4c; }
+  .comfort-controls button:disabled { opacity: .3; cursor: default; }
+  .comfort-controls > span { min-width: 44px; color: #ccb59e; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: .06em; text-align: center; }
+  .comfort-grid { display: grid; grid-auto-flow: column; grid-auto-columns: min(82vw, 340px); gap: 16px; padding: 0 0 10px; margin: 0; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #755342 transparent; overscroll-behavior-x: contain; scroll-padding-inline: 0; }
+  .comfort-card { position: relative; height: 385px; min-width: 0; isolation: isolate; overflow: hidden; scroll-snap-align: start; border: 1px solid #6b4c3866; border-radius: 22px; background: #251a14; transition: border-color .5s ease; }
+  .comfort-card article { position: relative; height: 100%; }
+  .comfort-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; transform: scale(1.015); transition: transform 800ms cubic-bezier(.2,.65,.3,1); will-change: auto; }
+  .comfort-card::before { content: ''; position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, #0d09052b 0%, transparent 30%, #140d07c9 65%, #130d08 100%); pointer-events: none; }
+  .comfort-card::after { content: ''; position: absolute; z-index: 3; inset: 0; background: radial-gradient(340px circle at var(--comfort-x, 50%) var(--comfort-y, 50%), #ffe7bd16, transparent 65%); opacity: 0; pointer-events: none; transition: opacity .6s ease; }
+  .comfort-number { position: absolute; top: 18px; left: 18px; z-index: 2; display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #f6d2a444; border-radius: 50%; background: #130d0780; color: #fff1df; font-size: 10px; font-weight: 500; letter-spacing: .08em; }
+  .comfort-copy { position: absolute; z-index: 2; left: 24px; right: 24px; bottom: 26px; }
+  .comfort-copy h3 { max-width: 20ch; color: #fff7ed; font-size: 22px; font-weight: 600; line-height: 1.22; letter-spacing: -.025em; }
+  .comfort-copy p { max-width: 35ch; margin-top: 10px; color: #e1cbbb; font-size: 14px; line-height: 1.65; }
+  .comfort-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 12px; }
+  .comfort-footer p { color: #a99788; font-size: 10px; line-height: 1.5; }
+  .comfort-swipe { color: #c6af99; font-size: 11px; line-height: 1.5; }
+  .comfort-swipe > span { display: inline-block; margin-left: 8px; }
+  :is(.comfort-grid, .comfort-controls button):focus-visible { outline: 2px solid #efb48e; outline-offset: 4px; }
+  @media (max-width: 599px) { .comfort-heading { align-items: start; flex-direction: column; gap: 18px; } .comfort-controls { align-self: end; } .comfort-grid { margin-right: -12px; padding-right: 12px; } }
+  @media (min-width: 900px) {
+    .comfort-section { padding-block: 62px 68px; }
+    .comfort-heading { margin-bottom: 30px; }
+    .comfort-controls, .comfort-swipe { display: none; }
+    .comfort-grid { grid-template-columns: 1.16fr 1fr 1fr; grid-template-rows: 240px 240px; grid-auto-flow: row; gap: 18px; padding: 0; overflow: visible; scroll-snap-type: none; }
+    .comfort-card { height: auto; }
+    .comfort-card--pet { grid-column: 1; grid-row: 1 / 3; }
+    .comfort-card--terrace { grid-column: 2 / 4; grid-row: 1; }
+    .comfort-card--winter { grid-column: 2; grid-row: 2; }
+    .comfort-card--family { grid-column: 3; grid-row: 2; }
+    .comfort-card--pet .comfort-copy { left: 28px; right: 28px; bottom: 30px; }
+    .comfort-card--pet .comfort-copy h3 { max-width: 13ch; font-size: clamp(25px, 2.3vw, 32px); }
+    .comfort-card--terrace .comfort-image { inset: 0 0 0 auto; width: 70%; object-position: 50% 58%; }
+    .comfort-card--terrace::before { background: linear-gradient(90deg, #17100c 0%, #17100cf2 26%, #17100ca6 50%, #17100c05 80%); }
+    .comfort-card--terrace .comfort-copy { max-width: 42%; bottom: 30px; }
+    .comfort-card--terrace .comfort-copy h3 { font-size: 26px; }
+    .comfort-card--winter .comfort-copy, .comfort-card--family .comfort-copy { left: 22px; right: 20px; bottom: 22px; }
+    .comfort-card--winter .comfort-copy h3, .comfort-card--family .comfort-copy h3 { font-size: 20px; }
+    .comfort-card--winter .comfort-copy p, .comfort-card--family .comfort-copy p { font-size: 13px; line-height: 1.55; margin-top: 8px; }
+    .comfort-card--winter .comfort-image { object-position: 50% 35%; }
+    .comfort-card--family .comfort-image { object-position: 50% 29%; }
+  }
+  @media (hover: hover) and (pointer: fine) { .comfort-card:hover { border-color: #bb896366; } .comfort-card:hover .comfort-image { transform: translate3d(var(--comfort-shift-x, 0px), var(--comfort-shift-y, 0px), 0) scale(1.065); } .comfort-card:hover::after { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .comfort-card, .comfort-image, .comfort-card::after { transition: none !important; } .comfort-image, .comfort-card:hover .comfort-image { transform: none !important; } }
+  @media print { .comfort-controls, .comfort-swipe { display: none; } .comfort-grid { display: grid; grid-template-columns: repeat(2, 1fr); overflow: visible; } .comfort-card { height: 280px; break-inside: avoid; } }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-comfort-section]');
+  const track = section?.querySelector<HTMLElement>('[data-comfort-track]');
+  if (section && track) {
+    const cards = Array.from(track.querySelectorAll<HTMLElement>('[data-comfort-card]'));
+    const controls = section.querySelector<HTMLElement>('[data-comfort-controls]')!;
+    const previous = section.querySelector<HTMLButtonElement>('[data-comfort-prev]')!;
+    const next = section.querySelector<HTMLButtonElement>('[data-comfort-next]')!;
+    const count = section.querySelector<HTMLElement>('[data-comfort-count]')!;
+    const mobile = matchMedia('(max-width: 899px)');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    let active = 0;
+    function update() {
+      frame = 0;
+      controls.hidden = !mobile.matches;
+      if (!mobile.matches) { track!.removeAttribute('tabindex'); track!.removeAttribute('aria-roledescription'); return; }
+      track!.tabIndex = 0;
+      track!.setAttribute('aria-roledescription', 'carrusel');
+      active = cards.reduce((best, card, index) => Math.abs(card.offsetLeft - cards[0].offsetLeft - track!.scrollLeft) < Math.abs(cards[best].offsetLeft - cards[0].offsetLeft - track!.scrollLeft) ? index : best, 0);
+      previous.disabled = track!.scrollLeft <= 2;
+      next.disabled = track!.scrollLeft >= track!.scrollWidth - track!.clientWidth - 2;
+      const label = `${String(active + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')}`;
+      if (count.textContent !== label) count.textContent = label;
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(update); }
+    function go(index: number) {
+      const card = cards[Math.max(0, Math.min(cards.length - 1, index))];
+      track!.scrollTo({ left: card.offsetLeft - cards[0].offsetLeft, behavior: reduced.matches ? 'auto' : 'smooth' });
+    }
+    previous.addEventListener('click', () => go(active - 1));
+    next.addEventListener('click', () => go(active + 1));
+    track.addEventListener('scroll', schedule, { passive: true });
+    track.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight') go(active + 1);
+      else if (event.key === 'ArrowLeft') go(active - 1);
+      else if (event.key === 'Home') go(0);
+      else if (event.key === 'End') go(cards.length - 1);
+      else return;
+      event.preventDefault();
+    });
+    mobile.addEventListener('change', schedule);
+    window.addEventListener('resize', schedule, { passive: true });
+    update();
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced.matches) for (const card of cards) {
+      let pointerFrame = 0;
+      card.addEventListener('pointermove', event => {
+        if (pointerFrame) return;
+        pointerFrame = requestAnimationFrame(() => {
+          pointerFrame = 0;
+          const box = card.getBoundingClientRect();
+          const x = (event.clientX - box.left) / box.width, y = (event.clientY - box.top) / box.height;
+          card.style.setProperty('--comfort-x', `${x * 100}%`);
+          card.style.setProperty('--comfort-y', `${y * 100}%`);
+          card.style.setProperty('--comfort-shift-x', `${(x - .5) * 7}px`);
+          card.style.setProperty('--comfort-shift-y', `${(y - .5) * 7}px`);
+        });
+      }, { passive: true });
+      card.addEventListener('pointerleave', () => { cancelAnimationFrame(pointerFrame); pointerFrame = 0; card.style.removeProperty('--comfort-shift-x'); card.style.removeProperty('--comfort-shift-y'); });
+    }
+  }
+</script>
