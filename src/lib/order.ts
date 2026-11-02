@@ -16,8 +16,8 @@ export function getOrder(products: OrderProduct[], quantities: Record<string, nu
 export function orderMessage(products: OrderProduct[], quantities: Record<string, number>, intro: string, name = '', notes = '') {
   const { order, total, hasPendingPrices, hasPricedProducts } = getOrder(products, quantities);
   return [intro, ...(name.trim() ? [`Soy ${name.trim()}.`] : []), ...(order.length ? [
-    '', ...order.map(item => `• ${quantities[item.id]} × ${item.name} — ${item.description}${item.description ? ' — ' : ''}${item.price === null ? 'precio por confirmar' : formatPrice(item.price * quantities[item.id])}`), '',
-    ...(hasPricedProducts ? [`${hasPendingPrices ? 'Subtotal con precio conocido' : 'Total referencial'}: ${formatPrice(total)}`] : []),
+    '', ...order.map(item => `• ${quantities[item.id]} × ${item.name} — ${item.price === null ? 'precio por confirmar' : `${formatPrice(item.price)} c/u`}`), '',
+    ...(hasPricedProducts ? [`${hasPendingPrices ? 'Subtotal con precio conocido' : 'Total'}: ${formatPrice(total)}`] : []),
     ...(hasPendingPrices ? ['Hay productos con precio pendiente. ¿Me confirman sus precios y el total final?'] : []),
   ] : []), ...(notes.trim() ? ['', `Comentario: ${notes.trim()}`] : []), '', '¿Me confirman disponibilidad y cómo coordinar el retiro? ¡Gracias!'].join('\n');
 }

@@ -33,7 +33,10 @@ test('disponibilidad protege la selección, el cálculo y el mensaje incluso ant
   assert.equal(order.total, 3800);
   assert.equal(order.hasPendingPrices, true);
   const message = orderMessage(menu.map(p => ({ ...p, name: p.id })), quantities, 'Hola');
-  assert.match(message, /Descripción nueva/);
+  assert.doesNotMatch(message, /Descripción nueva/);
+  assert.match(message, /2 × prueba — \$1\.900 c\/u/);
+  assert.match(message, /Subtotal con precio conocido: \$3\.800/);
+  assert.match(orderMessage([product], { prueba: 2 }, 'Hola'), /2 × Café — \$1\.900 c\/u\n\nTotal: \$3\.800/);
   assert.match(message, /Subtotal con precio conocido/);
   assert.match(message, /precio por confirmar/);
   assert.doesNotMatch(message, /agotado|oculto|eliminado/);
@@ -43,7 +46,7 @@ test('solo pendientes y carta vacía no generan total ficticio', () => {
   const pending = getOrder([{ ...product, price: null }], { prueba: 2 });
   assert.equal(pending.hasPricedProducts, false);
   assert.equal(pending.hasPendingPrices, true);
-  assert.doesNotMatch(orderMessage([{ ...product, price: null }], { prueba: 1 }, 'Hola'), /Total referencial|\$0/);
+  assert.doesNotMatch(orderMessage([{ ...product, price: null }], { prueba: 1 }, 'Hola'), /Total:|\$0/);
   assert.deepEqual(getOrder([], { prueba: 1 }).order, []);
 });
 test('ocultar el último producto retira grupos y categorías de la navegación pública', () => {
@@ -59,7 +62,9 @@ test('ocultar el último producto retira grupos y categorías de la navegación 
 test('edición, creación, eliminación y versiones comparten una fuente de datos', () => {
   const edited = { ...product, name: 'Nuevo nombre', description: 'Nueva receta', price: 2100 };
   const menu = parseMenu({ products: [edited, { ...product, id: 'nuevo', category: 'comida', group: 'pasteles', price: null }] });
-  assert.match(orderMessage(menu.products, { prueba: 1, nuevo: 1 }, 'Hola'), /Nuevo nombre — Nueva receta/);
+  const message = orderMessage(menu.products, { prueba: 1, nuevo: 1 }, 'Hola');
+  assert.match(message, /Nuevo nombre — \$2\.100 c\/u/);
+  assert.doesNotMatch(message, /Nueva receta/);
   assert.equal(getOrder(menu.products, { prueba: 1 }).total, 2100);
   assert.equal(menu.products[1].group, 'pasteles');
   assert.equal(getOrder(menu.products.filter(p => p.id !== 'prueba'), { prueba: 1 }).count, 0);
