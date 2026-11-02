@@ -1,6 +1,6 @@
 # Sección de comodidades
 
-`Amenities.astro` sustituye las cuatro columnas con iconos por una composición de tarjetas con escenas ilustrativas de cafetería. Se mantiene el título «Tu gente, tu mascota y un buen momento» y los cuatro servicios y descripciones de `src/data/business.ts`.
+`Amenities.astro` presenta cuatro tarjetas con fotografías retocadas del propio local. Se mantiene el título «Tu gente, tu mascota y un buen momento» y los cuatro servicios y descripciones de `src/data/business.ts`.
 
 Referencias de 21st.dev consultadas:
 
@@ -13,14 +13,15 @@ El movimiento de imagen es suave y limitado a pocos píxeles con ratón. Se omit
 
 ## Imágenes
 
-Se crearon con la herramienta integrada `image_gen` cuatro escenas nuevas. No son fotografías documentales de Fusión x8; el pie de la sección indica «Imágenes referenciales». No se añadieron servicios a partir de las imágenes.
+Se sustituyeron las cuatro escenas enteramente sintéticas por retoques de las tres fotografías entregadas por el usuario, usando la herramienta integrada `image_gen`. El pie de la sección indica «Fotografías del local · Retocadas». No se añadieron animales ni servicios a partir de las imágenes.
 
-- `src/assets/amenities/pet-friendly.png`: mascota junto a mesa de cafetería y agua.
-- `src/assets/amenities/terrace.png`: terraza con plantas, mesa y luz cálida.
-- `src/assets/amenities/winter.png`: rincón con manta, café y calefacción.
-- `src/assets/amenities/family.png`: silla de bebé junto a una mesa.
+- `src/assets/amenities/terrace-photo-retouched.png`: terraza real al atardecer, con sombras recuperadas y menor destello. También se usa para «Pet friendly», con otro encuadre; no representa una visita real con mascota.
+- `src/assets/amenities/winter-photo-retouched.png`: calefactor original e interior, sin clientes, manos ni personas en la televisión.
+- `src/assets/amenities/family-photo-retouched.png`: fotografía de la silla, sin la niña, brazos, manos ni cartas que distraen.
 
-El conjunto final de prompts está en `docs/amenities-art-prompts.json`. Los originales permanecen en el proyecto y Astro sirve variantes WebP de 360, 640 y 960 px con carga diferida, dimensiones reservadas y decodificación asíncrona. No dependen de un servidor externo de imágenes ni de un generador en tiempo de ejecución.
+Las fuentes originales se conservan sin modificar en los archivos locales `public/references/silla_bebé.png`, `terraza.png` y `calefacción.png`; no se incluyen en este commit ni se publican como recursos nuevos. La primera fuente contiene la atribución «Raúl Castro, 12 de enero de 2025». Solo se publican las versiones retocadas sin personas. Las áreas antes tapadas se reconstruyen: la forma exacta del asiento de bebé no puede verificarse a partir de la foto original. No se debe presentar este retoque como una prueba del modelo exacto de silla disponible.
+
+Se conserva la dirección de cámara y la arquitectura reconocible de cada toma, con encuadres verticales y luz coherentes. Hacer coincidir literalmente el ángulo de tres ubicaciones distintas obligaría a inventar áreas del local; se evita esa reinterpretación. El conjunto final de prompts está en `docs/amenities-art-prompts.json`. Astro sirve variantes WebP de 360, 640 y 960 px con carga diferida, dimensiones reservadas y decodificación asíncrona. No dependen de un servidor externo de imágenes ni de un generador en tiempo de ejecución.
 
 ## Comprobaciones
 
