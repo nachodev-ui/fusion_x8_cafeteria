@@ -59,7 +59,7 @@ export default function AdminPanel({ imageSources = {} }: { imageSources?: Recor
   const wasEditing = useRef(false);
   const products = snapshot?.menu.products ?? [];
   const original = products.find(product => product.id === editor?.product.id);
-  const dirty = !!editor && (editor.isNew || !original || (['name', 'description', 'price', 'category', 'group', 'status'] as const).some(key => !Object.is(editor.product[key], original[key])) || JSON.stringify([...(editor.product.tags ?? [])].sort()) !== JSON.stringify([...(original.tags ?? [])].sort()));
+  const dirty = !!editor && (editor.isNew || !original || (['name', 'description', 'price', 'category', 'group', 'status'] as const).some(key => !Object.is(editor.product[key], original[key])) || JSON.stringify([...(editor.product.tags ?? [])].sort()) !== JSON.stringify([...(original.tags ?? [])].sort()) || JSON.stringify(editor.product.options ?? []) !== JSON.stringify(original.options ?? []));
   const dirtyRef = useRef(dirty); dirtyRef.current = dirty;
   const validError = useMemo(() => {
     if (!editor) return '';

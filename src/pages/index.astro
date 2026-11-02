@@ -147,7 +147,7 @@ const mapLink = hasAddress ? `https://www.google.com/maps/dir/?api=1&destination
                   {!!product.tags?.length && <small>{product.tags.map(tag => dietaryTagLabels[tag]).join(' · ')}</small>}
                   {product.note && <small>{product.note}</small>}
                 </div>
-                <button class="menu-entry-add" type="button" disabled={product.status !== 'disponible'} data-add-product={product.status === 'disponible' ? product.id : undefined} aria-label={`Agregar ${product.name} al pedido${product.price === null ? ', precio por confirmar' : ''}`}><Icon name="plus" size={18} /></button>
+                <button class="menu-entry-add" type="button" disabled={product.status !== 'disponible'} data-add-product={product.status === 'disponible' ? product.id : undefined} aria-haspopup={product.options?.length ? 'dialog' : undefined} aria-label={`${product.options?.length ? 'Elegir opciones de' : 'Agregar'} ${product.name}${product.options?.length ? '' : ' al pedido'}${product.price === null ? ', precio por confirmar' : ''}`}><Icon name="plus" size={18} /></button>
               </article>)}
             </div>
           </section>)}

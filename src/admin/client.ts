@@ -18,4 +18,4 @@ export async function adminRequest<T>(path: string, options: RequestInit = {}): 
   if (!value) throw new AdminApiError(502, 'INVALID_RESPONSE', 'No se pudo interpretar la respuesta. Comprueba el estado de la carta antes de reintentar.');
   return value as T;
 }
-export const editableProduct = (product: ProductData) => ({ name: product.name.trim(), description: product.description, price: product.price, category: product.category, group: product.group, status: product.status, tags: product.tags ?? [] });
+export const editableProduct = (product: ProductData) => ({ name: product.name.trim(), description: product.description, price: product.price, category: product.category, group: product.group, status: product.status, tags: product.tags ?? [], options: product.options ?? [] });

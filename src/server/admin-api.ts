@@ -68,7 +68,7 @@ async function body(request: Request): Promise<Record<string, unknown>> {
   } catch { throw new ApiError(400, 'INVALID_BODY', 'El cuerpo JSON no es válido.'); }
 }
 const requiredEditableKeys = ['name', 'description', 'price', 'category', 'group', 'status'];
-const editableKeys = [...requiredEditableKeys, 'tags'];
+const editableKeys = [...requiredEditableKeys, 'tags', 'options'];
 function editedProduct(value: unknown, base: ProductData): ProductData {
   if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => !editableKeys.includes(key)) || requiredEditableKeys.some(key => !Object.hasOwn(value, key))) throw new ApiError(422, 'INVALID_PRODUCT', 'Envía solo los campos editables del producto, completos.');
   const product = { ...base, ...value };

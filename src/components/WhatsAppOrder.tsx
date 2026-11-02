@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { menuGroups, categories } from '../data/menu-config';
 import { formatPrice } from '../data/menu-format';
 import { canOrder } from '../data/menu-schema';
-import { getOrder, orderMessage, type OrderProduct } from '../lib/order';
+import { addOrderLine, createOrderLine, getOrder, orderLineKey, orderMessage, type OrderItem, type OrderLine, type OrderProduct, type OrderSelections } from '../lib/order';
 import { business, whatsappReady } from '../data/business';
+import ProductOptionsDialog from './ProductOptionsDialog';
 
 export default function WhatsAppOrder({ products }: { products: OrderProduct[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [lines, setLines] = useState<OrderLine[]>([]);
+  const [pending, setPending] = useState<{ product: OrderProduct; opener: HTMLElement | null; item?: OrderItem } | null>(null);
   const [selected, setSelected] = useState(products.find(canOrder)?.id ?? '');
   const [name, setName] = useState('');
   const [notes, setNotes] = useState('');
@@ -25,14 +27,26 @@ export default function WhatsAppOrder({ products }: { products: OrderProduct[] }
 
   function restoreFocus() {
     document.body.style.overflow = previousOverflow.current;
-    previousFocus.current?.focus();
+    previousFocus.current?.focus({ preventScroll: true });
   }
 
-  function addProduct(id: string) {
+  function addProduct(id: string, opener: HTMLElement | null, item?: OrderItem) {
     const product = products.find((item) => item.id === id);
     if (!product || !canOrder(product)) return;
-    setQuantities((current) => ({ ...current, [id]: Math.min((current[id] || 0) + 1, 99) }));
+    if (product.options?.length) { setPending({ product, opener, item }); return; }
+    setLines(current => addOrderLine(current, product));
     setAnnouncement(`${product.name} agregado a tu pedido.`);
+  }
+
+  function confirmOptions(selections: OrderSelections, quantity: number) {
+    if (!pending || !createOrderLine(pending.product, selections, quantity)) return;
+    setLines(current => addOrderLine(pending.item ? current.filter(line => orderLineKey(line) !== pending.item!.key) : current, pending.product, selections, quantity));
+    setAnnouncement(`${pending.product.name} ${pending.item ? 'actualizado en' : 'agregado a'} tu pedido.`);
+    setPending(null);
+  }
+
+  function changeQuantity(item: OrderItem, delta: number) {
+    setLines(current => current.map(line => orderLineKey(line) === item.key ? { ...line, quantity: Math.min(99, Math.max(0, line.quantity + delta)) } : line).filter(line => line.quantity > 0));
   }
 
   useEffect(() => {
@@ -41,7 +55,7 @@ export default function WhatsAppOrder({ products }: { products: OrderProduct[] }
       const opener = event.target.closest<HTMLElement>('[data-order-open]');
       const add = event.target.closest<HTMLElement>('[data-add-product]');
       if (opener) { event.preventDefault(); openOrder(); }
-      if (add?.dataset.addProduct) addProduct(add.dataset.addProduct);
+      if (add?.dataset.addProduct) addProduct(add.dataset.addProduct, add);
     };
     document.addEventListener('click', onClick);
     return () => {
@@ -54,12 +68,12 @@ export default function WhatsAppOrder({ products }: { products: OrderProduct[] }
     if (!announcement) return;
     const timer = window.setTimeout(() => setAnnouncement(''), 3200);
     return () => window.clearTimeout(timer);
-  }, [announcement, quantities]);
+  }, [announcement, lines]);
 
-  const { order, count, total, hasPendingPrices, hasPricedProducts } = getOrder(products, quantities);
+  const { order, count, total, hasPendingPrices, hasPricedProducts } = getOrder(products, lines);
   const totalLabel = hasPendingPrices ? (hasPricedProducts ? 'Subtotal conocido' : 'Total por confirmar') : 'Total referencial';
   const totalDisplay = hasPendingPrices ? (hasPricedProducts ? `${formatPrice(total)} + por confirmar` : 'Por confirmar') : formatPrice(total);
-  const message = orderMessage(products, quantities, business.whatsappMessage, name, notes);
+  const message = orderMessage(products, lines, business.whatsappMessage, name, notes);
   const orderUrl = `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   return (
@@ -89,17 +103,19 @@ export default function WhatsAppOrder({ products }: { products: OrderProduct[] }
                 {products.filter((item) => item.group === group.id).map((item) => <option key={item.id} value={item.id} disabled={!canOrder(item)}>{item.status === 'agotado' ? 'Agotado · ' : ''}{item.name} · {formatPrice(item.price)}</option>)}
               </optgroup>)}
             </select>
-            <button type="button" className="button button-red" disabled={!products.some(item => item.id === selected && canOrder(item))} onClick={() => addProduct(selected)} aria-label="Agregar producto seleccionado">+</button>
+            <button type="button" className="button button-red" disabled={!products.some(item => item.id === selected && canOrder(item))} onClick={event => addProduct(selected, event.currentTarget)} aria-label="Agregar producto seleccionado">+</button>
           </div>
         </div>
         {order.length ? <ul className="order-items">
-          {order.map((item) => <li key={item.id}>
-            <div className="order-item-name"><strong>{item.name}</strong><small>{item.description}</small><span>{item.price === null ? 'Precio por confirmar' : formatPrice(item.price * quantities[item.id])}</span></div>
+          {order.map((item) => <li key={item.key}>
+            <div className="order-item-name"><strong>{item.name}</strong>{item.selectionLabel && <small className="order-item-options">{item.selectionLabel}</small>}<small>{item.description}</small><span>{item.price === null ? 'Precio por confirmar' : formatPrice(item.price * item.quantity)}</span>
+              {!!item.options?.length && <button type="button" className="order-edit-options" onClick={event => addProduct(item.id, event.currentTarget, item)}>Cambiar opciones</button>}
+            </div>
             <div className="order-quantity">
-              <button type="button" aria-label={`Quitar uno de ${item.name}`} onClick={() => setQuantities((current) => ({ ...current, [item.id]: Math.max(0, current[item.id] - 1) }))}>−</button>
-              <span aria-label={`${quantities[item.id]} unidades`}>{quantities[item.id]}</span>
-              <button type="button" disabled={quantities[item.id] >= 99} aria-label={`Agregar uno de ${item.name}`} onClick={() => addProduct(item.id)}>+</button>
-              <button type="button" className="remove-item" aria-label={`Eliminar ${item.name} del pedido`} onClick={() => setQuantities((current) => ({ ...current, [item.id]: 0 }))}>Quitar</button>
+              <button type="button" aria-label={`Quitar uno de ${item.name}${item.selectionLabel ? `, ${item.selectionLabel}` : ''}`} onClick={() => changeQuantity(item, -1)}>−</button>
+              <span aria-label={`${item.quantity} unidades`}>{item.quantity}</span>
+              <button type="button" disabled={item.quantity >= 99} aria-label={`Agregar uno de ${item.name}${item.selectionLabel ? `, ${item.selectionLabel}` : ''}`} onClick={() => changeQuantity(item, 1)}>+</button>
+              <button type="button" className="remove-item" aria-label={`Eliminar ${item.name}${item.selectionLabel ? `, ${item.selectionLabel}` : ''} del pedido`} onClick={() => setLines(current => current.filter(line => orderLineKey(line) !== item.key))}>Quitar</button>
             </div>
           </li>)}
         </ul> : <p className="empty-order">Tu próxima pausa rica empieza aquí. ☕</p>}
@@ -109,13 +125,14 @@ export default function WhatsAppOrder({ products }: { products: OrderProduct[] }
           <input id="customer-name" autoComplete="given-name" maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="¿Cómo te llamas?" />
         </label>
         <label className="order-field" htmlFor="order-notes">¿Algo que debamos saber? <span>(opcional)</span>
-          <textarea id="order-notes" rows={2} maxLength={400} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Sabores de helado, variedad del jugo, sin azúcar…" />
+          <textarea id="order-notes" rows={2} maxLength={400} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Sin azúcar, horario de retiro u otra indicación…" />
         </label>
         {!whatsappReady && <p className="demo-notice" id="demo-order-note">Estás viendo una demo. El WhatsApp de Fusión x8 está pendiente de confirmar: {business.whatsappDisplay}. Por ahora no se envían pedidos.</p>}
         {whatsappReady ? <a className="button button-red order-send" href={orderUrl} target="_blank" rel="noopener noreferrer">{order.length ? 'Enviar pedido por WhatsApp' : 'Consultar por WhatsApp'} <span aria-hidden="true">↗</span></a>
           : <button type="button" className="button button-red order-send" disabled aria-describedby="demo-order-note">WhatsApp pendiente de configurar</button>}
         <p className="order-footnote">Precios de la carta vigente, sujetos a confirmación. La disponibilidad y el retiro se coordinan por WhatsApp.</p>
       </dialog>
+      {pending && <ProductOptionsDialog product={pending.product} opener={pending.opener} initialSelections={pending.item?.selections} initialQuantity={pending.item?.quantity} editing={!!pending.item} onConfirm={confirmOptions} onCancel={() => setPending(null)} />}
     </div>
   );
 }

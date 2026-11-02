@@ -112,6 +112,7 @@ Crear y editar abre una vista dedicada con secciones y una vista previa del prod
 2. Buscar por nombre o filtrar categoría y estado. La lista está paginada para mantener ligera la edición.
 3. **Crear producto** añade al final un identificador UUID estable y un formulario sin imagen. En **Editar**, el ID no cambia. Al cambiar categoría, elegir de nuevo un grupo válido.
 4. Nombre obligatorio hasta 120 caracteres; descripción hasta 1000; precio entero entre 0 y 1.000.000.000 CLP. **Precio por confirmar** almacena null; desmarcar exige un precio explícito y nunca lo transforma en cero.
+   En **Sabores y preferencias**, añade listas de variedades o campos de preferencia escrita. El cliente debe completarlos antes de agregar el producto; cada combinación se conserva por separado en la cesta y en WhatsApp. Las opciones no cambian el precio. Consulta [el funcionamiento y las referencias de diseño](docs/order-options.md).
 5. **Disponible**: visible y admite pedidos. **Agotado**: visible con etiqueta, sin pedidos. **Oculto**: fuera de carta y selector. El selector rápido de estado abre el formulario: también requiere **Guardar producto**.
 6. **Eliminar** muestra el nombre y permite Cancelar o Eliminar. Sugiere Oculto para retiradas temporales. Elimina solo ese producto; no elimina imágenes.
 7. **Guardar producto** valida y guarda inmediatamente ese producto en Git. Cada guardado o eliminación solicita otro despliegue. No hay un segundo botón para publicar ni borradores.

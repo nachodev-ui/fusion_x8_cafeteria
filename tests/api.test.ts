@@ -58,6 +58,21 @@ test('etiquetas opcionales se validan, persisten, cambian la firma y pueden reti
   assert.deepEqual(f.menu.products[0].tags, []);
 });
 
+test('opciones se guardan, cambian versión, sobreviven a clientes anteriores y pueden retirarse', async () => {
+  const f = fixture();
+  const before = await (await f.request()).json();
+  const options = [{ id: 'sabor', label: 'Sabor', choices: ['Vainilla', 'Chocolate'] }];
+  const saved = await f.request('PUT', 'products/cafe', { revision: f.revision, product: { ...editable(product), options } });
+  assert.equal(saved.status, 200);
+  assert.notEqual((await saved.json()).version, before.version);
+  assert.deepEqual(f.menu.products[0].options, options);
+  assert.equal((await f.request('PUT', 'products/cafe', { revision: f.revision, product: editable(product) })).status, 200);
+  assert.deepEqual(f.menu.products[0].options, options);
+  assert.equal((await f.request('PUT', 'products/cafe', { revision: f.revision, product: { ...editable(product), options: [{ ...options[0], choices: [] }] } })).status, 422);
+  assert.equal((await f.request('PUT', 'products/cafe', { revision: f.revision, product: { ...editable(product), options: [] } })).status, 200);
+  assert.deepEqual(f.menu.products[0].options, []);
+});
+
 test('API rechaza lectura y escritura sin sesión, token falso, otro correo, audiencia, emisor o expiración', async () => {
   const f = fixture();
   const wrongAudience = await new SignJWT({ email: env.ADMIN_EMAIL, type: 'app' }).setProtectedHeader({ alg: 'RS256', kid: 'test' }).setIssuer(`https://${env.ACCESS_TEAM_DOMAIN}`).setAudience('other-app').setSubject('owner').setIssuedAt().setExpirationTime('10m').sign(pair.privateKey);

@@ -6,6 +6,12 @@ export const dietaryTags = ['vegetariano', 'sin-gluten', 'picante'] as const;
 export type DietaryTag = typeof dietaryTags[number];
 export const dietaryTagLabels: Record<DietaryTag, string> = { vegetariano: 'Vegetariano', 'sin-gluten': 'Sin gluten', picante: 'Picante' };
 export const imageKeys = ['cookie-cup', 'waffle-frutillas', 'galletones-veganos', 'cinnamon-roll', 'kuchen-sureno'] as const;
+export interface ProductOption {
+  id: string;
+  label: string;
+  choices?: string[];
+  hint?: string;
+}
 export interface ProductData {
   id: string;
   name: string;
@@ -17,6 +23,7 @@ export interface ProductData {
   note?: string;
   image?: string;
   tags?: DietaryTag[];
+  options?: ProductOption[];
 }
 export interface MenuData { products: ProductData[] }
 
@@ -31,7 +38,7 @@ export function parseMenu(value: unknown): MenuData {
   for (const [index, item] of items.entries()) {
     const prefix = `Producto ${index + 1}: `;
     if (!item || typeof item !== 'object' || Array.isArray(item)) return fail(prefix + 'formato inválido.');
-    if (Object.keys(item).some(key => !['id', 'name', 'description', 'price', 'category', 'group', 'status', 'note', 'image', 'tags'].includes(key))) return fail(prefix + 'campo desconocido.');
+    if (Object.keys(item).some(key => !['id', 'name', 'description', 'price', 'category', 'group', 'status', 'note', 'image', 'tags', 'options'].includes(key))) return fail(prefix + 'campo desconocido.');
     if (typeof item.id !== 'string' || !/^[a-z0-9][a-z0-9-]{0,79}$/.test(item.id) || ids.has(item.id)) return fail(prefix + 'identificador inválido o duplicado.');
     ids.add(item.id);
     if (typeof item.name !== 'string' || !item.name.trim() || item.name !== item.name.trim() || item.name.length > 120) return fail(prefix + 'el nombre es obligatorio, sin espacios en los extremos y de hasta 120 caracteres.');
@@ -43,6 +50,18 @@ export function parseMenu(value: unknown): MenuData {
     if (item.note !== undefined && (typeof item.note !== 'string' || item.note.length > 1000)) return fail(prefix + 'nota inválida.');
     if (item.image !== undefined && !imageKeys.includes(item.image)) return fail(prefix + 'referencia de imagen desconocida.');
     if (item.tags !== undefined && (!Array.isArray(item.tags) || item.tags.length > dietaryTags.length || new Set(item.tags).size !== item.tags.length || item.tags.some((tag: unknown) => !dietaryTags.includes(tag as DietaryTag)))) return fail(prefix + 'etiquetas inválidas.');
+    if (item.options !== undefined) {
+      if (!Array.isArray(item.options) || item.options.length > 8) return fail(prefix + 'admite hasta 8 opciones de personalización.');
+      const optionIds = new Set<string>();
+      for (const option of item.options) {
+        if (!option || typeof option !== 'object' || Array.isArray(option) || Object.keys(option).some(key => !['id', 'label', 'choices', 'hint'].includes(key))) return fail(prefix + 'opción de personalización inválida.');
+        if (typeof option.id !== 'string' || !/^[a-z0-9][a-z0-9-]{0,39}$/.test(option.id) || optionIds.has(option.id)) return fail(prefix + 'identificador de opción inválido o duplicado.');
+        optionIds.add(option.id);
+        if (typeof option.label !== 'string' || !option.label.trim() || option.label !== option.label.trim() || option.label.length > 80) return fail(prefix + 'cada opción necesita un nombre de hasta 80 caracteres.');
+        if (option.hint !== undefined && (typeof option.hint !== 'string' || option.hint.length > 200)) return fail(prefix + 'ayuda de opción inválida.');
+        if (option.choices !== undefined && (!Array.isArray(option.choices) || !option.choices.length || option.choices.length > 30 || option.choices.some((choice: unknown) => typeof choice !== 'string' || !choice.trim() || choice !== choice.trim() || choice.length > 80) || new Set(option.choices).size !== option.choices.length)) return fail(prefix + 'cada lista de opciones debe tener entre 1 y 30 respuestas distintas, de hasta 80 caracteres.');
+      }
+    }
   }
   return value as MenuData;
 }
@@ -65,4 +84,5 @@ export const menuSignatureInput = (menu: MenuData) => JSON.stringify(menu.produc
   category: product.category, group: product.group, status: product.status,
   note: product.note ?? null, image: product.image ?? null,
   tags: [...(product.tags ?? [])].sort(),
+  options: product.options ?? [],
 })));

@@ -88,7 +88,14 @@
       "name": "Milkshake",
       "description": "Helado a elección, 200 ml de leche y crema chantilly.",
       "price": 5900,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "chocolate-caliente",
@@ -106,7 +113,20 @@
       "name": "Frappuccino",
       "description": "Hielo frappé, 30 ml de café, syrup a elección y crema chantilly.",
       "price": null,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "syrup",
+          "label": "Sabor de syrup",
+          "choices": [
+            "Amaretto",
+            "Vainilla",
+            "Chocolate",
+            "Caramelo",
+            "Crema irlandesa"
+          ]
+        }
+      ]
     },
     {
       "id": "cortado",
@@ -134,7 +154,20 @@
       "name": "Agregado de syrup",
       "description": "Amaretto, vainilla, chocolate, caramelo o crema irlandesa.",
       "price": 800,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "sabor",
+          "label": "Sabor",
+          "choices": [
+            "Amaretto",
+            "Vainilla",
+            "Chocolate",
+            "Caramelo",
+            "Crema irlandesa"
+          ]
+        }
+      ]
     },
     {
       "id": "te",
@@ -206,7 +239,14 @@
       "name": "Infusiones",
       "description": "Consulta las variedades disponibles al pedir.",
       "price": 2500,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Infusión preferida",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "bebidas",
@@ -215,7 +255,14 @@
       "name": "Bebidas",
       "description": "Consulta las opciones disponibles.",
       "price": 2600,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Bebida preferida",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "agua-mineral",
@@ -233,7 +280,21 @@
       "name": "Jugos",
       "description": "Piña, frambuesa, frutilla, melón, mango o frutos rojos.",
       "price": 3900,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "sabor",
+          "label": "Sabor",
+          "choices": [
+            "Piña",
+            "Frambuesa",
+            "Frutilla",
+            "Melón",
+            "Mango",
+            "Frutos rojos"
+          ]
+        }
+      ]
     },
     {
       "id": "limonadas",
@@ -242,7 +303,20 @@
       "name": "Limonadas",
       "description": "Clásica, menta, menta jengibre, jengibre o coco.",
       "price": 3900,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Variedad",
+          "choices": [
+            "Clásica",
+            "Menta",
+            "Menta jengibre",
+            "Jengibre",
+            "Coco"
+          ]
+        }
+      ]
     },
     {
       "id": "copa-fusion",
@@ -269,7 +343,19 @@
       "name": "Copa Frutal",
       "description": "Mix de fruta, dos sabores de helado a elección, crema chantilly y salsa de caramelo.",
       "price": 6600,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado 1",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-2",
+          "label": "Sabor de helado 2",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "copa-nino",
@@ -278,7 +364,24 @@
       "name": "Copa Niño",
       "description": "Dos sabores de helado, crema chantilly, toppings a elección y salsa de manjar.",
       "price": 5500,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado 1",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-2",
+          "label": "Sabor de helado 2",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "topping",
+          "label": "Topping preferido",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "barquillo-simple",
@@ -287,7 +390,14 @@
       "name": "Barquillo simple",
       "description": "Consulta los sabores disponibles para tu barquillo.",
       "price": null,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "barquillo-doble",
@@ -296,7 +406,19 @@
       "name": "Barquillo doble",
       "description": "Consulta los sabores disponibles para tu barquillo.",
       "price": null,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado 1",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-2",
+          "label": "Sabor de helado 2",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "barquillo-triple",
@@ -305,7 +427,24 @@
       "name": "Barquillo triple",
       "description": "Consulta los sabores disponibles para tu barquillo.",
       "price": null,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado 1",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-2",
+          "label": "Sabor de helado 2",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-3",
+          "label": "Sabor de helado 3",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "porcion-crema",
@@ -332,7 +471,14 @@
       "name": "Toppings",
       "description": "Consulta los toppings disponibles.",
       "price": 700,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "topping",
+          "label": "Topping preferido",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "mechada-fusion",
@@ -422,7 +568,14 @@
       "name": "Agregados extras",
       "description": "Consulta qué puedes agregar a tu sándwich.",
       "price": null,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "agregado",
+          "label": "Agregado preferido",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "trozo-torta",
@@ -431,7 +584,14 @@
       "name": "Trozo de torta",
       "description": "Consulta las tortas disponibles para tu porción.",
       "price": 4300,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Torta preferida",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "pie-limon",
@@ -470,7 +630,19 @@
       "price": 2500,
       "note": "Precio de ejemplo, por confirmar.",
       "image": "galletones-veganos",
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "sabor",
+          "label": "Sabor",
+          "choices": [
+            "Limón",
+            "Chocolate brownie",
+            "Canela",
+            "Matcha"
+          ]
+        }
+      ]
     },
     {
       "id": "cinnamon-roll",
@@ -499,7 +671,14 @@
       "name": "Cheesecake",
       "description": "Consulta la variedad disponible.",
       "price": 4300,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Variedad preferida",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "donuts",
@@ -517,7 +696,14 @@
       "name": "Muffin",
       "description": "Consulta las variedades disponibles.",
       "price": 2700,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Variedad preferida",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "medialuna",
@@ -536,7 +722,14 @@
       "description": "Producto relleno de la sección de pasteles.",
       "price": 1800,
       "note": "El nombre aparece cortado en la carta compartida; consulta la variedad.",
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "variedad",
+          "label": "Variedad preferida",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "waffle",
@@ -546,7 +739,31 @@
       "description": "Base de Nutella o manjar, plátano y/o frutilla, helado a elección, crema chantilly y salsa.",
       "price": 7300,
       "image": "waffle-frutillas",
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "base",
+          "label": "Base",
+          "choices": [
+            "Nutella",
+            "Manjar"
+          ]
+        },
+        {
+          "id": "fruta",
+          "label": "Fruta",
+          "choices": [
+            "Plátano",
+            "Frutilla",
+            "Plátano y frutilla"
+          ]
+        },
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "fondue-fusion",
@@ -555,7 +772,17 @@
       "name": "Fondue Fusión",
       "description": "Para dos: chocolate italiano dulce o belga semiamargo, frutilla, plátano, trozos de waffle y marshmallow.",
       "price": null,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "chocolate",
+          "label": "Chocolate",
+          "choices": [
+            "Italiano dulce",
+            "Belga semiamargo"
+          ]
+        }
+      ]
     },
     {
       "id": "volcan-chocolate",
@@ -573,7 +800,24 @@
       "name": "Banana split",
       "description": "Tres porciones de helado y crema chantilly.",
       "price": 6500,
-      "status": "disponible"
+      "status": "disponible",
+      "options": [
+        {
+          "id": "helado-1",
+          "label": "Sabor de helado 1",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-2",
+          "label": "Sabor de helado 2",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        },
+        {
+          "id": "helado-3",
+          "label": "Sabor de helado 3",
+          "hint": "Escribe tu preferencia; el local confirma la disponibilidad."
+        }
+      ]
     },
     {
       "id": "producto-4ee347ef-269b-448e-9543-291d51383ebd",

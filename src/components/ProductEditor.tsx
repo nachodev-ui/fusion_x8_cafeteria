@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { categories, menuGroups } from '../data/menu-config';
 import { formatPrice } from '../data/menu-format';
 import { statuses, dietaryTags, dietaryTagLabels, type ProductData } from '../data/menu-schema';
+import ProductOptionEditor from './ProductOptionEditor';
 
 const labels = { disponible: 'Disponible', agotado: 'Agotado', oculto: 'Oculto' };
 const descriptions = { disponible: 'Visible en la carta. Se puede añadir al pedido.', agotado: 'Visible con etiqueta Agotado. No permite pedidos.', oculto: 'Fuera de la carta y del selector del pedido.' };
@@ -15,7 +16,7 @@ export default function ProductEditor({ product, isNew, dirty, saving, validatio
   const name = useRef<HTMLInputElement>(null);
   const [touched, setTouched] = useState<string[]>([]);
   useEffect(() => { name.current?.focus({ preventScroll: true }); window.scrollTo(0, 0); }, []);
-  const errorField = validation.includes('nombre') ? 'product-name' : validation.includes('precio') ? 'product-price' : validation.includes('grupo') ? 'product-group' : '';
+  const errorField = /opción|opciones/.test(validation) ? 'product-options' : validation.includes('nombre') ? 'product-name' : validation.includes('precio') ? 'product-price' : validation.includes('grupo') ? 'product-group' : '';
   const error = (field: string) => errorField === field && touched.includes(field) ? validation.replace(/^Producto \d+: /, '') : '';
   const price = product.price === null ? 'Precio por confirmar' : Number.isSafeInteger(product.price) && product.price >= 0 && product.price <= 1_000_000_000 ? formatPrice(product.price) : 'Introduce un precio válido';
   const category = categories.find(item => item.id === product.category)?.label;
@@ -52,6 +53,7 @@ export default function ProductEditor({ product, isNew, dirty, saving, validatio
         <div className="fusion-section-title"><span aria-hidden="true">05</span><div><h2 id="tags-heading">Etiquetas opcionales</h2><p>Marca solo las que el local haya confirmado para esta preparación.</p></div></div>
         <fieldset className="fusion-dietary-tags"><legend className="fusion-sr-only">Etiquetas del producto</legend>{dietaryTags.map(tag => <label key={tag}><input type="checkbox" checked={product.tags?.includes(tag) ?? false} onChange={event => patch({ tags: event.target.checked ? [...(product.tags ?? []), tag] : (product.tags ?? []).filter(item => item !== tag) })} />{dietaryTagLabels[tag]}</label>)}</fieldset>
       </section>
+      <ProductOptionEditor key={product.id} options={product.options ?? []} validation={errorField === 'product-options' ? validation.replace(/^Producto \d+: /, '') : ''} onChange={options => patch({ options })} />
     </fieldset>
     <aside className="fusion-edit-preview" aria-label="Vista previa del producto"><span className="fusion-kicker">VISTA PREVIA</span><h2>Así se verá tu antojo</h2><p>Una referencia de su contenido en la carta.</p><article className="fusion-preview-card" data-status={product.status}>
       {image && <img src={image} alt="" width="112" height="112" />}<span className="fusion-preview-category">{category} / {group || 'Selecciona un grupo'}</span><h3>{product.name.trim() || 'Nombre del producto'}</h3><p>{product.description || 'La descripción de tu producto aparecerá aquí.'}</p><strong className="fusion-preview-price">{price}</strong><span className="fusion-preview-badge">{labels[product.status]}</span>
